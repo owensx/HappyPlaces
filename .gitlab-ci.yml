@@ -7,7 +7,7 @@ zip:
   before_script:
     - yum install zip
   script:
-    - zip ./* output.zip
+    - zip -r target.zip ./*
 
 push:
   stage: main
