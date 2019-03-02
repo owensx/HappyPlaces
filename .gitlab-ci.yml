@@ -4,6 +4,8 @@ stages:
 
 zip:
   stage: before
+  before_script:
+    - yum install zip
   script:
     - zip ./* output.zip
 
