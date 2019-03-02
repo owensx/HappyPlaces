@@ -6,6 +6,6 @@ delpoy:
   script:
     - export AWS_ACCESS_KEY_ID=AKIAJRTMXD2SFU4BRB2A
     - export AWS_SECRET_ACCESS_KEY=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
-    - export AWS_DEFAULT_REGION=us-east-1
+    - export AWS_DEFAULT_REGION=us-east-2
     - zip -r target.zip ./*
     - aws s3 cp target.zip s3://owensx-bucket
