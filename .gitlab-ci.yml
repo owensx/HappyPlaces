@@ -1,8 +1,8 @@
 delpoy:
   before_script:
     - apt-get update
-    - apt-get install zip
-    - apt-get install awscli
+    - apt-get -y install zip
+    - apt-get -y install awscli
   script:
     - zip -r target.zip ./*
     - aws s3 cp target.zip s3://owensx-bucket
