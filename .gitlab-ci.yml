@@ -15,4 +15,4 @@ push:
   image: python:latest
   script:
     - pip install awscli
-    - aws s3 cp output.zip s3://owensx-bucket
+    - aws s3 cp target.zip s3://owensx-bucket
