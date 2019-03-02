@@ -1,6 +1,9 @@
 zip:
-  before_script:
-    - pip install awscli
-    - zip ./* output.zip
   script:
+    - zip ./* output.zip
+
+push:
+  image: python:latest
+  script:
+    - pip install awscli
     - aws s3 cp output.zip s3://owensx-bucket
