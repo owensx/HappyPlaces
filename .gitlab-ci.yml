@@ -1,18 +1,8 @@
-stages:
-  - before
-  - main
-
-zip:
-  stage: before
+delpoy:
   before_script:
     - apt-get update
     - apt-get install zip
+    - apt-get install awscli
   script:
     - zip -r target.zip ./*
-
-push:
-  stage: main
-  image: python:latest
-  script:
-    - pip install awscli
     - aws s3 cp target.zip s3://owensx-bucket
