@@ -5,7 +5,7 @@ stages:
 zip:
   stage: before
   before_script:
-    - yum install zip
+    - apt-get install zip
   script:
     - zip -r target.zip ./*
 
