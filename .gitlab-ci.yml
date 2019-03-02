@@ -1,12 +1,14 @@
 stages:
-  - zip
-  - push
+  - before
+  - main
 
 zip:
+  stage: before
   script:
     - zip ./* output.zip
 
 push:
+  stage: main
   image: python:latest
   script:
     - pip install awscli
