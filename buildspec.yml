@@ -3,4 +3,4 @@ version: 0.2
 phases:
   build:
     commands:
-      - docker container run -p 8000:8000 happyplaces
+      - docker build -t happyplaces .
