@@ -3,6 +3,8 @@ version: 0.2
 phases:
   build:
     commands:
-      - ls -ltr
-      - docker container run -p 8000:8000 happyplaces
-      - ls -ltr
+      - docker build -t 570412635900.dkr.ecr.us-east-2.amazonaws.com/happyplaces:latest .
+      - docker tag 570412635900.dkr.ecr.us-east-2.amazonaws.com/happyplaces:latest
+  post_build:
+    commands:
+      - docker push 570412635900.dkr.ecr.us-east-2.amazonaws.com/happyplaces:latest
