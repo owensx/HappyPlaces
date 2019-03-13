@@ -1,6 +1,9 @@
 version: 0.2
 
 phases:
+  pre_build:
+    commands:
+      - $(aws ecr get-login --region us-east-1 --no-include-email)
   build:
     commands:
       - docker build -t 570412635900.dkr.ecr.us-east-2.amazonaws.com/happyplaces:latest .
