@@ -4,6 +4,9 @@ phases:
   build:
     commands:
       - docker build -t happyplaces .
+  post_build:
+    commands:
+      - ls -l ./*
 artifacts:
   files:
     - 'happyplaces:latest'
