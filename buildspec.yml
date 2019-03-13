@@ -6,5 +6,5 @@ phases:
       - docker build -t happyplaces .
 artifacts:
   files:
-    - '**/*'
+    - 'happyplaces:latest'
   name: happyplaces-$(date +%Y-%m-%d)
