@@ -1,13 +1,6 @@
 version: 0.2
 
-phases:
-  build:
-    commands:
-      - docker build -t happyplaces .
-  post_build:
-    commands:
-      - ls -l ./*
 artifacts:
   files:
-    - 'happyplaces:latest'
+    - '*/**'
   name: happyplaces-$(date +%Y-%m-%d)
