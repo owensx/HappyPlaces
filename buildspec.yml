@@ -1,6 +1,8 @@
 version: 0.2
 
-artifacts:
-  files:
-    - '**/*'
-  name: happyplaces-$(date +%Y-%m-%d)
+phases:
+  build:
+    commands:
+      - ls -ltr
+      - docker container run -p 8000:8000 happyplaces
+      - ls -ltr
