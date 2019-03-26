@@ -6,8 +6,8 @@ phases:
       - $(aws ecr get-login --region us-east-2 --no-include-email)
   build:
     commands:
-      - docker build -t happyplacesi:latest .
-      - docker tag happyplacesi:latest 570412635900.dkr.ecr.us-east-2.amazonaws.com/happyplaces:latest
+      - docker build -t happyplaces:latest .
+      - docker tag happyplaces:latest 570412635900.dkr.ecr.us-east-2.amazonaws.com/happyplaces:latest
   post_build:
     commands:
       - docker push 570412635900.dkr.ecr.us-east-2.amazonaws.com/happyplaces:latest
