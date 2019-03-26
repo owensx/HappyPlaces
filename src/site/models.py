@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from django.core import serializers
 from django.http.response import HttpResponse
 
-from src.site.templaztetags.filters import *
+from src.site.templatetags.filters import *
 
 DAYS = (('S', 'Sunday')
         , ('M', 'Monday')
