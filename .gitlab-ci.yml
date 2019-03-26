@@ -1,9 +1,0 @@
-delpoy:
-  before_script:
-    - apt-get update
-    - apt-get -y install zip
-    - apt-get -y install awscli
-  script:
-    - export AWS_DEFAULT_REGION=us-east-2
-    - zip -r target.zip ./*
-    - aws s3 cp target.zip s3://owensx-bucket
