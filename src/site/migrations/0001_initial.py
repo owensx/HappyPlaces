@@ -50,7 +50,6 @@ class Migration(migrations.Migration):
                 ('place_id', models.CharField(max_length=50, primary_key=True, serialize=False)),
                 ('id', models.IntegerField(unique=True)),
                 ('timeUpdated', models.DateTimeField()),
-                ('timeUpdatedd', models.DateTimeField()),
                 ('name', models.CharField(max_length=50)),
                 ('address', models.CharField(max_length=75)),
                 ('cross', models.CharField(max_length=50, null=True)),
