@@ -10,4 +10,5 @@ EXPOSE 8000
 RUN pwd
 RUN ls -ltr
 RUN pip install -r requirements.txt
+RUN python src/manage.py migrate
 CMD ["python", "src/manage.py", "runserver", "0.0.0.0:8000"]
