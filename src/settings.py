@@ -25,8 +25,6 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = ['ec2-18-221-164-96.us-east-2.compute.amazonaws.com']
-
 
 # Application definition
 
@@ -53,19 +51,7 @@ ROOT_URLCONF = 'src.urls'
 
 
 
-# Database
-# https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'HappyPlaces',
-        'USER': 'happyplacesdev',
-        'PASSWORD': 'happyplacesdev',
-        'HOST': 'happyplacesdbdev.ca3z3ga9nwuc.us-east-2.rds.amazonaws.com',
-        'PORT': 3306,
-    }
-}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
