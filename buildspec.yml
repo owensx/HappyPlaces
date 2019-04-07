@@ -7,6 +7,7 @@ phases:
   build:
     commands:
       - docker build -t happyplaces:latest .
+        - e DJANGO_SETTINGS_MODULE
       - docker tag happyplaces:latest 570412635900.dkr.ecr.us-east-2.amazonaws.com/happyplaces:latest
   post_build:
     commands:
