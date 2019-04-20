@@ -1,22 +1,5 @@
-var googlePlaces;
-var googlePlacesIterator;
-
 function init(){
 	windowHeight = document.documentElement.clientHeight;
-	
-	$('.halfScreen').each(function(){
-		$(this).height((windowHeight / 2) - getMarginHeight());
-	});
-	
-	$("#cityForm select#id_city").change(function(){
-		if ($(this).prop("selectedIndex") == 0){
-			$("#cityForm input#id_name").show();
-			$("#cityForm label[for='id_name']").show();
-		} else {
-			$("#cityForm input#id_name").hide();
-			$("#cityForm label[for='id_name']").hide();
-		}
-	});
 	
 	$("input#fromOpen").change(function(){
    	 	if($(this).prop('checked')){       	 		
@@ -41,46 +24,6 @@ function init(){
 
 function getMarginHeight(){
 	return parseInt($('#form').css("margin-top"));
-}
-
-function scrollHalf(){
-	$('body,html').scrollTop(windowHeight / 2);
-}
-
-function scrollFull(){
-	$('body,html').scrollTop(windowHeight);
-}
-
-function onStateFormSumbit(){
-	
-}
-
-function onCityFormSumbit(){
-	
-}
-
-function onHappyPlaceFormSumbit(){
-	
-}
-
-function hideHappyPlaceFormInputFields(){	
-	$('#happyPlaceForm input').hide();
-	$("#happyPlaceForm label").hide();
-
-	$('#happyPlaceForm #id_city').hide();
-	$("#happyPlaceForm select#id_happyPlace").hide();
-	
-	$('#happyPlaceForm input#id_name').show();
-	$("#happyPlaceForm label[for='id_name']").show();
-	
-	$('#happyPlaceForm input#id_neighborhood').show();
-	$("#happyPlaceForm label[for='id_neighborhood']").show();
-	
-	$('#happyPlaceForm input#id_neighborhoodName').show();
-	$("#happyPlaceForm label[for='id_neighborhoodName']").show();
-
-	
-	$("#happyPlaceForm button").not('#searchButton').hide();
 }
 
 function setHappyHourDays(buttonName){
@@ -136,27 +79,36 @@ function onHappyHourSubmit(){
 }
 
 function onSearchButtonClick(){
-	queryString = $("#happyPlaceForm input#id_name").val() + ' ' + $("#happyPlaceForm input#cityName") + ' ' + $("#happyPlaceForm input#id_address").val();
+    name = $("#happyPlaceForm input[name='name']").val()
+    neighborhood = $("#happyPlaceForm select[name='neighborhood']").val()
+    address = $("#happyPlaceForm input[name='address']").val()
+
+	if(name == '') {
+	    alert('Please provide a name');
+	    return;
+
+	}
+	if(neighborhood == '') {
+	    alert('Please select a neighborhood');
+	    return;
+	}
+
+	queryString = name + ' ' + neighborhood + ' ' + address;
 
 	$.getJSON("/getPlaceId/" + queryString, function(data) {
-		googlePlaces = data;
-		googlePlacesIterator = -1;
-		
-		loadNextGooglePlace();
-		
-		$('#map').show();
-		$('#happyPlaceForm #submitButton').show();	
-		$('#happyPlaceForm #nextButton').show();	
-		
-		if (googlePlacesIterator == googlePlaces.length - 1){
-			$('#happyPlaceForm #nextButton').hide();
-		}
-		
-		$('.errorlist').hide();
-		$('#happyPlaceForm #prevButton').hide();
+		var googlePlaces = data;
+
+        $('#searchResults').empty();
+		$.each(googlePlaces, function(index, value){
+		    $('#searchResults').append(
+                '<tr> <td>'+value["name"]+'</td> <td>'+value["address"]+'</td><td><button>Select</button></td>  </tr>'
+            );
+		});
+        $('#searchResults').css('border', '1px solid black');
+        $('#searchResults').css('align', 'center');
+        $('td').css('border', '1px solid black');
 	});
 
-	
 }
 
 function loadNextGooglePlace() {

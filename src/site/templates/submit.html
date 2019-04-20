@@ -1,71 +1,55 @@
-{% load filters %}
-{% load staticfiles %}
- <!DOCTYPE html>
+{% load static %}
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-	<link rel="stylesheet" href="{% static 'css/submit/submit.css' %}" type="text/css">
+	<!--<link rel="stylesheet" href="{#% static 'css/submit/submit.css' %#}" type="text/css">-->
   
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDj5RUzdluGjmLNjSVXASlDyvK_LIZ4Qq8&libraries=places" type="text/javascript"></script>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js" type="text/javascript"></script>
-	<script src="{{ STATIC_URL}}js/submit/submit.js" type="text/javascript"></script>
-	<script src="{{ STATIC_URL}}js/submit/map.js" type="text/javascript"></script>
+	<script src="{% static "js/submit/submit.js" %}" type="text/javascript"></script>
+	<!--<script src="{#{ STATIC_URL}#}js/submit/map.js" type="text/javascript"></script>-->
 	
-	<script type="text/javascript">	
-		$(document).ready(function(){
-			init();		
-			hideHappyPlaceFormInputFields();	
-			
-				
-			$("#happyPlaceForm select#id_neighborhood").change(function(){
-				if ($(this).prop("selectedIndex") == 0){
-					$('#happyPlaceForm input#id_neighborhoodName').show();
-					$("#happyPlaceForm label[for='id_neighborhoodName']").show();
-				} else {
-					$('#happyPlaceForm input#id_neighborhoodName').hide();
-					$("#happyPlaceForm label[for='id_neighborhoodName']").hide();
-				}
-			});				
-		});
-	</script>
+	<!--<script type="text/javascript">	-->
+		<!--$(document).ready(function(){-->
+			<!--init();		-->
+			<!--hideHappyPlaceFormInputFields();	-->
+			<!---->
+				<!---->
+			<!--$("#happyPlaceForm select#id_neighborhood").change(function(){-->
+				<!--if ($(this).prop("selectedIndex") == 0){-->
+					<!--$('#happyPlaceForm input#id_neighborhoodName').show();-->
+					<!--$("#happyPlaceForm label[for='id_neighborhoodName']").show();-->
+				<!--} else {-->
+					<!--$('#happyPlaceForm input#id_neighborhoodName').hide();-->
+					<!--$("#happyPlaceForm label[for='id_neighborhoodName']").hide();-->
+				<!--}-->
+			<!--});				-->
+		<!--});-->
+	<!--</script>-->
 </head>
 
 <body>
-	<div id="form" class="halfScreen" style="text-align:center">
+	<div id="form" style="text-align:center">
 		
 		<div id="happyPlaceSubmit">
-			<br/>
-			Search your HappyPlace below! 
-			<br/>
 			<form id="happyPlaceForm" enctype="multipart/form-data" onSubmit="onHappyPlaceFormSumbit()" action="/submit/" method="post">
 			  	{% csrf_token %}
 			  	
-			    {{ happyPlaceForm.as_p }}    
+			    {{ happy_place_submit_form.as_p }}
 			    <button type="button" id="searchButton" onClick="onSearchButtonClick()"> Search </button>
-			    </br>
-			    <button type="button" id="prevButton" onClick="loadPrevGooglePlace()"> Prev </button>
-			    <button type="button" id="nextButton" onClick="loadNextGooglePlace()"> Next </button>
-			    </br>
-			    <input type="submit" id="submitButton" value="Select">
-			    
-				<input type="hidden" name="formType" value="happyPlaceForm">
-				<input type="hidden" name="cityId" value="{{ cityId }}">
-				<input type="hidden" id="cityName" name="cityName" value="{{ cityId }}">
 			</form>
+			<table id="searchResults"></table>
 		</div>
 		
-		<div id="happyHourSubmit" style="display: {{ displayHappyHourSumbit }};">
+		<div id="happyHourSubmit">
 			<form id="happyHourForm" enctype="multipart/form-data" onSubmit="onHappyHourFormSumbit()" action="/submit/" method="post">
 			  	{% csrf_token %}
-			  	Enter happy hour details for
-			  	<br/>
-			  	<i>{{ happyPlace }}!</i>
-			  	<br/>
-				<br/>
+			  	Enter happy hour details
+
 			    <label for="fromOpen"><input id="fromOpen" name="fromOpen" type="checkbox"> From Open </label>
 			    <label for="toClose"><input id="toClose" name="toClose" type="checkbox"> To Close </label>
 			    
-			    {{ happyHourForm.as_p }}
+			    {{ happy_hour_submit_form.as_p }}
 			    
 			    <button for="daily" id="daily" name="daily" type="button" onCLick="setHappyHourDays('daily')"> Daily </button>
 			    <button for="weekdays" id="weekdays" name="weekdays" type="button" onCLick="setHappyHourDays('weekdays')"> Weekdays </button>
@@ -82,7 +66,5 @@
 		</div>
 		
 	</div>
-	
-	<div id="map" class="halfScreen"></div>
 
 </body>

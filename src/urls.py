@@ -1,8 +1,10 @@
 from django.urls import *
 from src.site import views
+from src.site import utils
 
 urlpatterns = [
-    path('getHappyPlaceById/<happyPlaceId>', views.getHappyPlaceById)
+   path('admin/submit', views.admin_submit)
+   , path('getPlaceId/<query_string>', utils.getPlaceId)
 ]#'',
     # Examples:
     # url(r'^$', 'src.views.home', name='home'),

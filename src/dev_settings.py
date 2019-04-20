@@ -1,6 +1,6 @@
 from src.settings import *
 
-ALLOWED_HOSTS = ['ec2-18-221-164-96.us-east-2.compute.amazonaws.com']
+ALLOWED_HOSTS.append('ec2-18-221-164-96.us-east-2.compute.amazonaws.com')
 
 DATABASES = {
     'default': {

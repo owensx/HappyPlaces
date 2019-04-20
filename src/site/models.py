@@ -1,5 +1,7 @@
+from django import forms
 from django.db import models
 from django.core import serializers
+from django.forms import ModelForm
 from django.http.response import HttpResponse
 
 
@@ -78,6 +80,32 @@ class HappyPlace(models.Model):
         db_table = "happyplace"
 
 
+class HappyPlaceSubmitForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        city_name = kwargs.pop('city_name')
+
+        super(HappyPlaceSubmitForm, self).__init__(*args, **kwargs)
+        self.fields['city'] = forms.CharField(initial=city_name, widget=forms.HiddenInput())
+        self.fields['neighborhood'] = forms.ModelChoiceField(queryset=Neighborhood.objects.filter(city__name=city_name)
+                                                             .order_by('name'), required=True, to_field_name="name")
+
+        self.fields['name'].required = True
+
+    class Meta:
+        model = HappyPlace
+        exclude = ('time_updated', 'active')
+
+        widgets = {
+            'cross': forms.HiddenInput()
+            , 'site': forms.HiddenInput()
+            , 'phone': forms.HiddenInput()
+            , 'latitude': forms.HiddenInput()
+            , 'longitude': forms.HiddenInput()
+            , 'price_level': forms.HiddenInput()
+            , 'google_place_id': forms.HiddenInput()
+        }
+
+
 class HappyHour(models.Model):
     # foreign keys
     happy_place = models.ForeignKey(HappyPlace, related_name='happy_hours', on_delete=models.CASCADE)
@@ -106,3 +134,9 @@ class HappyHour(models.Model):
 
     class Meta:
         db_table = "happyhour"
+
+
+class HappyHourSubmitForm(ModelForm):
+    class Meta:
+        model = HappyHour
+        exclude = ('time_updated',)
