@@ -16,11 +16,11 @@ body {
 }
 
 #happyPlaceColumn {
-    width: 23%;
+    width: 40%;
 }
 
 #happyHourColumn {
-    width: 73%;
+    width: 60%;
 }
 
 button, input[type="button"], input[type="submit"] {
