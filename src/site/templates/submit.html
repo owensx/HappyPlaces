@@ -32,10 +32,18 @@
 		
 		<div id="happyPlaceColumn" class="column">
 			<form id="happyPlaceForm" enctype="multipart/form-data">
+				Select a Neighborhood, then choose a HappyPlace from the list</br></br>
 			  	{% csrf_token %}
 			  	
-			    {{ happy_place_submit_form.as_p }}
-			    <button type="button" id="searchButton" onClick="onSearchButtonClick()"> Search </button>
+				{{ happy_place_submit_form.neighborhood.label_tag }} {{ happy_place_submit_form.neighborhood }}</br></br>
+				{{ happy_place_submit_form.happy_place.label_tag }} {{ happy_place_submit_form.happy_place }}</br></br>
+				<hr></br>
+				If you don't see your HappyPlace above, search for it below and select 'Add'</br></br>
+				{{ happy_place_submit_form.name.label_tag }} {{ happy_place_submit_form.name }}</br></br>
+			    <button type="button" id="searchButton" onClick="onSearchButtonClick()"> Search </button></br></br>
+
+				Optionally, add a cross street before adding</br></br>
+				{{ happy_place_submit_form.cross.label_tag }} {{ happy_place_submit_form.cross }}
 			</form>
 			</br>
 			<table id="searchResults" align="center"></table>

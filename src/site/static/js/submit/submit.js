@@ -82,7 +82,7 @@ function onSearchButtonClick(){
                 '<td>'+ address +'</td>'+
                 '<td><button '+
                     'onclick=saveHappyPlace("'+ saveHappyPlaceRequest +'") '+
-                    '>Select'+
+                    '>Add'+
                 '</button></td>'+
                 '</tr>'
             );
