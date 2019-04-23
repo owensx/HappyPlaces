@@ -1,0 +1,38 @@
+body {
+    background-color: #fcf4d4;
+	font-family:Tahoma, Geneva, sans-serif;
+	font-variant: small-caps;
+	color: black;
+	font-size: 1.2em;
+}
+
+.hiddenField {
+    display: none;
+}
+
+.column {
+    float: left;
+    padding-right: 2%;
+}
+
+#happyPlaceColumn {
+    width: 23%;
+}
+
+#happyHourColumn {
+    width: 73%;
+}
+
+button, input[type="button"], input[type="submit"] {
+	font-family: inherit;
+	font-variant: inherit;
+ 	font-size:1em;
+    font-weight: bold;
+}
+
+select {
+    border: none;
+    border-radius: 4px;
+    background-color: #D2C17D;
+ 	font-size: 1em;
+}

@@ -87,3 +87,28 @@ TEMPLATES = [
         },
     }
 ]
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'base': {
+            'format': '%(asctime)s || %(module)s.%(funcName)s || %(message)s'
+        }
+    },
+    'handlers': {
+        'happy_places': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(os.path.dirname(__file__), '..', 'happy_places.log'),
+            'formatter': 'base'
+        }
+    },
+    'loggers': {
+        'src.site': {
+            'handlers': ['happy_places'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}

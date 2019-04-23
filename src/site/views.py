@@ -19,69 +19,6 @@ def admin_submit(request):
         context['happy_hour_submit_form'] = HappyHourSubmitForm()
 
     # elif request.method == 'POST':
-    #     formType = request.POST.get('formType')
-    #
-    #     if formType == 'stateForm':
-    #         stateForm = StateForm(request.POST)
-    #
-    #         if stateForm.is_valid():
-    #             formData = stateForm.cleaned_data
-    #
-    #             state = formData['state']
-    #
-    #             cityForm = CityForm()
-    #             initCityFormView(cityForm, state, context)
-    #
-    #     elif formType == 'cityForm':
-    #         stateId = request.POST.get('stateId')
-    #
-    #         cityForm = CityForm(request.POST)
-    #         state = State.objects.get(id=stateId)
-    #
-    #         if cityForm.is_valid():
-    #             formData = cityForm.cleaned_data
-    #
-    #             if not formData['city']:
-    #                 city = saveNewCity(formData, state)
-    #             else:
-    #                 city = formData['city']
-    #
-    #             happyPlaceForm = HappyPlaceForm()
-    #             initHappyPlaceFormView(happyPlaceForm, city, context)
-    #
-    #         else:
-    #             initCityFormView(cityForm, state, context)
-    #
-    #     elif formType == 'happyPlaceForm':
-    #         cityId = request.POST.get('cityId')
-    #
-    #         happyPlaceForm = HappyPlaceForm(request.POST)
-    #         city = City.objects.get(id=cityId)
-    #
-    #         if happyPlaceForm.is_valid():
-    #             formData = happyPlaceForm.cleaned_data
-    #
-    #             happyPlace = saveNewHappyPlace(formData, city)
-    #
-    #             happyHourForm = HappyHourForm()
-    #             initHappyHourFormView(happyHourForm, happyPlace, context)
-    #
-    #         else:
-    #             initHappyPlaceFormView(happyPlaceForm, city, context)
-    #
-    #     elif formType == 'happyHourForm':
-    #         happyHourForm = HappyHourForm(request.POST)
-    #         happyPlace = HappyPlace.objects.get(id=request.POST.get('happyPlaceId'))
-    #
-    #         if happyHourForm.is_valid():
-    #             formData = happyHourForm.cleaned_data
-    #
-    #             saveNewHappyHour(formData, happyPlace)
-    #
-    #             return HttpResponseRedirect(reverse('home'))
-    #
-    #         else:
-    #             initHappyHourFormView(happyHourForm, happyPlace, context)
 
     return render(request, 'submit.html', context)
 #

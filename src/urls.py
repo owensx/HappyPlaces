@@ -1,10 +1,12 @@
 from django.urls import *
 from src.site import views
-from src.site import utils
+from src.site import apis
 
 urlpatterns = [
    path('admin/submit', views.admin_submit)
-   , path('getPlaceId/<query_string>', utils.getPlaceId)
+   , path('getGooglePlaces', apis.get_google_places)
+   , path('getHappyPlacesForNeighborhood', apis.get_happy_places_for_neighborhood)
+   , path('saveHappyPlace', apis.save_happy_place)
 ]#'',
     # Examples:
     # url(r'^$', 'src.views.home', name='home'),

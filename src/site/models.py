@@ -1,7 +1,7 @@
 from django import forms
 from django.db import models
 from django.core import serializers
-from django.forms import ModelForm
+from django.forms import ModelForm, Form
 from django.http.response import HttpResponse
 
 
@@ -54,7 +54,7 @@ class HappyPlace(models.Model):
     google_place_id = models.CharField(max_length=50, null=True)
 
     time_updated = models.DateTimeField()
-    active = models.BooleanField(default=False)
+    active = models.BooleanField(default=True)
 
     @property
     def lat_lng(self):
@@ -68,10 +68,6 @@ class HappyPlace(models.Model):
             , self.todaysSpecials
         ])
 
-    def render_to_response(self):
-        data = serializers.serialize('json', self.get_queryset())
-        return HttpResponse(data, content_type="application/json")
-
     def __str__(self):
         return self.name.__str__()
 
@@ -80,30 +76,21 @@ class HappyPlace(models.Model):
         db_table = "happyplace"
 
 
-class HappyPlaceSubmitForm(ModelForm):
+class HappyPlaceSubmitForm(Form):
     def __init__(self, *args, **kwargs):
         city_name = kwargs.pop('city_name')
 
         super(HappyPlaceSubmitForm, self).__init__(*args, **kwargs)
-        self.fields['city'] = forms.CharField(initial=city_name, widget=forms.HiddenInput())
+
+        self.fields['city'] = forms.CharField(initial=city_name, label='')
+        self.fields['city'].widget.attrs['class'] = 'hiddenField'
+
         self.fields['neighborhood'] = forms.ModelChoiceField(queryset=Neighborhood.objects.filter(city__name=city_name)
-                                                             .order_by('name'), required=True, to_field_name="name")
-
-        self.fields['name'].required = True
-
-    class Meta:
-        model = HappyPlace
-        exclude = ('time_updated', 'active')
-
-        widgets = {
-            'cross': forms.HiddenInput()
-            , 'site': forms.HiddenInput()
-            , 'phone': forms.HiddenInput()
-            , 'latitude': forms.HiddenInput()
-            , 'longitude': forms.HiddenInput()
-            , 'price_level': forms.HiddenInput()
-            , 'google_place_id': forms.HiddenInput()
-        }
+                                                             .order_by('name'))
+        self.fields['happy_place'] = forms.ModelChoiceField(queryset=HappyPlace.objects.all().order_by('name')
+                                                            , to_field_name="google_place_id")
+        self.fields['name'] = forms.CharField(max_length=200)
+        self.fields['cross'] = forms.CharField(max_length=200)
 
 
 class HappyHour(models.Model):
@@ -137,6 +124,9 @@ class HappyHour(models.Model):
 
 
 class HappyHourSubmitForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(HappyHourSubmitForm, self).__init__(*args, **kwargs)
+
     class Meta:
         model = HappyHour
-        exclude = ('time_updated',)
+        exclude = ('happy_place','time_updated')
