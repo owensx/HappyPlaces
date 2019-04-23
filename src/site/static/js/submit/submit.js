@@ -14,13 +14,16 @@ function setHappyPlaceOptions(neighborhoodId){
     $.getJSON("/getHappyPlacesForNeighborhood", requestBody, function(response) {
         $("#happyPlaceForm select[name='happy_place']").empty();
         $("#happyPlaceForm select[name='happy_place']").append("<option text='Select HappyPlace' value='default'>"+
-                                                             "Select HappyPlace</option>");
+                                                           "Select HappyPlace</option>");
 
-        $.each(response, function(index, happyPlace){
+        requestId = response['request_id']
+        happyPlaces = response['body']
+
+        $.each(JSON.parse(happyPlaces), function(index, happyPlace){
             $("#happyPlaceForm select[name='happy_place']").append(
                 $("<option>")
-                .val(response['body']['fields']['google_place_id'])
-                .html(response['body']['fields']['name'])
+                .val(happyPlace['fields']['google_place_id'])
+                .html(happyPlace['fields']['name'])
             );
         });
     });
