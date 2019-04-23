@@ -11,16 +11,16 @@ $(document).ready(function(){
 function setHappyPlaceOptions(neighborhoodId){
     requestBody = { neighborhood_id: neighborhoodId }
 
-    $.getJSON("/getHappyPlacesForNeighborhood", requestBody, function(happyPlaces) {
+    $.getJSON("/getHappyPlacesForNeighborhood", requestBody, function(response) {
         $("#happyPlaceForm select[name='happy_place']").empty();
         $("#happyPlaceForm select[name='happy_place']").append("<option text='Select HappyPlace' value='default'>"+
                                                              "Select HappyPlace</option>");
 
-        $.each(happyPlaces, function(index, happyPlace){
+        $.each(response, function(index, happyPlace){
             $("#happyPlaceForm select[name='happy_place']").append(
                 $("<option>")
-                .val(happyPlace['fields']['google_place_id'])
-                .html(happyPlace['fields']['name'])
+                .val(response['body']['fields']['google_place_id'])
+                .html(response['body']['fields']['name'])
             );
         });
     });
