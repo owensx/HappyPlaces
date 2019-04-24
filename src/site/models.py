@@ -90,7 +90,9 @@ class HappyPlaceSubmitForm(Form):
         self.fields['happy_place'] = forms.ModelChoiceField(queryset=HappyPlace.objects.all().order_by('name')
                                                             , to_field_name="google_place_id")
         self.fields['name'] = forms.CharField(max_length=200)
-        self.fields['cross'] = forms.CharField(max_length=200)
+
+        self.fields['cross'] = forms.CharField(max_length=200, label='')
+        self.fields['cross'].widget.attrs['class'] = 'hiddenField'
 
 
 class HappyHour(models.Model):

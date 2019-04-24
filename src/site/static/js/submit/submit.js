@@ -45,21 +45,27 @@ function onSearchButtonClick(){
 	    return;
 	}
 
+    $('#searchResults').empty();
+    $("#searchingIcon").show();
+
 	queryString = name + ' ' + neighborhood + ' ' + city;
 
     requestBody = { query_string: queryString
                     , max_results: 5 }
 
 	$.getJSON("/getGooglePlaces", requestBody, function(response) {
+        $("#searchingIcon").hide();
+
+        $("#crossMessage").show();
+        $("#happyPlaceForm input[name='cross']").show();
+        $("#happyPlaceForm label[for='id_cross']").text("Cross");
+
 	    var googlePlaces = response['body'];
 
 	    if(googlePlaces.length == 0){
 	        alert('Google returned zero results! Try again.')
 	        return;
 	    }
-
-
-        $('#searchResults').empty();
 
 		$.each(googlePlaces, function(index, googlePlace){
 		    name = googlePlace["name"]

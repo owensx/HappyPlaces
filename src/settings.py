@@ -51,6 +51,12 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 ROOT_URLCONF = 'src.urls'
 
 
+DATABASES = {
+  'default': {
+    'ENGINE': 'django.db.backends.sqlite3',
+    'NAME': ':memory:',
+  }
+}
 
 
 
