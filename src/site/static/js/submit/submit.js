@@ -9,6 +9,8 @@ $(document).ready(function(){
 });
 
 function setHappyPlaceOptions(neighborhoodId){
+    //TODO:if id is null, reset to all
+
     requestBody = { neighborhood_id: neighborhoodId }
 
     $.getJSON("/getHappyPlacesForNeighborhood", requestBody, function(response) {
@@ -56,7 +58,6 @@ function onSearchButtonClick(){
 	$.getJSON("/getGooglePlaces", requestBody, function(response) {
         $("#searchingIcon").hide();
 
-        $("#crossMessage").show();
         $("#happyPlaceForm input[name='cross']").show();
         $("#happyPlaceForm label[for='id_cross']").text("Cross");
 
@@ -66,6 +67,8 @@ function onSearchButtonClick(){
 	        alert('Google returned zero results! Try again.')
 	        return;
 	    }
+
+        $("#crossMessage").show();
 
 		$.each(googlePlaces, function(index, googlePlace){
 		    name = googlePlace["name"]
