@@ -47,7 +47,9 @@
 				{{ happy_place_submit_form.cross.label_tag }} {{ happy_place_submit_form.cross }}
 			</form>
 			</br>
-			<img id="searchingIcon" src="{% static 'searching.svg' %}" style="display: none"/>
+			<svg id="searchingIcon" style="display: none">
+                <image xlink:href="{% static 'searching.svg' %}" height="100%" width="200px"></image>
+			</svg>
 			<table id="searchResults" align="center"></table>
 		</div>
 		
