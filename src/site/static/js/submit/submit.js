@@ -58,9 +58,6 @@ function onSearchButtonClick(){
 	$.getJSON("/getGooglePlaces", requestBody, function(response) {
         $("#searchingIcon").hide();
 
-        $("#happyPlaceForm input[name='cross']").show();
-        $("#happyPlaceForm label[for='id_cross']").text("Cross");
-
 	    var googlePlaces = response['body'];
 
 	    if(googlePlaces.length == 0){
@@ -69,6 +66,8 @@ function onSearchButtonClick(){
 	    }
 
         $("#crossMessage").show();
+        $("#happyPlaceForm input[name='cross']").show();
+        $("#happyPlaceForm label[for='id_cross']").text("Cross");
 
 		$.each(googlePlaces, function(index, googlePlace){
 		    name = googlePlace["name"]
