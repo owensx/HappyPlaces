@@ -1,8 +1,12 @@
 import json
 import logging
+import sys
+import uuid
+
 from datetime import datetime
 
 from django.core.serializers import serialize
+from django.db import IntegrityError
 from django.http.response import HttpResponse
 
 from src.site.models import HappyPlace, Neighborhood
@@ -13,6 +17,9 @@ logger = logging.getLogger(__name__)
 
 
 def get_google_places(request):
+    request_id = str(uuid.uuid4())
+    logger.debug('Received new request, assigning id ' + request_id)
+
     query = request.GET["query_string"]
     max_results = int(request.GET["max_results"])
 
@@ -30,31 +37,65 @@ def get_google_places(request):
 
     logger.debug('Returning below data:')
     logger.debug(response)
-    return HttpResponse(json.dumps(response), content_type="application/javascript")
+    return HttpResponse(json.dumps(response), content_type="application/json")
 
 
-def get_happy_places_for_neighborhood(request):
-    neighborhood_id = int(request.GET["neighborhood_id"])
-    happy_places = HappyPlace.objects.filter(neighborhood__id=neighborhood_id)
-    happy_places = serialize('json', happy_places)
+def happy_places(request, happy_place_id=None):
+    request_id = str(uuid.uuid4())
+    logger.debug('Received new request, assigning id ' + request_id)
 
-    response = {
-        'request_id': 1
-        , 'body': happy_places
-    }
+    try:
+        if request.method == 'POST':
+            logger.debug(request.method + str(request.POST))
+            happy_place = save_happy_place(request.POST)
 
-    logger.debug('Returning below data:')
-    logger.debug(response)
-    return HttpResponse(json.dumps(response), content_type="application/javascript")
+            response = {
+                'request_id': request_id
+                , 'name': happy_place.name
+                , 'happy_place_id': happy_place.id
+                , 'google_place_id': happy_place.google_place_id
+            }
 
+        elif request.method == 'GET':
+            logger.debug(request.method + str(request.GET))
 
-def save_happy_place(request):
-    cross = request.POST["cross"]
-    place_id = request.POST["place_id"]
-    neighborhood_id = int(request.POST["neighborhood_id"])
+            if happy_place_id is None:
+                if "neighborhood_id" in request.GET:
+                    neighborhood_id = request.GET["neighborhood_id"]
+                    logger.debug('Fetching all HappyPlaces for Neighborhood ' + neighborhood_id)
 
-    if HappyPlace.objects.filter(google_place_id=place_id).first() is not None:
+                    happy_places = HappyPlace.objects.filter(neighborhood__id=int(neighborhood_id))
+                else:
+                    logger.debug('Fetching all HappyPlaces')
+
+                    happy_places = HappyPlace.objects.all()
+            else:
+                logger.debug('Fetching HappyPlace ' + str(happy_place_id))
+
+                happy_places = HappyPlace.objects.filter(id=happy_place_id)
+
+            response = {
+                'request_id': request_id
+                , 'body': serialize('json', happy_places)
+            }
+
+            logger.debug('Returning below data:')
+            logger.debug(response)
+
+    except IntegrityError:
         return HttpResponse(status=400, reason='Duplicate Happy Place')
+    except:
+        logger.error(sys.exc_info())
+        return HttpResponse(status=500, reason='Internal Server Error, Request Id: ' + request_id)
+    else:
+        return HttpResponse(json.dumps(response), content_type="application/json")
+
+
+def save_happy_place(form_details):
+    place_id = form_details["place_id"]
+
+    cross = form_details["cross"]
+    neighborhood_id = int(form_details["neighborhood_id"])
 
     google_place = google_helper.get_google_place_details(place_id=place_id)
 
@@ -62,12 +103,12 @@ def save_happy_place(request):
         neighborhood=Neighborhood.objects.get(id=neighborhood_id)
         , name=google_place["name"]
         , address=google_place["address"]
-        , cross=cross
-        , site=google_place["site"]
-        , phone=google_place["phone"]
+        , cross=cross if cross else None
+        , site=google_place["site"] if google_place["site"] else None
+        , phone=google_place["phone"] if google_place["phone"] else None
         , latitude=google_place["latitude"]
         , longitude=google_place["longitude"]
-        , price_level=google_place["price_level"]
+        , price_level=google_place["price_level"] if google_place["price_level"] else None
         , google_place_id=place_id
         , time_updated=datetime.now()
     )
@@ -75,9 +116,9 @@ def save_happy_place(request):
     logger.debug('Saving below data:')
     logger.debug(happy_place)
 
-    #happy_place.save()
-    return HttpResponse()
+    happy_place.save()
 
+    return happy_place
 
 # def getPhotos(request, location):
 #     if location.endswith('all'):

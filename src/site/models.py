@@ -51,7 +51,7 @@ class HappyPlace(models.Model):
     latitude = models.FloatField(null=True)
     longitude = models.FloatField(null=True)
     price_level = models.IntegerField(null=True)
-    google_place_id = models.CharField(max_length=50, null=True)
+    google_place_id = models.CharField(max_length=50, null=True, unique=True)
 
     time_updated = models.DateTimeField()
     active = models.BooleanField(default=True)
@@ -89,6 +89,7 @@ class HappyPlaceSubmitForm(Form):
                                                              .order_by('name'))
         self.fields['happy_place'] = forms.ModelChoiceField(queryset=HappyPlace.objects.all().order_by('name')
                                                             , to_field_name="google_place_id")
+
         self.fields['name'] = forms.CharField(max_length=200)
 
         self.fields['cross'] = forms.CharField(max_length=200, label='')
@@ -105,11 +106,11 @@ class HappyHour(models.Model):
     # optional fields
     start = models.TimeField()
     end = models.TimeField()
-    beer = models.CharField(max_length=200, null=True)
-    wine_glass = models.CharField(max_length=200, null=True)
-    wine_bottle = models.CharField(max_length=200, null=True)
-    well = models.CharField(max_length=200, null=True)
-    shot_beer = models.CharField(max_length=200, null=True)
+    beer = models.FloatField(null=True)
+    wine_glass = models.FloatField(null=True)
+    wine_bottle = models.FloatField(null=True)
+    well = models.FloatField(null=True)
+    shot_beer = models.FloatField(null=True)
     display_notes = models.CharField(max_length=200, null=True)
     sunday = models.BooleanField(default=False)
     monday = models.BooleanField(default=False)
@@ -131,4 +132,4 @@ class HappyHourSubmitForm(ModelForm):
 
     class Meta:
         model = HappyHour
-        exclude = ('happy_place','time_updated')
+        exclude = ('happy_place', 'time_updated')

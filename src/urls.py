@@ -4,9 +4,11 @@ from src.site import apis
 
 urlpatterns = [
    path('admin/submit', views.admin_submit)
-   , path('getGooglePlaces', apis.get_google_places)
-   , path('getHappyPlacesForNeighborhood', apis.get_happy_places_for_neighborhood)
-   , path('saveHappyPlace', apis.save_happy_place)
+   , path('googlePlaces', apis.get_google_places)
+
+   , path('happyPlaces', apis.happy_places)
+   , path('happyPlaces/', apis.happy_places)
+   , path('happyPlaces/<int:happy_place_id>', apis.happy_places)
 ]#'',
     # Examples:
     # url(r'^$', 'src.views.home', name='home'),
