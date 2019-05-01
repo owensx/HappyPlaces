@@ -88,7 +88,7 @@ class HappyPlaceSubmitForm(Form):
         self.fields['neighborhood'] = forms.ModelChoiceField(queryset=Neighborhood.objects.filter(city__name=city_name)
                                                              .order_by('name'))
         self.fields['happy_place'] = forms.ModelChoiceField(queryset=HappyPlace.objects.all().order_by('name')
-                                                            , to_field_name="google_place_id")
+                                                            , to_field_name="id")
 
         self.fields['name'] = forms.CharField(max_length=200)
 
@@ -101,17 +101,16 @@ class HappyHour(models.Model):
     happy_place = models.ForeignKey(HappyPlace, related_name='happy_hours', on_delete=models.CASCADE)
 
     # required fields
-    notes = models.CharField(max_length=200)
-
-    # optional fields
     start = models.TimeField()
     end = models.TimeField()
+
+    # optional fields
+    notes = models.CharField(max_length=200, null=True)
     beer = models.FloatField(null=True)
     wine_glass = models.FloatField(null=True)
     wine_bottle = models.FloatField(null=True)
     well = models.FloatField(null=True)
     shot_beer = models.FloatField(null=True)
-    display_notes = models.CharField(max_length=200, null=True)
     sunday = models.BooleanField(default=False)
     monday = models.BooleanField(default=False)
     tuesday = models.BooleanField(default=False)
@@ -132,4 +131,4 @@ class HappyHourSubmitForm(ModelForm):
 
     class Meta:
         model = HappyHour
-        exclude = ('happy_place', 'time_updated')
+        exclude = ('happy_place', 'time_updated',)

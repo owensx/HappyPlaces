@@ -99,7 +99,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'base': {
-            'format': '%(asctime)s || %(module)s.%(funcName)s || %(message)s'
+            'format': '%(asctime)s || %(module)s.%(funcName)s || %(levelname)s || %(message)s'
         }
     },
     'handlers': {

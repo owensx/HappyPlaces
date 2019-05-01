@@ -9,6 +9,10 @@ urlpatterns = [
    , path('happyPlaces', apis.happy_places)
    , path('happyPlaces/', apis.happy_places)
    , path('happyPlaces/<int:happy_place_id>', apis.happy_places)
+
+    , path('happyHours', apis.happy_hours)
+    , path('happyHours/', apis.happy_hours)
+    , path('happyHours/<int:happy_hour_id>', apis.happy_hours)
 ]#'',
     # Examples:
     # url(r'^$', 'src.views.home', name='home'),

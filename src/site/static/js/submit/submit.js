@@ -1,8 +1,11 @@
 $(document).ready(function(){
+    initOpenClose();
+
     $("#happyPlaceForm select[name='neighborhood']").change(function(){
         neighborhoodId = $("#happyPlaceForm select[name='neighborhood']").val();
         setHappyPlaceOptions(neighborhoodId);
     });
+
     $("#happyPlaceForm input[name='name']").change(function(){
         $("#happyPlaceForm select[name='happy_place']").val('default')
     });
@@ -26,7 +29,7 @@ function setHappyPlaceOptions(neighborhoodId){
         $.each(JSON.parse(happyPlaces), function(index, happyPlace){
             $("#happyPlaceForm select[name='happy_place']").append(
                 $("<option>")
-                .val(happyPlace['fields']['google_place_id'])
+                .val(happyPlace['pk'])
                 .html(happyPlace['fields']['name'])
             );
         });
@@ -106,7 +109,7 @@ function onSearchButtonClick(){
 
 function saveHappyPlace(saveHappyPlaceRequest){
     $.post( "/happyPlaces", JSON.parse(saveHappyPlaceRequest))
-        .done(function(data, textStatus){
+        .done(function(data){
             alert('Saved Happy Place!');
             $("#happyPlaceForm select[name='happy_place']").append("<option text='Select HappyPlace' value='"
                                                            + data["google_place_id"]+"'>"
@@ -114,6 +117,61 @@ function saveHappyPlace(saveHappyPlaceRequest){
             $("#happyPlaceForm select[name='happy_place']").val(data["google_place_id"]);
         }).fail(function(request, textStatus, thrownError){
             alert('Failed to save Happy Place ' + request.status + ' ' + textStatus + ' ' + thrownError)
+        });
+}
+
+function saveHappyHour(){
+    if ($("#happyPlaceForm select[name='happy_place']").val() == 'default'
+        || $("#happyPlaceForm select[name='happy_place']").val() == '' ){
+        alert('Please select a HappyPlace');
+        return;
+    }
+
+    happy_place_id = $("#happyPlaceForm select[name='happy_place']").val();
+    notes = $("#happyHourForm input[name='notes']").val();
+    start = $("#happyHourForm input[name='start']").val();
+    end = $("#happyHourForm input[name='end']").val();
+    beer = $("#happyHourForm input[name='beer']").val();
+    wine_glass = $("#happyHourForm input[name='wine_glass']").val();
+    wine_bottle = $("#happyHourForm input[name='wine_bottle']").val();
+    well = $("#happyHourForm input[name='well']").val();
+    shot_beer = $("#happyHourForm input[name='shot_beer']").val();
+    sunday = $("#happyHourForm input[name='sunday']").is(":checked");
+    monday = $("#happyHourForm input[name='monday']").is(":checked");
+    tuesday = $("#happyHourForm input[name='tuesday']").is(":checked");
+    wednesday = $("#happyHourForm input[name='wednesday']").is(":checked");
+    thursday = $("#happyHourForm input[name='thursday']").is(":checked");
+    friday = $("#happyHourForm input[name='friday']").is(":checked");
+    saturday = $("#happyHourForm input[name='saturday']").is(":checked");
+
+    saveHappyHourRequest = {
+        happy_place_id: happy_place_id
+        , notes: notes
+        , start: start
+        , end: end
+        , beer: beer
+        , wine_glass: wine_glass
+        , wine_bottle: wine_bottle
+        , well: well
+        , shot_beer: shot_beer
+        , sunday: sunday
+        , monday: monday
+        , tuesday: tuesday
+        , wednesday: wednesday
+        , thursday: thursday
+        , friday: friday
+        , saturday: saturday
+    }
+
+    $.post( "/happyHours", saveHappyHourRequest)
+        .done(function(data){
+            alert('Saved Happy Hour!');
+            $('#happyHourForm input').val('');
+            $('#happyHourForm input').prop('checked', false);
+	        $("input#id_start").attr('disabled', false);
+	        $("input#id_end").attr('disabled', false);
+        }).fail(function(request, textStatus, thrownError){
+            alert('Failed to save Happy Hour ' + request.status + ' ' + textStatus + ' ' + thrownError)
         });
 }
 
@@ -156,18 +214,30 @@ function clearHappyHourDays(){
     $("#happyHourForm #id_saturday").prop('checked', false);
 }
 
-//function onHappyHourSubmit(){
-//	$("input#id_start").attr('disabled', false);
-//	$("input#id_end").attr('disabled', false);
-//
-//	if($("input#fromOpen").prop('checked')){
-//		$("input#id_start").val("00:00:01");
-//	}
-//
-//	if($("input#toClose").prop('checked')){
-//		$("input#id_end").val("02:01:00");
-//	}
-//}
+function initOpenClose(){
+	$("input#id_start").attr('disabled', false);
+	$("input#id_end").attr('disabled', false);
+
+    $("input#fromOpen").change(function(){
+        if($("input#fromOpen").prop('checked')){
+            $("input#id_start").val("00:00:01");
+	        $("input#id_start").attr('disabled', true);
+        } else {
+	        $("input#id_start").attr('disabled', false);
+            $("input#id_start").val("");
+        }
+    });
+
+	$("input#toClose").change(function(){
+        if($("input#toClose").prop('checked')){
+            $("input#id_end").val("23:59:59");
+	        $("input#id_end").attr('disabled', true);
+        } else {
+	        $("input#id_end").attr('disabled', false);
+            $("input#id_end").val("");
+        }
+    });
+}
 
 function clearForm(formId){
 	$(formId).find("input[type=text], textarea").val("");
