@@ -109,12 +109,12 @@ function onSearchButtonClick(){
 
 function saveHappyPlace(saveHappyPlaceRequest){
     $.post( "/happyPlaces", JSON.parse(saveHappyPlaceRequest))
-        .done(function(data){
+        .done(function(saveHappyPlaceResponse){
             alert('Saved Happy Place!');
-            $("#happyPlaceForm select[name='happy_place']").append("<option text='Select HappyPlace' value='"
-                                                           + data["google_place_id"]+"'>"
-                                                           + data["name"] + "</option>");
-            $("#happyPlaceForm select[name='happy_place']").val(data["google_place_id"]);
+            $("#happyPlaceForm select[name='happy_place']").append("<option value='"
+                                                           + saveHappyPlaceResponse["id"]+"'>"
+                                                           + saveHappyPlaceResponse["name"] + "</option>");
+            $("#happyPlaceForm select[name='happy_place']").val(saveHappyPlaceResponse["id"]);
         }).fail(function(request, textStatus, thrownError){
             alert('Failed to save Happy Place ' + request.status + ' ' + textStatus + ' ' + thrownError)
         });
