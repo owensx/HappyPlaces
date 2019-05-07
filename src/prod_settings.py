@@ -6,7 +6,7 @@ DATABASES = {
         'NAME': 'HappyPlaces',
         'USER': 'happyplacesprod',
         'PASSWORD': 'happyplacesprod',
-        'HOST': 'happyplacesprod.ca3z3ga9nwuc.us-east-2.rds.amazonaws.com',
+        'HOST': 'happyplacesdbprod.ca3z3ga9nwuc.us-east-2.rds.amazonaws.com',
         'PORT': 3306,
     }
 }
