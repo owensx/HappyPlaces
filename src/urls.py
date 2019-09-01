@@ -3,12 +3,18 @@ from src.site import views
 from src.site import apis
 
 urlpatterns = [
-   path('admin/submit', views.admin_submit)
-   , path('googlePlaces', apis.get_google_places)
+    path('', views.home)
 
-   , path('happyPlaces', apis.happy_places)
-   , path('happyPlaces/', apis.happy_places)
-   , path('happyPlaces/<int:happy_place_id>', apis.happy_places)
+    , path('admin/submit', views.admin_submit)
+    , path('googlePlaces', apis.get_google_places)
+
+    , path('neighborhoods', apis.neighborhoods)
+    , path('neighborhoods/', apis.neighborhoods)
+    , path('neighborhoods/<int:neighborhood_id>', apis.neighborhoods)
+
+    , path('happyPlaces', apis.happy_places)
+    , path('happyPlaces/', apis.happy_places)
+    , path('happyPlaces/<int:happy_place_id>', apis.happy_places)
 
     , path('happyHours', apis.happy_hours)
     , path('happyHours/', apis.happy_hours)

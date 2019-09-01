@@ -23,7 +23,6 @@ function setHappyPlaceOptions(neighborhoodId){
         $("#happyPlaceForm select[name='happy_place']").append("<option text='Select HappyPlace' value='default'>"+
                                                            "Select HappyPlace</option>");
 
-        requestId = response['request_id']
         happyPlaces = response['body']
 
         $.each(JSON.parse(happyPlaces), function(index, happyPlace){

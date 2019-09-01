@@ -1,11 +1,18 @@
- body {
- font-family:Tahoma, Geneva, sans-serif;
- font-variant: small-caps;
- color: #B59B31;
- font-size: 1em;
- background-repeat: no-repeat;
- background-size: cover;
- }
+html {
+    height: 98%;
+}
+
+body {
+    min-height: 98%;
+    font-family:Tahoma, Geneva, sans-serif;
+    font-variant: small-caps;
+    color: #B59B31;
+    font-size: 1em;
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 80%;
+    margin: auto;
+}
 /*
  table, th, td {
  	height: 50px;
@@ -24,14 +31,12 @@
         #report tr.odd td { background:#aaa  repeat-x scroll center left; cursor:pointer;  }
        */
 #map {
-		margin:10%;
-		margin-top: 1%;
-        height: 75%;
-        width: 80%;
-        position: absolute;
-       }
+    height: 100%;
+    width: inherit;
+    position: absolute;
+}
      
-.gm-style div {
+/*.gm-style div {
     font-weight: 500;
     font-size: 19px;
 }
@@ -40,27 +45,32 @@
     width: 40px;
     height: 40px;
     padding-top: 3px;
-}
+}*/
        
-#report div.arrow { background:transparent url('./arrows.png') no-repeat scroll 0px -16px; width:16px; height:16px; display:block;}
+/*#report div.arrow { background:transparent url('./arrows.png') no-repeat scroll 0px -16px; width:16px; height:16px; display:block;}
+*/
 
-.selectForm select {
+/*.input {
+    color: black;
+    display: inline-block;
     width: 30%;
     padding: 16px 20px;
     border: none;
     border-radius: 4px;
     background-color: #D2C17D;
     font-family: Tahoma, Geneva, sans-serif;
- 	font-size: 1em;
+ 	font-size: 1.3em;
 	font-variant: small-caps;
+	vertical-align: top;
+	text-align: center;
 }
 
 div.selectFormRow {
 	width: 80%;
 	margin: auto;
-}
+}*/
 
-.selectForm input[type=submit] {
+/*.selectForm input[type=submit] {
     font-family: Tahoma, Geneva, sans-serif;
  	font-size: 1em;
 	font-variant: small-caps;
@@ -189,4 +199,4 @@ table tr.odd:hover td {
 	background: #f2f2f2;
 	background: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(#f0f0f0));
 	background: -moz-linear-gradient(top,  #f2f2f2,  #f0f0f0);	
-}
+}*/

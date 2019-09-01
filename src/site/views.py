@@ -1,15 +1,8 @@
-from django.http import Http404
 from django.shortcuts import render
 
+from src.site.apis import happy_places
 from src.site.models import *
 
-
-# def getHappyPlaceById(request, happyPlaceId):
-#     try:
-#         return HttpResponse(HappyPlace.objects.get(id=happyPlaceId).render_to_response()
-#                             , content_type="application/javascript")
-#     except HappyPlace.DoesNotExist:
-#         raise Http404
 
 def admin_submit(request):
     context = {}
@@ -21,7 +14,19 @@ def admin_submit(request):
     # elif request.method == 'POST':
 
     return render(request, 'submit.html', context)
-#
+
+
+def home(request):
+    context = {}
+
+    # all_active_happy_places = HappyPlace.objects.filter(active=True).exclude(latitude__isnull=True)
+    # all_active_happy_places = HappyPlace.objects.filter(id=20).exclude(latitude__isnull=True)
+    # all_active_cities = sorted(set(happy_place.neighborhood.city for happy_place in all_active_happy_places))
+    #
+    # context['cities'] = all_active_cities
+
+    return render(request, 'home.html', context=context)
+
 # def Home(request):
 #     mobileFlag = request.POST.get('mobileFlag')
 #     mobileOverride = request.POST.get('mobileOverride')

@@ -4,13 +4,15 @@ import traceback
 import uuid
 
 from datetime import datetime
+from functools import reduce
+from math import sqrt
 
 from django.core.exceptions import ValidationError
 from django.core.serializers import serialize
 from django.db import IntegrityError
 from django.http.response import HttpResponse
 
-from src.site.models import HappyPlace, Neighborhood, HappyHour
+from src.site.models import HappyPlace, Neighborhood, HappyHour, City
 
 import src.site.google_helper as google_helper
 
@@ -41,6 +43,44 @@ def get_google_places(request):
     return HttpResponse(json.dumps(response), content_type="application/json")
 
 
+def neighborhoods(request, neighborhood_id=None):
+    request_id = str(uuid.uuid4())
+    logger.debug('Received new request, assigning id ' + request_id)
+
+    try:
+        if request.method == 'GET':
+            logger.debug(request.method + str(request.GET))
+
+            if neighborhood_id is not None:
+                logger.debug('Fetching Neighborhood ' + str(neighborhood_id))
+                neighborhoods = Neighborhood.objects.filter(id=neighborhood_id)
+
+            else:
+                neighborhoods = Neighborhood.objects.all()
+
+                if request.GET:
+                    if "cityId" in request.GET:
+                        city_id = request.GET.get('cityId')
+                        neighborhoods = neighborhoods.filter(city__id=int(city_id))
+
+            response = {
+                'request_id': request_id
+                , 'body': serialize('json', neighborhoods)
+            }
+
+            logger.debug('Returning below data:')
+            logger.debug(response)
+
+    except (IntegrityError, ValidationError) as e:
+        logger.error(traceback.format_exc())
+        return HttpResponse(status=400, reason=e)
+    except:
+        logger.error(traceback.format_exc())
+        return HttpResponse(status=500, reason='Internal Server Error, Request Id: ' + request_id)
+    else:
+        return HttpResponse(json.dumps(response), content_type="application/json")
+
+
 def happy_places(request, happy_place_id=None):
     request_id = str(uuid.uuid4())
     logger.debug('Received new request, assigning id ' + request_id)
@@ -61,15 +101,45 @@ def happy_places(request, happy_place_id=None):
             logger.debug(request.method + str(request.GET))
 
             if happy_place_id is None:
-                if "neighborhood_id" in request.GET:
-                    neighborhood_id = request.GET["neighborhood_id"]
-                    logger.debug('Fetching all HappyPlaces for Neighborhood ' + neighborhood_id)
+                logger.debug('Fetching HappyPlaces...')
+                happy_places = HappyPlace.objects.all()
 
-                    happy_places = HappyPlace.objects.filter(neighborhood__id=int(neighborhood_id))
-                else:
-                    logger.debug('Fetching all HappyPlaces')
+                if "cityId" in request.GET:
+                    city_id = request.GET["cityId"]
+                    logger.debug('Filtering on City ' + city_id + ' - '
+                                 + City.objects.filter(id=city_id).first().__str__())
 
-                    happy_places = HappyPlace.objects.all()
+                    neighborhood_ids = Neighborhood.objects.filter(city__id=int(city_id))
+                    happy_places = happy_places.filter(neighborhood__id__in=neighborhood_ids)
+
+                if "neighborhoodId" in request.GET:
+                    neighborhood_id = request.GET["neighborhoodId"]
+                    logger.debug('Filtering on Neighborhood ' + neighborhood_id + ' - '
+                                 + Neighborhood.objects.filter(id=neighborhood_id).first().__str__())
+
+                    happy_places = happy_places.filter(neighborhood__id=int(neighborhood_id))
+
+                if "beer" in request.GET or "wine" in request.GET or "well" in request.GET:
+                    happy_places = filter(lambda happy_place:
+                                          ("beer" in request.GET and any(happy_hour.beer is not None for happy_hour in happy_place.happy_hours.all()))
+                                          or ("wine" in request.GET and any(happy_hour.wine_bottle is not None or happy_hour.wine_glass is not None for happy_hour in happy_place.happy_hours.all()))
+                                          or ("well" in request.GET and any(happy_hour.well is not None for happy_hour in happy_place.happy_hours.all()))
+                                          , happy_places)
+
+                if "latitude" in request.GET and "longitude" in request.GET:
+                    latitude = request.GET["latitude"]
+                    longitude = request.GET["longitude"]
+                    logger.debug('Sorting HappyPlaces by latlng ' + latitude + ', ' + longitude)
+
+                    happy_places = sorted(happy_places
+                                          , key=lambda happy_place: sqrt(pow(happy_place.latitude - float(latitude), 2) + pow(happy_place.longitude - float(longitude), 2)))
+
+                    if "count" in request.GET:
+                        count = int(request.GET["count"])
+                        logger.debug('Returning top ' + str(count) + ' results')
+
+                        happy_places = happy_places[:count]
+
             else:
                 logger.debug('Fetching HappyPlace ' + str(happy_place_id))
 

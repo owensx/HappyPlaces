@@ -1,174 +1,178 @@
-{% load filters %}
-{% load staticfiles %}
- <!DOCTYPE html>
+<!--{% load filters %}-->
+<!--{% load staticfiles %}-->
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-	<link rel="stylesheet" href="{% static 'main.css' %}" type="text/css">
+	<link rel="stylesheet" href="{% static 'css/home/home.css' %}" type="text/css">
 	
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js" type="text/javascript"></script>
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDj5RUzdluGjmLNjSVXASlDyvK_LIZ4Qq8&libraries=places" type="text/javascript"></script>
-	
-	<script src="{{ STATIC_URL}}js/tableDrop.js" type="text/javascript"></script>
-	<script src="{{ STATIC_URL}}js/mobileCheck.js" type="text/javascript"></script>
-	<script src="{{ STATIC_URL}}js/home.js" type="text/javascript"></script>
-	
-	<script type="text/javascript">
-		$(document).ready(function(){
-		
-	        var lastSelectedCity = '{{ lastSelectedCity }}';
-	        var lastSelectedNeighborhood = '{{ lastSelectedNeighborhood }}';
-	        var mapCenter = {{ mapCenter }};
-	        var staticUrl = ".{{ STATIC_URL }}";
-	        
-	        {% with markersInfo=happyPlaces|getMarkerInfo %}
-	        var markersInfo = {{ markersInfo|safe }};
-	        {% endwith %}
-			
-			$("input#currentTimeOnly").prop('checked', {{ rightNowFlag }});
-			
-			init(lastSelectedCity, lastSelectedNeighborhood, staticUrl + 'photos/');
-			initMap(mapCenter, markersInfo);
 
-			tableDrop();
-	        
+	<script src="{% static 'js/home.js' %}" type="text/javascript"></script>
+	
+	<!--<script type="text/javascript">-->
+		<!--$(document).ready(function(){-->
+		<!---->
+	        <!--var lastSelectedCity = '{{ lastSelectedCity }}';-->
+	        <!--var lastSelectedNeighborhood = '{{ lastSelectedNeighborhood }}';-->
+	        <!--var mapCenter = {{ mapCenter }};-->
+	        <!--var staticUrl = ".{{ STATIC_URL }}";-->
+	        <!---->
+	        <!--{% with markersInfo=happyPlaces|getMarkerInfo %}-->
+	        <!--var markersInfo = {{ markersInfo|safe }};-->
+	        <!--{% endwith %}-->
+			<!---->
+			<!--$("input#currentTimeOnly").prop('checked', {{ rightNowFlag }});-->
+			<!---->
+			<!--init(lastSelectedCity, lastSelectedNeighborhood, staticUrl + 'photos/');-->
+			<!--initMap(mapCenter, markersInfo);-->
 
-			$("#tableContainer").css('display', '{{ tableDisplay }}');
-			$("#tableDisplay").val('{{ tableDisplay }}');
-			$("#map").css('display', '{{ mapDisplay }}');
-			$("#mapDisplay").val('{{ mapDisplay }}');
-		});
-	    
-	    function flipMobileFlag(){
-			document.getElementById('mobileFlag').value = !(document.getElementById('mobileFlag').value) || {{ mobileOverride }};
-	    }
-	    
-	    function flipDisplay(mapCenter){
-	    	if (document.getElementById('map').style.display == 'none'){
-			 	$("#map").css('display', 'initial');
-			 	$("#mapDisplay").val('initial');
-			 	
-			 	$("#tableContainer").css('display', 'none');
-			 	$("#tableDisplay").val('none');
-			 	
-				google.maps.event.trigger(gmap, 'resize');
-				gmap.setCenter({lat: mapCenter[0], lng: mapCenter[1]});
-	    	} else {
-			 	$("#map").css('display', 'none');
-			 	$("#mapDisplay").val('none');
-			 	
-			 	$("#tableContainer").css('display', 'initial');
-			 	$("#tableDisplay").val('initial');
-			 	
-				google.maps.event.trigger(gmap, 'resize');
-				gmap.setCenter({lat: mapCenter[0], lng: mapCenter[1]});
-	    	}
-	    }
-	</script>
+			<!--tableDrop();-->
+	        <!---->
+
+			<!--$("#tableContainer").css('display', '{{ tableDisplay }}');-->
+			<!--$("#tableDisplay").val('{{ tableDisplay }}');-->
+			<!--$("#map").css('display', '{{ mapDisplay }}');-->
+			<!--$("#mapDisplay").val('{{ mapDisplay }}');-->
+		<!--});-->
+	    <!---->
+	    <!--function flipMobileFlag(){-->
+			<!--document.getElementById('mobileFlag').value = !(document.getElementById('mobileFlag').value) || {{ mobileOverride }};-->
+	    <!--}-->
+	    <!---->
+	    <!--function flipDisplay(mapCenter){-->
+	    	<!--if (document.getElementById('map').style.display == 'none'){-->
+			 	<!--$("#map").css('display', 'initial');-->
+			 	<!--$("#mapDisplay").val('initial');-->
+			 	<!---->
+			 	<!--$("#tableContainer").css('display', 'none');-->
+			 	<!--$("#tableDisplay").val('none');-->
+			 	<!---->
+				<!--google.maps.event.trigger(gmap, 'resize');-->
+				<!--gmap.setCenter({lat: mapCenter[0], lng: mapCenter[1]});-->
+	    	<!--} else {-->
+			 	<!--$("#map").css('display', 'none');-->
+			 	<!--$("#mapDisplay").val('none');-->
+			 	<!---->
+			 	<!--$("#tableContainer").css('display', 'initial');-->
+			 	<!--$("#tableDisplay").val('initial');-->
+			 	<!---->
+				<!--google.maps.event.trigger(gmap, 'resize');-->
+				<!--gmap.setCenter({lat: mapCenter[0], lng: mapCenter[1]});-->
+	    	<!--}-->
+	    <!--}-->
+	<!--</script>-->
 </head>
 
 <body id="body">
+	<!--<div id="inputs">-->
+		<!--{% csrf_token %}-->
+		<!--<select name="city" id="city" class="input">-->
+			<!--<option value="None">Select a City</option>-->
+			<!--{% for city in cities %}-->
+				<!--<option value="{{ city.id }}">{{ city.name }}</option>-->
+			<!--{% endfor %}-->
+		<!--</select>-->
 
-<form id="selectForm" class="selectForm" enctype="multipart/form-data" action="/" method="post" style="text-align: center;">
-	{% csrf_token %}
+		<!--<select name="neighborhood" id="neighborhood" class="input">-->
+			<!--<option value="all">Select a Neighborhood</option>-->
+		<!--</select>-->
+
+		<!--<div name="filterOptions" id="filterOptions" class="input">-->
+			<!--<input type="checkbox" name="beer" value="beer"> beer-->
+			<!--<input type="checkbox" name="wine" value="wine"> wine-->
+			<!--<input type="checkbox" name="wine" value="wine"> well-->
+			<!--<input type="checkbox" name="rightnow" value="rightnow"> right now-->
+		<!--</div>-->
+
+		<!--<button type="submit">Find</button>-->
+	<!--</div>-->
 	
-	<div class="selectFormRow">
-		<select name="city" id="city">
-			<option value="{{ cities.0 }}">{{ cities.0 }}</option>
-			{% for city in cities|slice:"1:" %}
-				<option value="{{ city }}">{{ city }}</option>
-			{% endfor %}
-		</select>
+	<!--<div class="selectFormRow" style="padding-top: 20px;">-->
+		<!--{% if mobileOverride == "true" %} -->
+			<!--<input id="flipView" type="submit" value="Mobile/Desktop" onClick="flipMobileFlag()">-->
+		<!--{% endif %}-->
+		<!---->
+		<!--<p style = "text-shadow: -1px 0 1px black; font-weight: bold; font-size: 18px;"> <input id="currentTimeOnly" name="currentTimeOnly" type ="checkbox"> Right Now! </p>-->
+		<!--<input type="button" onCLick="flipDisplay({{ mapCenter }})" value="Map/List View"/>-->
+	<!--</div>-->
 		
-		<select name="neighborhood" id="neighborhood">
-			<option value="all">Select a Neighborhood</option>
-		</select>
-	</div>
-	
-	<div class="selectFormRow" style="padding-top: 20px;">
-		{% if mobileOverride == "true" %} 
-			<input id="flipView" type="submit" value="Mobile/Desktop" onClick="flipMobileFlag()">
-		{% endif %}
-		
-		<p style = "text-shadow: -1px 0 1px black; font-weight: bold; font-size: 18px;"> <input id="currentTimeOnly" name="currentTimeOnly" type ="checkbox"> Right Now! </p>
-		<input type="button" onCLick="flipDisplay({{ mapCenter }})" value="Map/List View"/>
-	</div>
-		
-	<input type="hidden" id="mobileFlag" name="mobileFlag" value=""/>
-	<input type="hidden" id="mobileOverride" name="mobileOverride" value="false"/>
-	<input type="hidden" id="tableDisplay" name="tableDisplay" value="none"/>      
-	<input type="hidden" id="mapDisplay" name="mapDisplay" value="initial"/>
-</form>
+	<!--<input type="hidden" id="mobileFlag" name="mobileFlag" value=""/>-->
+	<!--<input type="hidden" id="mobileOverride" name="mobileOverride" value="false"/>-->
+	<!--<input type="hidden" id="tableDisplay" name="tableDisplay" value="none"/>      -->
+	<!--<input type="hidden" id="mapDisplay" name="mapDisplay" value="initial"/>-->
+
 
 <div id="map"></div>
 
-<div id = "tableContainer" cellspacing='0' style="display: none;">
- <table id="report">
-        <tr>
-            <th>Name</th>
-    		<th>Neighborhood</th>
-    		<th colspan=2>Location</th>
-            <th colspan=2>Today's Specials</th>
-            <th></th>
-        </tr>
-        {% for happyPlace in happyPlaces %}
-	        	<tr>
-	            	<td>
-	            		{% if happyPlace.site != None %}
-	            			<a target="_blank" href="{{ happyPlace.site }}">
-								{{ happyPlace.name }}
-							</a>
-						{% else%}
-							{{ happyPlace.name }}
-						{% endif %}
-					</td>
-	            	<td>{{ happyPlace.neighborhood }}</td>
-		            <td colspan=2> 
-		            	<a target="_blank" href="https://www.google.com/maps/search/{{happyPlace.name}} {{ happyPlace.address }} {{ happyPlace.city }}/17z">
-		            		{{ happyPlace.address }}
-		            	</a>
-		            	</br>@</br>
-		            	{{ happyPlace.cross }}
-		            </td>
-		            <td colspan=2>
-		            	{% for happyHour in happyPlace.happyHours.all %}
-		            		{% if today in happyHour.days %}
-		            			{% with start=happyHour.start|formatTime end=happyHour.end|formatTime %}
-		            			{% with displayTime=start|formatTimeRange:end %}
-		            			<strong>{{ displayTime }}:</strong> {{ happyHour.notes }}</br>
-		            			{% endwith %}
-		            			{% endwith %}        		
-		            		{% endif %}
-		        		{% endfor %}
-		            </td>
-		            <td><div class="arrow"></div></td>
-		        </tr>
-		        
-		        <tr>
-		        {% for dayPair in dayPairs %}
-		        	<td class="dayOfWeek">
-		        		<p><strong>{{ dayPair.0 }}</strong></p>
-		        		</br>
-		        		</br>
-		        		<p>
-		        		{% for happyHour in happyPlace.happyHours.all %}
-		        			{% if dayPair.0 in happyHour.days %}        			
-		        				{% with start=happyHour.start|formatTime end=happyHour.end|formatTime %}
-		            			{% with displayTime=start|formatTimeRange:end %}
-		            			<strong>{{ displayTime }}:</strong></br>
-		            			{% endwith %}
-		            			{% endwith %}
-		        				{{ happyHour.notes }}        			
-		        				</br></br>     			 
-		        			{% endif %}
-		        		{% endfor %}
-		        		</p>
-		        	</td>
-		        {% endfor %}			        	
-		        </tr>
-       	{% endfor %} 
-    </table>
-</div>
+<!--<div id = "tableContainer" cellspacing='0' style="display: none;">-->
+ <!--<table id="report">-->
+        <!--<tr>-->
+            <!--<th>Name</th>-->
+    		<!--<th>Neighborhood</th>-->
+    		<!--<th colspan=2>Location</th>-->
+            <!--<th colspan=2>Today's Specials</th>-->
+            <!--<th></th>-->
+        <!--</tr>-->
+        <!--{% for happyPlace in happyPlaces %}-->
+	        	<!--<tr>-->
+	            	<!--<td>-->
+	            		<!--{% if happyPlace.site != None %}-->
+	            			<!--<a target="_blank" href="{{ happyPlace.site }}">-->
+								<!--{{ happyPlace.name }}-->
+							<!--</a>-->
+						<!--{% else%}-->
+							<!--{{ happyPlace.name }}-->
+						<!--{% endif %}-->
+					<!--</td>-->
+	            	<!--<td>{{ happyPlace.neighborhood }}</td>-->
+		            <!--<td colspan=2> -->
+		            	<!--<a target="_blank" href="https://www.google.com/maps/search/{{happyPlace.name}} {{ happyPlace.address }} {{ happyPlace.city }}/17z">-->
+		            		<!--{{ happyPlace.address }}-->
+		            	<!--</a>-->
+		            	<!--</br>@</br>-->
+		            	<!--{{ happyPlace.cross }}-->
+		            <!--</td>-->
+		            <!--<td colspan=2>-->
+		            	<!--{% for happyHour in happyPlace.happyHours.all %}-->
+		            		<!--{% if today in happyHour.days %}-->
+		            			<!--{% with start=happyHour.start|formatTime end=happyHour.end|formatTime %}-->
+		            			<!--{% with displayTime=start|formatTimeRange:end %}-->
+		            			<!--<strong>{{ displayTime }}:</strong> {{ happyHour.notes }}</br>-->
+		            			<!--{% endwith %}-->
+		            			<!--{% endwith %}        		-->
+		            		<!--{% endif %}-->
+		        		<!--{% endfor %}-->
+		            <!--</td>-->
+		            <!--<td><div class="arrow"></div></td>-->
+		        <!--</tr>-->
+		        <!---->
+		        <!--<tr>-->
+		        <!--{% for dayPair in dayPairs %}-->
+		        	<!--<td class="dayOfWeek">-->
+		        		<!--<p><strong>{{ dayPair.0 }}</strong></p>-->
+		        		<!--</br>-->
+		        		<!--</br>-->
+		        		<!--<p>-->
+		        		<!--{% for happyHour in happyPlace.happyHours.all %}-->
+		        			<!--{% if dayPair.0 in happyHour.days %}        			-->
+		        				<!--{% with start=happyHour.start|formatTime end=happyHour.end|formatTime %}-->
+		            			<!--{% with displayTime=start|formatTimeRange:end %}-->
+		            			<!--<strong>{{ displayTime }}:</strong></br>-->
+		            			<!--{% endwith %}-->
+		            			<!--{% endwith %}-->
+		        				<!--{{ happyHour.notes }}        			-->
+		        				<!--</br></br>     			 -->
+		        			<!--{% endif %}-->
+		        		<!--{% endfor %}-->
+		        		<!--</p>-->
+		        	<!--</td>-->
+		        <!--{% endfor %}			        	-->
+		        <!--</tr>-->
+       	<!--{% endfor %} -->
+    <!--</table>-->
+<!--</div>-->
 
 </br>
 </br>
