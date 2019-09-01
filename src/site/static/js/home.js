@@ -91,26 +91,9 @@ function getHappyPlacesForLatLng(latitude, longitude, count, callback) {
 
 function CenterControl(controlDiv, map) {
     // Set CSS for the control border.
-    var controlUI = document.createElement('div');
-    controlUI.style.backgroundColor = '#fff';
-    controlUI.style.border = '2px solid #fff';
-    controlUI.style.borderRadius = '3px';
-    controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
-    controlUI.style.cursor = 'pointer';
-    controlUI.style.marginBottom = '22px';
-    controlUI.style.textAlign = 'center';
+    var controlUI = document.createElement('button');
+    controlUI.innerHTML = 'Search This Area';
     controlDiv.appendChild(controlUI);
-
-    // Set CSS for the control interior.
-    var controlText = document.createElement('div');
-    controlText.style.color = 'rgb(25,25,25)';
-    controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
-    controlText.style.fontSize = '16px';
-    controlText.style.lineHeight = '38px';
-    controlText.style.paddingLeft = '5px';
-    controlText.style.paddingRight = '5px';
-    controlText.innerHTML = 'Search This Area';
-    controlUI.appendChild(controlText);
 
     controlUI.addEventListener('click', function() {
         clearMarkers();
@@ -151,19 +134,25 @@ function createMap(latitude, longitude) {
         }]
     });
 
-    var centerControlDiv = document.createElement('div');
-    var centerControl = new CenterControl(centerControlDiv, gmap);
+    var searchButton = document.createElement('button');
+    searchButton.innerHTML = 'Search This Area';
+    searchButton.style.margin = "10px";
+    searchButton.index = 1;
+    searchButton.style.display = "none";
 
-    centerControlDiv.index = 1;
-    gmap.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
+    searchButton.addEventListener('click', function() {
+        clearMarkers();
+        addMarkersToMap(gmap.getCenter().lat(), gmap.getCenter().lng());
+    searchButton.style.display = "none";
+    });
 
-    centerControlDiv.hidden = true;
+    gmap.controls[google.maps.ControlPosition.TOP_CENTER].push(searchButton);
 
     google.maps.event.addListener(gmap, 'center_changed', function(){
-        centerControlDiv.hidden = false;
+        searchButton.style.display = "initial";
     });
     google.maps.event.addListener(gmap, 'zoom_changed', function(){
-        centerControlDiv.hidden = false;
+        searchButton.style.display = "initial";
     });
 }
 
