@@ -132,8 +132,7 @@ function initMap() {
         google.maps.event.addListenerOnce(gmap, 'idle', function(){
             addMarkersToMap(latitude, longitude);
         });
-	}, function(position) {
-	    alert('Couldnt get position!');
+	}, function(error) {
         createMap(latitude, longitude);
         gmap.setZoom(13);//TODO: better way to do this? it triggers the zoom listener
 	});
