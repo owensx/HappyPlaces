@@ -109,7 +109,7 @@ function CenterControl(controlDiv, map) {
     controlText.style.lineHeight = '38px';
     controlText.style.paddingLeft = '5px';
     controlText.style.paddingRight = '5px';
-    controlText.innerHTML = 'Redo Search In This Area';
+    controlText.innerHTML = 'Search This Area';
     controlUI.appendChild(controlText);
 
     controlUI.addEventListener('click', function() {
@@ -120,40 +120,52 @@ function CenterControl(controlDiv, map) {
 }
 
 function initMap() {
+    var latitude = 40.679
+    var longitude = -73.936
+
     navigator.geolocation.getCurrentPosition(function(position) {
-        var latitude = position.coords.latitude;
-        var longitude = position.coords.longitude;
+        latitude = position.coords.latitude;
+        longitude = position.coords.longitude;
 
-        gmap = new google.maps.Map(document.getElementById('map'), {
-            zoom: 15
-            , center: {lat: latitude, lng: longitude}
-            , styles: [{
-                featureType: "poi"
-                , elementType: "labels"
-                , stylers: [{
-                    visibility: "off"
-                }]
-              }]
-        });
-
-        var centerControlDiv = document.createElement('div');
-        var centerControl = new CenterControl(centerControlDiv, gmap);
-
-        centerControlDiv.index = 1;
-        gmap.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
-
-        centerControlDiv.hidden = true;
-
-        google.maps.event.addListener(gmap, 'center_changed', function(){
-            centerControlDiv.hidden = false;
-        });
+        createMap(latitude, longitude);
 
         google.maps.event.addListenerOnce(gmap, 'idle', function(){
             addMarkersToMap(latitude, longitude);
         });
 	}, function(position) {
-	    alert('fuck off');
+	    alert('Couldnt get position!');
+        createMap(latitude, longitude);
+        gmap.setZoom(13);//TODO: better way to do this? it triggers the zoom listener
 	});
+}
+
+function createMap(latitude, longitude) {
+    gmap = new google.maps.Map(document.getElementById('map'), {
+        zoom: 15
+        , center: {lat: latitude, lng: longitude}
+        , styles: [{
+            featureType: "poi"
+            , elementType: "labels"
+            , stylers: [{
+                visibility: "off"
+            }]
+        }]
+    });
+
+    var centerControlDiv = document.createElement('div');
+    var centerControl = new CenterControl(centerControlDiv, gmap);
+
+    centerControlDiv.index = 1;
+    gmap.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
+
+    centerControlDiv.hidden = true;
+
+    google.maps.event.addListener(gmap, 'center_changed', function(){
+        centerControlDiv.hidden = false;
+    });
+    google.maps.event.addListener(gmap, 'zoom_changed', function(){
+        centerControlDiv.hidden = false;
+    });
 }
 
 //function updateMap(happyPlacesJSON) {
