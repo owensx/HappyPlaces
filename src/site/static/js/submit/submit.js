@@ -15,7 +15,7 @@ function setHappyPlaceOptions(neighborhoodId){
     var requestBody = {};
 
     if (neighborhoodId != ''){
-        requestBody['neighborhood_id'] = neighborhoodId;
+        requestBody['neighborhoodId'] = neighborhoodId;
     }
 
     $.getJSON("/happyPlaces", requestBody, function(response) {
@@ -56,8 +56,8 @@ function onSearchButtonClick(){
 
 	queryString = name + ' ' + neighborhood + ' ' + city;
 
-    requestBody = { query_string: queryString
-                    , max_results: 5 }
+    requestBody = { "queryString": queryString
+                    , "count": 5 }
 
 	$.getJSON("/googlePlaces", requestBody, function(response) {
         $("#searchingIcon").hide();

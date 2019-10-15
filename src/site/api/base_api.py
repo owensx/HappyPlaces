@@ -4,7 +4,7 @@ import logging
 import abc
 import json
 
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.db import IntegrityError
 from django.http import HttpResponse
 
@@ -23,6 +23,9 @@ class API(abc.ABC):
         except (IntegrityError, ValidationError) as e:
             self._logger.error(traceback.format_exc())
             return HttpResponse(status=400, reason=e)
+        except ObjectDoesNotExist as e:
+            self._logger.error(traceback.format_exc())
+            return HttpResponse(status=404, reason=e)
         except:
             self._logger.error(traceback.format_exc())
             return HttpResponse(status=500, reason='Internal Server Error, Request Id: ' + request_id)

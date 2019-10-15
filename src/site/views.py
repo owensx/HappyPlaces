@@ -1,6 +1,5 @@
 from django.shortcuts import render
 
-from src.site.apis import happy_places
 from src.site.models import *
 
 

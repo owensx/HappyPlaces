@@ -89,19 +89,6 @@ function getHappyPlacesForLatLng(latitude, longitude, count, callback) {
     });
 }
 
-function CenterControl(controlDiv, map) {
-    // Set CSS for the control border.
-    var controlUI = document.createElement('button');
-    controlUI.innerHTML = 'Search This Area';
-    controlDiv.appendChild(controlUI);
-
-    controlUI.addEventListener('click', function() {
-        clearMarkers();
-        addMarkersToMap(map.getCenter().lat(), map.getCenter().lng());
-        controlDiv.hidden = true;
-    });
-}
-
 function initMap() {
     var latitude = 40.679
     var longitude = -73.936
@@ -211,7 +198,6 @@ function addMarkerToMap(latitude, longitude){
 		, animation: google.maps.Animation.DROP
 	});
 
-    markersOnMap.push(marker);
 //	var infoWindow = new google.maps.InfoWindow({
 //	    content: getInfoWindowHtml(happyPlaceName, specials)
 //	});
@@ -225,6 +211,8 @@ function addMarkerToMap(latitude, longitude){
 //			infoWindow.open(map, marker);
 //		}
 //	});
+
+    markersOnMap.push(marker);
 }
 
 function clearMarkers() {
@@ -233,30 +221,7 @@ function clearMarkers() {
     }
     markersOnMap = [];
 }
-//function initMap(mapCenter, markersInfo) {
-//	var geocoder = new google.maps.Geocoder();
-//	gmap = new google.maps.Map(document.getElementById('map'), {
-//		zoom: 15
-//		, center: {lat: mapCenter[0], lng: mapCenter[1]}
-//		, styles: [{
-//            featureType: "poi"
-//            , elementType: "labels"
-//            , stylers: [{
-//            	visibility: "off"
-//            }]
-//          }]
-//	});
-//
-//	var sumLat = 0;
-//	var sumLng = 0;
-//	var service = new google.maps.places.PlacesService(gmap);
-//
-//	markersInfo.forEach(function(markerInfo){
-//		addMarkerToMap(geocoder, gmap, markerInfo);
-//	});
-//
-//}
-//var gmap;
+
 //
 //function init(lastSelectedCity, lastSelectedNeighborhood, photosPath) {
 //	//get mobileFlag

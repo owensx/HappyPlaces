@@ -1,46 +1,35 @@
 from django.urls import *
 from src.site import views
-from src.site import apis
+from src.site.api import neighborhoods, happy_places, happy_hours, google_places
+
+
+google_places_api = google_places.GooglePlacesAPI()
+neighborhoods_api = neighborhoods.NeighborhoodsAPI()
+happy_places_api = happy_places.HappyPlacesAPI()
+happy_hours_api = happy_hours.HappyHoursAPI()
+
+
+def handle_request(request, **kwargs):
+    api = kwargs.pop('api')
+    return api.handle_request(request, **kwargs)
+
 
 urlpatterns = [
     path('', views.home)
 
     , path('admin/submit', views.admin_submit)
-    , path('googlePlaces', apis.get_google_places)
 
-    , path('neighborhoods', apis.neighborhoods)
-    , path('neighborhoods/', apis.neighborhoods)
-    , path('neighborhoods/<int:neighborhood_id>', apis.neighborhoods)
+    , path('googlePlaces', handle_request, {'api': google_places_api})
 
-    , path('happyPlaces', apis.happy_places)
-    , path('happyPlaces/', apis.happy_places)
-    , path('happyPlaces/<int:happy_place_id>', apis.happy_places)
+    , path('neighborhoods', handle_request, {'api': neighborhoods_api})
+    , path('neighborhoods/', handle_request, {'api': neighborhoods_api})
+    , path('neighborhoods/<int:neighborhood_id>',  handle_request, {'api': neighborhoods_api})
 
-    , path('happyHours', apis.happy_hours)
-    , path('happyHours/', apis.happy_hours)
-    , path('happyHours/<int:happy_hour_id>', apis.happy_hours)
-]#'',
-    # Examples:
-    # url(r'^$', 'src.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
+    , path('happyPlaces', handle_request, {'api': happy_places_api})
+    , path('happyPlaces/', handle_request, {'api': happy_places_api})
+    , path('happyPlaces/<int:happy_place_id>', handle_request, {'api': happy_places_api})
 
-#    url(r'^admin/', include(admin.site.urls)),
-    
-    #url(r'^happyPlace/(?P<happyPlaceId>\d+)', 'src.site.views.HappyPlaceView', name='viewHappyPlace'),
-  #  url(r'^submit/', 'src.site.views.Submit', name='submit'),
-#     url(r'^submitState/', 'src.site.views.SubmitState', name='submitState'),
-#     url(r'^submitCityForState/(?P<stateId>[0-9]*)/$', 'src.site.views.SubmitCityForState', name='submitCityForState'),
-#     url(r'^submitHappyPlaceForCity/(?P<cityId>[0-9]*)/$', 'src.site.views.SubmitHappyPlaceForCity', name='submitHappyPlaceForCity'),
-#     url(r'^submitHappyHourForHappyPlace/(?P<happyPlaceId>[0-9]*)/$', 'src.site.views.SubmitHappyHourForHappyPlace', name='submitHappyHourForHappyPlace'),
- #   url(r'^error/', 'src.site.views.Error', name='error'),
-  #  url(r'^getNeighborhoods/(?P<cityToSearch>\w+)', 'src.site.utils.getNeighborhoodsForCity', name='getNeighborhoodsForCity'),
- #   url(r'^getHappyPlaces/(?P<neighborhoodToSearch>\w+)', 'src.site.utils.getHappyPlacesForNeighborhood', name='getHappyPlacesForNeighborhood'),
-
-  #  url(r'^getHappyPlace/(?P<happyPlaceId>\w+)', 'src.site.utils.getHappyPlace', name='getHappyPlace'),
-
- #   url(r'^getPhotos/(?P<location>.+\/.+)', 'src.site.utils.getPhotos', name = 'getPhotos'),
- #   url(r'^getPlaceId/(?P<queryString>.+)', 'src.site.utils.getPlaceId', name = 'getPlaceId'),
- #   url(r'^', 'src.site.views.Home', name='home'),
-        
-#] + staticfiles_urlpatterns()
-
+    , path('happyHours', handle_request, {'api': happy_hours_api})
+    , path('happyHours/', handle_request, {'api': happy_hours_api})
+    , path('happyHours/<int:happy_hour_id>', handle_request, {'api': happy_hours_api})
+]
