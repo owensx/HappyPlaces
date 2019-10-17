@@ -1,8 +1,6 @@
 from django import forms
 from django.db import models
-from django.core import serializers
 from django.forms import ModelForm, Form
-from django.http.response import HttpResponse
 
 
 class City(models.Model):
@@ -55,18 +53,6 @@ class HappyPlace(models.Model):
 
     time_updated = models.DateTimeField()
     active = models.BooleanField(default=True)
-
-    @property
-    def lat_lng(self):
-        return {'lat': self.latitude, 'lng': self.longitude}
-
-    @property
-    def marker_info(self):
-        return list([
-            self.name
-            , self.lat_lng
-            , self.todaysSpecials
-        ])
 
     def __str__(self):
         return self.name.__str__()
@@ -121,14 +107,31 @@ class HappyHour(models.Model):
 
     time_updated = models.DateTimeField()
 
+    # @property
+    # def has_active_happy_place(self):
+    #     return self.happy_place.active
+    #
+    # def is_active(self, *args, **kwargs):
+    #     is_active = False
+    #
+    #     if "days" in kwargs:
+    #         days = kwargs["days"].split(',')
+    #         is_active =\
+    #             ('M' in days and self.monday)\
+    #             or ('T' in days and self.tuesday)\
+    #             or ('W' in days and self.wednesday)\
+    #             or ('R' in days and self.thursday)\
+    #             or ('F' in days and self.friday)\
+    #             or ('S' in days and self.saturday)\
+    #             or ('Y' in days and self.sunday)
+    #
+    #     return is_active and self.has_active_happy_place
+
     class Meta:
         db_table = "happyhour"
 
 
 class HappyHourSubmitForm(ModelForm):
-    def __init__(self, *args, **kwargs):
-        super(HappyHourSubmitForm, self).__init__(*args, **kwargs)
-
     class Meta:
         model = HappyHour
         exclude = ('happy_place', 'time_updated',)

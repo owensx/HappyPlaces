@@ -16,9 +16,18 @@ class API(abc.ABC):
     def handle_request(self, request, **kwargs):
         request_id = str(uuid.uuid4())
         self._logger.debug('Received new request, assigning id ' + request_id)
+        self._logger.debug("Method: " + request.method)
+        self._logger.debug("Query Params/Request Body: "
+                           + (str(request.POST) if request.method == 'POST'
+                              else str(request.GET) if request.method == 'GET' else ""))
+        self._logger.debug("Path Params: " + str(kwargs))
 
         try:
             response_body = self.get_response_body(request, kwargs)
+            if response_body is None:
+                self._logger.error('Unable to handle method ' + request.method)
+                raise NotImplementedError
+
             response_body['request_id'] = request_id
         except (IntegrityError, ValidationError) as e:
             self._logger.error(traceback.format_exc())

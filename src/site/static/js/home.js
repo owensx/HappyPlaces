@@ -1,93 +1,10 @@
+'use strict';
 var gmap;
 var markersOnMap = [];
 
 $(document).ready(function() {
     initMap();
-
-//    $("select#city").change(function() {
-//        var cityId = $("select#city").val();
-//
-//        if (cityId != "None"){
-//            setNeighborhoodOptions(cityId);
-//            getHappyPlacesForCity(cityId, function(response) {
-//                updateMap(response['body']);
-//            });
-//        } else {
-//            resetNeighborhoodOptions();
-//        }
-//	});
-//
-//    $("select#neighborhood").change(function() {
-//        updateMap();
-//	});
 });
-
-//function resetNeighborhoodOptions() {
-//    $("select#neighborhood").empty();
-//    $("select#neighborhood").append("<option text='Select Neighborhood' value='None'>"+
-//                                                       "Select Neighborhood</option>");
-//}
-//
-//function setNeighborhoodOptions(cityId) {
-//    $("select#neighborhood").empty();
-//    $("select#neighborhood").append("<option>Fetching Neighborhoods...</option>");
-//    $("select#neighborhood").prop('disabled', true);
-//
-//    getNeighborhoodsForCity(cityId, function(response) {
-//        $("select#neighborhood").prop('disabled', false);
-//        resetNeighborhoodOptions();
-//
-//        var neighborhoods = response['body']
-//
-//        $.each(JSON.parse(neighborhoods), function(index, neighborhood){
-//            $("select#neighborhood").append(
-//                $("<option>")
-//                .val(neighborhood['pk'])
-//                .html(neighborhood['fields']['name'])
-//            );
-//        });
-//	});
-//    var url = "/neighborhoods?cityId=" + cityId;
-
-//	$.getJSON(url, function(response) {
-//        $("select#neighborhood").prop('disabled', false);
-//        resetNeighborhoodOptions();
-//
-//        var neighborhoods = response['body']
-//
-//        $.each(JSON.parse(neighborhoods), function(index, neighborhood){
-//            $("select#neighborhood").append(
-//                $("<option>")
-//                .val(neighborhood['pk'])
-//                .html(neighborhood['fields']['name'])
-//            );
-//        });
-//	});
-//}
-
-//function getNeighborhoodsForCity(cityId, callback) {
-//    var url = "/neighborhoods?cityId=" + cityId;
-//
-//    $.getJSON(url, function(response) {
-//        callback(response);
-//	});
-//}
-//
-//function getHappyPlacesForCity(cityId, callback) {
-//    var url = "/happyPlaces?cityId=" + cityId;
-//
-//    $.getJSON(url, function(response) {
-//        callback(response);
-//	});
-//}
-
-function getHappyPlacesForLatLng(latitude, longitude, count, callback) {
-    var url = "/happyPlaces?latitude=" + latitude + "&longitude=" + longitude + "&count=" + count;
-
-    $.getJSON(url, function(response) {
-        callback(response);
-    });
-}
 
 function initMap() {
     var latitude = 40.679
@@ -130,7 +47,7 @@ function createMap(latitude, longitude) {
     searchButton.addEventListener('click', function() {
         clearMarkers();
         addMarkersToMap(gmap.getCenter().lat(), gmap.getCenter().lng());
-    searchButton.style.display = "none";
+        searchButton.style.display = "none";
     });
 
     gmap.controls[google.maps.ControlPosition.TOP_CENTER].push(searchButton);
@@ -143,76 +60,61 @@ function createMap(latitude, longitude) {
     });
 }
 
-//function updateMap(happyPlacesJSON) {
-//    if ($("select#neighborhood").val() != 'None') {
-//        //get happyplaces based on neighborhood
-//    } else {
-//
-//    }
-//
-////    if (happyPlaces == null) {
-////        return;
-////    }
-//
-//    var sumLatitude = 0;
-//    var sumLongitude = 0;
-//
-//    var happyPlaces = JSON.parse(happyPlacesJSON);
-//    $.each(happyPlaces, function(index, happyPlace){
-//        sumLatitude += happyPlace['fields']['latitude'];
-//        sumLongitude += happyPlace['fields']['longitude'];
-//    });
-//
-//    var averageLatitude = sumLatitude / happyPlaces.length;
-//    var averageLongitude = sumLongitude / happyPlaces.length;
-//
-//    gmap.panTo(new google.maps.LatLng(averageLatitude, averageLongitude));
-//    gmap.setZoom(15);
-//}
-
 function addMarkersToMap(latitude, longitude){
     var bounds = gmap.getBounds();
     var ne = bounds.getNorthEast();
     var sw = bounds.getSouthWest();
 
     getHappyPlacesForLatLng(latitude, longitude, 10, function(response){
-        happyPlaces = JSON.parse(response['body']);
+        var happyPlaces = JSON.parse(response['body']);
 
-        if (happyPlaces.length <= 10){
-//                disableNextButton();
-        }
+//        if (happyPlaces.length <= 10){
+////                disableNextButton();
+//        }
 
         $.each(happyPlaces, function(index, happyPlace){
-            if (happyPlace['fields']['latitude'] > sw.lat() && happyPlace['fields']['latitude'] < ne.lat()
-                && happyPlace['fields']['longitude'] > sw.lng() && happyPlace['fields']['longitude'] < ne.lng()){
-                addMarkerToMap(happyPlace['fields']['latitude'], happyPlace['fields']['longitude'])
+            var happyPlaceId = happyPlace['pk']
+            var latitude = happyPlace['fields']['latitude']
+            var longitude = happyPlace['fields']['longitude']
+
+            if (latitude > sw.lat() && latitude < ne.lat() && longitude > sw.lng() && longitude < ne.lng()){
+                getTodaysHappyHours(happyPlaceId, function(response){
+                    var happyHours = JSON.parse(response['body']);
+                    var infoWindowDetails = createInfoWindowDetails(happyHours);
+                    addMarkerToMap(latitude, longitude, infoWindowDetails);
+                });
             }
         });
     });
 }
 
-function addMarkerToMap(latitude, longitude){
+function addMarkerToMap(latitude, longitude, infoWindowDetails){
 	var marker = new google.maps.Marker({
 		map: gmap
 		, position: {lat: latitude, lng: longitude}
 		, animation: google.maps.Animation.DROP
 	});
 
-//	var infoWindow = new google.maps.InfoWindow({
-//	    content: getInfoWindowHtml(happyPlaceName, specials)
-//	});
-//
-//	marker.addListener('click', function() {
-//
-//		if (isInfoWindowOpen(infoWindow)) {
-//			infoWindow.close();
-//		}
-//		else {
-//			infoWindow.open(map, marker);
-//		}
-//	});
+	var infoWindow = new google.maps.InfoWindow({
+	    content: infoWindowDetails
+	});
+
+	marker.addListener('click', function(){
+		if (isInfoWindowOpen(infoWindow)) {
+			infoWindow.close();
+		}
+		else {
+			infoWindow.open(gmap, marker);
+			gmap.panTo(marker.getPosition());
+		}
+	});
 
     markersOnMap.push(marker);
+}
+
+function isInfoWindowOpen(infoWindow){
+    var map = infoWindow.getMap();
+    return (map !== null && typeof map !== "undefined");
 }
 
 function clearMarkers() {
@@ -222,6 +124,22 @@ function clearMarkers() {
     markersOnMap = [];
 }
 
+function getHappyPlacesForLatLng(latitude, longitude, count, callback) {
+    var url = "/happyPlaces?latitude=" + latitude + "&longitude=" + longitude + "&count=" + count;
+
+    $.getJSON(url, function(response) {
+        callback(response);
+    });
+}
+
+function getTodaysHappyHours(happyPlaceId, callback) {
+    var days = 'M';
+    var url = "/happyHours?happyPlaceId=" + happyPlaceId + "&days=" + days;
+
+    $.getJSON(url, function(response) {
+        callback(response);
+    });
+}
 //
 //function init(lastSelectedCity, lastSelectedNeighborhood, photosPath) {
 //	//get mobileFlag
@@ -284,14 +202,15 @@ function clearMarkers() {
 
 //
 //
-//function isInfoWindowOpen(infoWindow){
-//    var map = infoWindow.getMap();
-//    return (map !== null && typeof map !== "undefined");
-//}
 //
 
 //
-//function getInfoWindowHtml(happyPlaceName, specials){
+function createInfoWindowDetails(happyHours){
+    if (happyHours.length > 0){
+        return JSON.stringify(happyHours[0]['fields']);
+    }
+
+    return "None Today!";
 //	var infoHtml = '';
 //	var displayNotes = '';
 //
@@ -316,7 +235,7 @@ function clearMarkers() {
 //	}
 //
 //	return  '<u style = "font-size: 22px; margin: 0px";>' + happyPlaceName + '</u>' + infoHtml;
-//}
+}
 //
 //function getIconHtml(special){
 //	specialName = special[0];

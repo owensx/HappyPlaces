@@ -10,8 +10,6 @@ from django.core.serializers import serialize
 class HappyPlacesAPI(API):
     def get_response_body(self, request, params):
         if request.method == 'POST':
-            self._logger.debug(request.method + str(request.POST))
-
             happy_place = happy_place_helper.create_happy_place_from_form_data(request.POST)
 
             self._logger.debug('Saving HappyPlace ' + happy_place.__str__())
@@ -24,13 +22,12 @@ class HappyPlacesAPI(API):
             }
 
         elif request.method == 'GET':
-            self._logger.debug(request.method + str(request.GET))
-
             if "happy_place_id" in params:
                 happy_place_id = params["happy_place_id"]
                 self._logger.debug('Fetching HappyPlace ' + str(happy_place_id))
 
-                happy_places = HappyPlace.objects.get(id=happy_place_id)
+                happy_places = [HappyPlace.objects.get(id=happy_place_id)]
+                print(serialize('json', happy_places))
 
             else:
                 self._logger.debug('Fetching HappyPlaces...')
@@ -39,7 +36,7 @@ class HappyPlacesAPI(API):
                 if "cityId" in request.GET:
                     city_id = request.GET["cityId"]
                     self._logger.debug('Filtering on City ' + city_id + ' - '
-                                       + City.objects.filter(id=city_id).first().__str__())
+                                       + City.objects.get(id=city_id).__str__())
 
                     neighborhood_ids = Neighborhood.objects.filter(city__id=int(city_id))
                     happy_places = happy_places.filter(neighborhood__id__in=neighborhood_ids)
@@ -47,12 +44,12 @@ class HappyPlacesAPI(API):
                 if "neighborhoodId" in request.GET:
                     neighborhood_id = request.GET["neighborhoodId"]
                     self._logger.debug('Filtering on Neighborhood ' + neighborhood_id + ' - '
-                                       + Neighborhood.objects.filter(id=neighborhood_id).first().__str__())
+                                       + Neighborhood.objects.get(id=neighborhood_id).__str__())
 
                     happy_places = happy_places.filter(neighborhood__id=int(neighborhood_id))
 
                 if "beer" in request.GET or "wine" in request.GET or "well" in request.GET:
-                    happy_places = filter(lambda happy_place:
+                    happy_places = filter(lambda happy_place:#TODO:use generator expression?
                                           ("beer" in request.GET and any(happy_hour.beer is not None for happy_hour in happy_place.happy_hours.all()))
                                           or ("wine" in request.GET and any(happy_hour.wine_bottle is not None or happy_hour.wine_glass is not None for happy_hour in happy_place.happy_hours.all()))
                                           or ("well" in request.GET and any(happy_hour.well is not None for happy_hour in happy_place.happy_hours.all()))
@@ -70,7 +67,7 @@ class HappyPlacesAPI(API):
                     count = int(request.GET["count"])
                     self._logger.debug('Returning top ' + str(count) + ' results')
 
-                    happy_places = happy_places[:count]
+                    happy_places = happy_places[:count]#TODO: optimize by not dooing count check at end
 
             return {
                 'body': serialize('json', happy_places)

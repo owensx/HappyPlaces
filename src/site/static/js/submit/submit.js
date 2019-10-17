@@ -1,8 +1,10 @@
+'use strict';
+
 $(document).ready(function(){
     initOpenClose();
 
     $("#happyPlaceForm select[name='neighborhood']").change(function(){
-        neighborhoodId = $("#happyPlaceForm select[name='neighborhood']").val();
+        var neighborhoodId = $("#happyPlaceForm select[name='neighborhood']").val();
         setHappyPlaceOptions(neighborhoodId);
     });
 
@@ -23,7 +25,7 @@ function setHappyPlaceOptions(neighborhoodId){
         $("#happyPlaceForm select[name='happy_place']").append("<option text='Select HappyPlace' value='default'>"+
                                                            "Select HappyPlace</option>");
 
-        happyPlaces = response['body']
+        var happyPlaces = response['body']
 
         $.each(JSON.parse(happyPlaces), function(index, happyPlace){
             $("#happyPlaceForm select[name='happy_place']").append(
@@ -36,10 +38,10 @@ function setHappyPlaceOptions(neighborhoodId){
 }
 
 function onSearchButtonClick(){
-    name = $("#happyPlaceForm input[name='name']").val()
-    neighborhood = $("#happyPlaceForm select[name='neighborhood'] option:selected").text()
-    neighborhood_id = $("#happyPlaceForm select[name='neighborhood'] option:selected").val()
-    city = $("#happyPlaceForm input[name='city']").val()
+    var name = $("#happyPlaceForm input[name='name']").val()
+    var neighborhood = $("#happyPlaceForm select[name='neighborhood'] option:selected").text()
+    var neighborhood_id = $("#happyPlaceForm select[name='neighborhood'] option:selected").val()
+    var city = $("#happyPlaceForm input[name='city']").val()
 
 	if(name == '') {
 	    alert('Please provide a name');
@@ -54,9 +56,9 @@ function onSearchButtonClick(){
     $('#searchResults').empty();
     $("#searchingIcon").show();
 
-	queryString = name + ' ' + neighborhood + ' ' + city;
+	var queryString = name + ' ' + neighborhood + ' ' + city;
 
-    requestBody = { "queryString": queryString
+    var requestBody = { "queryString": queryString
                     , "count": 5 }
 
 	$.getJSON("/googlePlaces", requestBody, function(response) {
@@ -74,13 +76,13 @@ function onSearchButtonClick(){
         $("#happyPlaceForm label[for='id_cross']").text("Cross");
 
 		$.each(googlePlaces, function(index, googlePlace){
-		    name = googlePlace["name"]
-		    address = googlePlace["address"]
-		    placeId = googlePlace["place_id"]
+		    var name = googlePlace["name"]
+		    var address = googlePlace["address"]
+		    var placeId = googlePlace["place_id"]
 
-		    cross = $("#happyPlaceForm input[name='cross']").val()
+		    var cross = $("#happyPlaceForm input[name='cross']").val()
 
-		    saveHappyPlaceRequest = {
+		    var saveHappyPlaceRequest = {
 		        cross: cross
 		        , place_id: placeId
 		        , neighborhood_id: neighborhood_id
@@ -126,22 +128,22 @@ function saveHappyHour(){
         return;
     }
 
-    happy_place_id = $("#happyPlaceForm select[name='happy_place']").val();
-    notes = $("#happyHourForm input[name='notes']").val();
-    start = $("#happyHourForm input[name='start']").val();
-    end = $("#happyHourForm input[name='end']").val();
-    beer = $("#happyHourForm input[name='beer']").val();
-    wine_glass = $("#happyHourForm input[name='wine_glass']").val();
-    wine_bottle = $("#happyHourForm input[name='wine_bottle']").val();
-    well = $("#happyHourForm input[name='well']").val();
-    shot_beer = $("#happyHourForm input[name='shot_beer']").val();
-    sunday = $("#happyHourForm input[name='sunday']").is(":checked");
-    monday = $("#happyHourForm input[name='monday']").is(":checked");
-    tuesday = $("#happyHourForm input[name='tuesday']").is(":checked");
-    wednesday = $("#happyHourForm input[name='wednesday']").is(":checked");
-    thursday = $("#happyHourForm input[name='thursday']").is(":checked");
-    friday = $("#happyHourForm input[name='friday']").is(":checked");
-    saturday = $("#happyHourForm input[name='saturday']").is(":checked");
+    var happy_place_id = $("#happyPlaceForm select[name='happy_place']").val();
+    var notes = $("#happyHourForm input[name='notes']").val();
+    var start = $("#happyHourForm input[name='start']").val();
+    var end = $("#happyHourForm input[name='end']").val();
+    var beer = $("#happyHourForm input[name='beer']").val();
+    var wine_glass = $("#happyHourForm input[name='wine_glass']").val();
+    var wine_bottle = $("#happyHourForm input[name='wine_bottle']").val();
+    var well = $("#happyHourForm input[name='well']").val();
+    var shot_beer = $("#happyHourForm input[name='shot_beer']").val();
+    var sunday = $("#happyHourForm input[name='sunday']").is(":checked");
+    var monday = $("#happyHourForm input[name='monday']").is(":checked");
+    var tuesday = $("#happyHourForm input[name='tuesday']").is(":checked");
+    var wednesday = $("#happyHourForm input[name='wednesday']").is(":checked");
+    var thursday = $("#happyHourForm input[name='thursday']").is(":checked");
+    var friday = $("#happyHourForm input[name='friday']").is(":checked");
+    var saturday = $("#happyHourForm input[name='saturday']").is(":checked");
 
     saveHappyHourRequest = {
         happy_place_id: happy_place_id
