@@ -80,15 +80,15 @@ function addMarkersToMap(latitude, longitude){
             if (latitude > sw.lat() && latitude < ne.lat() && longitude > sw.lng() && longitude < ne.lng()){
                 getTodaysHappyHours(happyPlaceId, function(response){
                     var happyHours = JSON.parse(response['body']);
-                    var infoWindowDetails = createInfoWindowDetails(happyHours);
-                    addMarkerToMap(latitude, longitude, infoWindowDetails);
+                    var infoWindowHTML = createInfoWindowHTML(happyPlace['fields']['name'], happyHours);
+                    addMarkerToMap(latitude, longitude, infoWindowHTML);
                 });
             }
         });
     });
 }
 
-function addMarkerToMap(latitude, longitude, infoWindowDetails){
+function addMarkerToMap(latitude, longitude, infoWindowHTML){
 	var marker = new google.maps.Marker({
 		map: gmap
 		, position: {lat: latitude, lng: longitude}
@@ -96,7 +96,7 @@ function addMarkerToMap(latitude, longitude, infoWindowDetails){
 	});
 
 	var infoWindow = new google.maps.InfoWindow({
-	    content: infoWindowDetails
+	    content: infoWindowHTML
 	});
 
 	marker.addListener('click', function(){
@@ -104,6 +104,9 @@ function addMarkerToMap(latitude, longitude, infoWindowDetails){
 			infoWindow.close();
 		}
 		else {
+		    $.each(markersOnMap, function(markerOnMap){
+		        markersOnMap
+		    });
 			infoWindow.open(gmap, marker);
 			gmap.panTo(marker.getPosition());
 		}
@@ -205,36 +208,30 @@ function getTodaysHappyHours(happyPlaceId, callback) {
 //
 
 //
-function createInfoWindowDetails(happyHours){
-    if (happyHours.length > 0){
-        return JSON.stringify(happyHours[0]['fields']);
-    }
+function createInfoWindowHTML(happyPlaceName, happyHours){
+	var infoWindowHTML = '';
 
-    return "None Today!";
-//	var infoHtml = '';
-//	var displayNotes = '';
-//
-//	if (specials == ''){
-//		infoHtml = '<br style = "clear: left;>' + '<p>' + 'No Specials Today!' + '</p>';
-//	} else {
-//		specials.forEach(function(specialDetails){
-//			var start = specialDetails[0];
-//			var end = specialDetails[1];
-//			var displayNotes = specialDetails[2];
+	if (happyHours.length == 0){
+		infoWindowHTML += '<br style = "clear: left;">' + '<p>' + 'No Specials Today!' + '</p>';
+	} else {
+		happyHours.forEach(function(happyHour){
+			var start = happyHour['fields']['start'];
+			var end = happyHour['fields']['end'];
+			var displayNotes = happyHour['fields']['notes'];
 //			var icons = specialDetails[3];
-//
-//			infoHtml += '<p style = "margin-top: 28px; margin-bottom: 0px;">' + start + '-' + end + ':' + '</p>';
+
+			infoWindowHTML += '<p style = "margin-top: 28px; margin-bottom: 0px;">' + start + '-' + end + ':' + '</p>';
 //			icons.forEach(function(icon){
 //				infoHtml += getIconHtml(icon);
 //			});
-//
-//			if (displayNotes != ''){
-//				infoHtml += '<br style = "clear: left;"> <p style = "margin-top: 2px; color: black">' + displayNotes + '</p>';
-//			}
-//		});
-//	}
-//
-//	return  '<u style = "font-size: 22px; margin: 0px";>' + happyPlaceName + '</u>' + infoHtml;
+
+			if (displayNotes != ''){
+				infoWindowHTML += '<br style = "clear: left;"> <p style = "margin-top: 2px; color: black">' + displayNotes + '</p>';
+			}
+		});
+	}
+
+	return  '<u style = "font-size: 22px; margin: 0px";>' + happyPlaceName + '</u>' + infoWindowHTML;
 }
 //
 //function getIconHtml(special){
