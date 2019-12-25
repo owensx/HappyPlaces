@@ -81,43 +81,34 @@ function addMarkersToMap(latitude, longitude){
                 getTodaysHappyHours(happyPlaceId, function(response){
                     var happyHours = JSON.parse(response['body']);
                     var infoWindowHTML = createInfoWindowHTML(happyPlace['fields']['name'], happyHours);
-                    addMarkerToMap(latitude, longitude, infoWindowHTML);
+                    addMarkerToMap(latitude, longitude, infoWindowHTML, happyPlace['fields']['name']);
                 });
             }
         });
     });
 }
 
-function addMarkerToMap(latitude, longitude, infoWindowHTML){
+function addMarkerToMap(latitude, longitude, happyPlaceName){
 	var marker = new google.maps.Marker({
 		map: gmap
 		, position: {lat: latitude, lng: longitude}
 		, animation: google.maps.Animation.DROP
-	});
-
-	var infoWindow = new google.maps.InfoWindow({
-	    content: infoWindowHTML
+		, label: {
+		    text: happyPlaceName
+		    , fontWeight: "500"
+		}
+		, icon: {
+		    url: 'static/icons/marker.png'
+		    , labelOrigin: new google.maps.Point(10,-7)
+		    , scaledSize: new google.maps.Size(22,35)
+		    }
 	});
 
 	marker.addListener('click', function(){
-		if (isInfoWindowOpen(infoWindow)) {
-			infoWindow.close();
-		}
-		else {
-		    $.each(markersOnMap, function(markerOnMap){
-		        markersOnMap
-		    });
-			infoWindow.open(gmap, marker);
-			gmap.panTo(marker.getPosition());
-		}
+	    gmap.panTo(marker.getPosition());
 	});
 
     markersOnMap.push(marker);
-}
-
-function isInfoWindowOpen(infoWindow){
-    var map = infoWindow.getMap();
-    return (map !== null && typeof map !== "undefined");
 }
 
 function clearMarkers() {

@@ -31,8 +31,9 @@ body {
         #report tr.odd td { background:#aaa  repeat-x scroll center left; cursor:pointer;  }
        */
 #map {
-    height: 85%;
-    margin-top: 10%;
+    height: 90%;
+    margin-top: 5%;
+    margin-bottom: 5%;
     width: inherit;
     position: absolute;
 }
