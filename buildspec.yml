@@ -6,7 +6,7 @@ phases:
       - $(aws ecr get-login --region us-east-2 --no-include-email)
   build:
     commands:
-      - docker build --build-arg DJANGO_SETTINGS_MODULE -t happyplaces:latest .
+      - docker build --build-arg DJANGO_SETTINGS_MODULE --build-arg APPLICATION_PORT -t happyplaces:latest .
       - docker tag happyplaces:latest 570412635900.dkr.ecr.us-east-2.amazonaws.com/happyplaces:latest
   post_build:
     commands:
