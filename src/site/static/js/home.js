@@ -1,10 +1,27 @@
 'use strict';
+
 var gmap;
 var allHappyPlaces = [];
 var markersOnMap = [];
 var happyPlaceSetIndex = 0;
 var maxMarkerOnMapCount = 10;
 var maxHappyPlaceCount = 50;
+
+var nextButton = initNextButton();
+nextButton.addEventListener('click', function() {
+    onNextButtonClick();
+});
+
+var previousButton = initPreviousButton();
+previousButton.addEventListener('click', function() {
+    onPreviousButtonClick();
+});
+
+var searchButton = initSearchButton();
+searchButton.addEventListener('click', function() {
+    var mapCenter = gmap.getCenter();
+    onSearchButtonClick(mapCenter.lat(), mapCenter.lng());
+});
 
 $(document).ready(function() {
     initMap();
@@ -21,18 +38,7 @@ function initMap() {
         createMap(latitude, longitude);
 
         google.maps.event.addListenerOnce(gmap, 'idle', function() {
-            fetchHappyPlaces(latitude, longitude, maxHappyPlaceCount, function(happyPlaces){
-                allHappyPlaces = happyPlaces;
-
-                var happyPlaceSet = allHappyPlaces.slice(0, maxMarkerOnMapCount);
-                $.each(happyPlaceSet, function(index, happyPlace) {
-                    var happyPlaceName = happyPlace['fields']['name'];
-                    var latitude = happyPlace['fields']['latitude'];
-                    var longitude = happyPlace['fields']['longitude'];
-
-                    addMarkerToMap(latitude, longitude, happyPlaceName);
-                });
-            });
+            searchButton.click();
         });
 
 	}, function(error) {
@@ -44,6 +50,11 @@ function initMap() {
 function createMap(latitude, longitude) {
     gmap = new google.maps.Map(document.getElementById('map'), {
         zoom: 15
+        , zoomControl: false
+        , mapTypeControl: false
+        , streetViewControlOptions:{
+            position: google.maps.ControlPosition.TOP_RIGHT
+        }
         , center: {lat: latitude, lng: longitude}
         , styles: [{
             featureType: "poi"
@@ -54,108 +65,124 @@ function createMap(latitude, longitude) {
         }]
     });
 
-    var nextButton = document.createElement('button');
-    nextButton.id = "nextButton";
-    nextButton.innerHTML = 'Next';
-    nextButton.style.margin = "10px";
-    nextButton.style.display = "none";
-
-    nextButton.addEventListener('click', function() {
-        clearMarkers();
-        happyPlaceSetIndex++;
-
-        var happyPlaceSet = allHappyPlaces.slice(happyPlaceSetIndex*maxMarkerOnMapCount, (happyPlaceSetIndex*maxMarkerOnMapCount) + maxMarkerOnMapCount);
-        $.each(happyPlaceSet, function(index, happyPlace) {
-            var happyPlaceName = happyPlace['fields']['name'];
-            var latitude = happyPlace['fields']['latitude'];
-            var longitude = happyPlace['fields']['longitude'];
-
-            addMarkerToMap(latitude, longitude, happyPlaceName);
-        });
-
-        previousButton.style.display = "initial";
-
-        if (happyPlaceSet.length < maxMarkerOnMapCount || (happyPlaceSetIndex*maxMarkerOnMapCount) + maxMarkerOnMapCount == allHappyPlaces.length) {
-            nextButton.style.display = "none";
-        }
-    });
-
-    var previousButton = document.createElement('button');
-    previousButton.id = "previousButton";
-    previousButton.innerHTML = 'Previous';
-    previousButton.style.margin = "10px";
-    previousButton.style.display = "none";
-
-    previousButton.addEventListener('click', function() {
-        clearMarkers();
-        happyPlaceSetIndex--;
-
-        var happyPlaceSet = allHappyPlaces.slice(happyPlaceSetIndex*maxMarkerOnMapCount, (happyPlaceSetIndex*maxMarkerOnMapCount) + maxMarkerOnMapCount);
-        $.each(happyPlaceSet, function(index, happyPlace) {
-            var happyPlaceName = happyPlace['fields']['name'];
-            var latitude = happyPlace['fields']['latitude'];
-            var longitude = happyPlace['fields']['longitude'];
-
-            addMarkerToMap(latitude, longitude, happyPlaceName);
-        });
-
-        nextButton.style.display = "initial";
-
-        if (happyPlaceSetIndex == 0) {
-            previousButton.style.display = "none";
-        }
-    });
-
-    var searchButton = document.createElement('button');
-    searchButton.id = "searchButton";
-    searchButton.innerHTML = 'Search This Area';
-    searchButton.style.margin = "10px";
-    searchButton.style.display = "none";
-
-    searchButton.addEventListener('click', function() {
-        clearMarkers();
-        clearHappyPlaces();
-
-        happyPlaceSetIndex = 0;
-
-        var newCenter = gmap.getCenter();
-
-        latitude = newCenter.lat();
-        longitude = newCenter.lng();
-
-        nextButton.style.display = "none";
-        previousButton.style.display = "none";
-        searchButton.style.display = "none";
-
-        fetchHappyPlaces(latitude, longitude, maxHappyPlaceCount, function(happyPlaces){
-            allHappyPlaces = happyPlaces;
-            if (allHappyPlaces.length > maxMarkerOnMapCount) {
-                $("#nextButton").css('display', "initial");
-            }
-
-            var happyPlaceSet = allHappyPlaces.slice(0, maxMarkerOnMapCount);
-            $.each(happyPlaceSet, function(index, happyPlace) {
-                var happyPlaceName = happyPlace['fields']['name'];
-                var latitude = happyPlace['fields']['latitude'];
-                var longitude = happyPlace['fields']['longitude'];
-
-                addMarkerToMap(latitude, longitude, happyPlaceName);
-            });
-        });
-    });
-
     var controlButtonsDiv = document.createElement('div');
     controlButtonsDiv.appendChild(previousButton);
     controlButtonsDiv.appendChild(nextButton);
 
     gmap.controls[google.maps.ControlPosition.TOP_CENTER].push(searchButton);
-    gmap.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlButtonsDiv);
+    gmap.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(controlButtonsDiv);
+    //gmap.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(bannerDiv);
 
     google.maps.event.addListener(gmap, 'center_changed', function(){
         searchButton.style.display = "initial";
     });
     google.maps.event.addListener(gmap, 'zoom_changed', function(){
         searchButton.style.display = "initial";
+    });
+}
+
+function initNextButton(){
+    var button = document.createElement('button');
+    button.id = "nextButton";
+    button.innerHTML = 'Next';
+    button.style.margin = "5px";
+    button.style.opacity = "50%";
+    button.disabled = true;
+
+    return button;
+}
+
+function onNextButtonClick() {
+    clearMarkers();
+    happyPlaceSetIndex++;
+
+    var happyPlaceSet = allHappyPlaces.slice(happyPlaceSetIndex*maxMarkerOnMapCount, (happyPlaceSetIndex*maxMarkerOnMapCount) + maxMarkerOnMapCount);
+    $.each(happyPlaceSet, function(index, happyPlace) {
+        var happyPlaceName = happyPlace['fields']['name'];
+        var latitude = happyPlace['fields']['latitude'];
+        var longitude = happyPlace['fields']['longitude'];
+
+        addMarkerToMap(latitude, longitude, happyPlaceName);
+
+    previousButton.style.opacity = "100%";
+    previousButton.disabled = false;
+    });
+
+    if (happyPlaceSet.length < maxMarkerOnMapCount || (happyPlaceSetIndex*maxMarkerOnMapCount) + maxMarkerOnMapCount == allHappyPlaces.length) {
+        nextButton.style.opacity = "50%";
+        nextButton.disabled = true;
+    }
+}
+
+function initPreviousButton(){
+    var button = document.createElement('button');
+    button.id = "previousButton";
+    button.innerHTML = 'Previous';
+    button.style.margin = "5px";
+    button.style.opacity = "50%";
+    button.disabled = true;
+
+    return button;
+}
+
+function onPreviousButtonClick(){
+    clearMarkers();
+    happyPlaceSetIndex--;
+
+    var happyPlaceSet = allHappyPlaces.slice(happyPlaceSetIndex*maxMarkerOnMapCount, (happyPlaceSetIndex*maxMarkerOnMapCount) + maxMarkerOnMapCount);
+    $.each(happyPlaceSet, function(index, happyPlace) {
+        var happyPlaceName = happyPlace['fields']['name'];
+        var latitude = happyPlace['fields']['latitude'];
+        var longitude = happyPlace['fields']['longitude'];
+
+        addMarkerToMap(latitude, longitude, happyPlaceName);
+
+        nextButton.style.opacity = "100%";
+        nextButton.disabled = false;
+
+        if (happyPlaceSetIndex==0) {
+            previousButton.style.opacity = "50%";
+            previousButton.disabled = true;
+        }
+    });
+}
+
+function initSearchButton(){
+    var button = document.createElement('button');
+    button.id = "searchButton";
+    button.innerHTML = 'Search This Area';
+    button.style.margin = "10px";
+    button.style.display = "none";
+
+    return button;
+}
+
+function onSearchButtonClick(latitude, longitude){
+    clearMarkers();
+    clearHappyPlaces();
+
+    happyPlaceSetIndex = 0;
+
+    previousButton.style.opacity = "50%";
+    previousButton.disabled = true;
+
+    searchButton.style.display = "none";
+
+    fetchHappyPlaces(latitude, longitude, maxHappyPlaceCount, function(happyPlaces){
+        allHappyPlaces = happyPlaces;
+        if (allHappyPlaces.length > maxMarkerOnMapCount) {
+            nextButton.style.opacity = "100%";
+            nextButton.disabled = false;
+        }
+
+        var happyPlaceSet = allHappyPlaces.slice(0, maxMarkerOnMapCount);
+        $.each(happyPlaceSet, function(index, happyPlace) {
+            var happyPlaceName = happyPlace['fields']['name'];
+            var latitude = happyPlace['fields']['latitude'];
+            var longitude = happyPlace['fields']['longitude'];
+
+            addMarkerToMap(latitude, longitude, happyPlaceName);
+        });
     });
 }
 
