@@ -31,8 +31,8 @@ body {
         #report tr.odd td { background:#aaa  repeat-x scroll center left; cursor:pointer;  }
        */
 #map {
-    height: 90%;
-    margin-top: 5%;
+    height: 80%;
+    margin-top: 3%;
     margin-bottom: 5%;
     width: inherit;
     position: absolute;
@@ -59,7 +59,7 @@ button {
 	font-family:Arial;
 	font-size:12px;
 	font-weight:bold;
-	padding:13px 22px;
+	padding:4px 7px;
 	text-decoration:none;
 	text-shadow:0px 1px 0px #ded17c;
 }
