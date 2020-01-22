@@ -118,6 +118,11 @@ function createMap(latitude, longitude) {
 
         happyPlaceSetIndex = 0;
 
+        var newCenter = gmap.getCenter();
+
+        latitude = newCenter.lat();
+        longitude = newCenter.lng();
+
         nextButton.style.display = "none";
         previousButton.style.display = "none";
         searchButton.style.display = "none";
