@@ -163,6 +163,8 @@ function onSearchButtonClick(latitude, longitude){
 
     happyPlaceSetIndex = 0;
 
+    nextButton.style.opacity = "50%";
+    nextButton.disabled = true;
     previousButton.style.opacity = "50%";
     previousButton.disabled = true;
 
