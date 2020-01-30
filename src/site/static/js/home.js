@@ -199,7 +199,7 @@ function fetchHappyPlaces(latitude, longitude, count, callback){
                 var latitude = happyPlace['fields']['latitude'];
                 var longitude = happyPlace['fields']['longitude'];
 
-                return (latitude > sw.lat() && latitude < ne.lat() && longitude > sw.lng() && longitude < ne.lng());
+                return (latitude > sw.lat()+.001 && latitude < ne.lat()-.001 && longitude > sw.lng()+.001 && longitude < ne.lng()-.001);
             });
 
         callback(happyPlaces);
