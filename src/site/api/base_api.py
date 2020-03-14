@@ -29,7 +29,7 @@ class API(abc.ABC):
                 raise NotImplementedError
 
             response_body['request_id'] = request_id
-        except (IntegrityError, ValidationError) as e:
+        except (IntegrityError, ValidationError, ValueError) as e:
             self._logger.error(traceback.format_exc())
             return HttpResponse(status=400, reason=e)
         except ObjectDoesNotExist as e:

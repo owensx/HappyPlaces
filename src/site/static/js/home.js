@@ -98,9 +98,9 @@ function onNextButtonClick() {
 
     var happyPlaceSet = allHappyPlaces.slice(happyPlaceSetIndex*maxMarkerOnMapCount, (happyPlaceSetIndex*maxMarkerOnMapCount) + maxMarkerOnMapCount);
     $.each(happyPlaceSet, function(index, happyPlace) {
-        var happyPlaceName = happyPlace['fields']['name'];
-        var latitude = happyPlace['fields']['latitude'];
-        var longitude = happyPlace['fields']['longitude'];
+        var happyPlaceName = happyPlace['name'];
+        var latitude = happyPlace['latitude'];
+        var longitude = happyPlace['longitude'];
 
         addMarkerToMap(latitude, longitude, happyPlaceName);
 
@@ -131,9 +131,9 @@ function onPreviousButtonClick(){
 
     var happyPlaceSet = allHappyPlaces.slice(happyPlaceSetIndex*maxMarkerOnMapCount, (happyPlaceSetIndex*maxMarkerOnMapCount) + maxMarkerOnMapCount);
     $.each(happyPlaceSet, function(index, happyPlace) {
-        var happyPlaceName = happyPlace['fields']['name'];
-        var latitude = happyPlace['fields']['latitude'];
-        var longitude = happyPlace['fields']['longitude'];
+        var happyPlaceName = happyPlace['name'];
+        var latitude = happyPlace['latitude'];
+        var longitude = happyPlace['longitude'];
 
         addMarkerToMap(latitude, longitude, happyPlaceName);
 
@@ -179,9 +179,9 @@ function onSearchButtonClick(latitude, longitude){
 
         var happyPlaceSet = allHappyPlaces.slice(0, maxMarkerOnMapCount);
         $.each(happyPlaceSet, function(index, happyPlace) {
-            var happyPlaceName = happyPlace['fields']['name'];
-            var latitude = happyPlace['fields']['latitude'];
-            var longitude = happyPlace['fields']['longitude'];
+            var happyPlaceName = happyPlace['name'];
+            var latitude = happyPlace['latitude'];
+            var longitude = happyPlace['longitude'];
 
             addMarkerToMap(latitude, longitude, happyPlaceName);
         });
@@ -196,8 +196,8 @@ function fetchHappyPlaces(latitude, longitude, count, callback){
     getHappyPlacesForLatLng(latitude, longitude, count, function(response){
         var happyPlaces = JSON.parse(response['body'])
             .filter(function(happyPlace){
-                var latitude = happyPlace['fields']['latitude'];
-                var longitude = happyPlace['fields']['longitude'];
+                var latitude = happyPlace['latitude'];
+                var longitude = happyPlace['longitude'];
 
                 return (latitude > sw.lat()+.001 && latitude < ne.lat()-.001 && longitude > sw.lng()+.001 && longitude < ne.lng()-.001);
             });

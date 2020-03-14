@@ -1,27 +1,30 @@
-from src.site.models import HappyHour, HappyPlace
-
-from datetime import datetime
+from django.db.models import Q
 
 
-def create_happy_hour_from_form_data(form_details):
-    happy_hour = HappyHour(
-        happy_place=HappyPlace.objects.get(id=form_details["happy_place_id"])
-        , notes=form_details["notes"] if form_details["notes"] else None
-        , start=form_details["start"]
-        , end=form_details["end"]
-        , beer=form_details["beer"] if form_details["beer"] else None
-        , wine_glass=form_details["wine_glass"] if form_details["wine_glass"] else None
-        , wine_bottle=form_details["wine_bottle"] if form_details["wine_bottle"] else None
-        , well=form_details["well"] if form_details["well"] else None
-        , shot_beer=form_details["shot_beer"] if form_details["shot_beer"] else None
-        , sunday=True if form_details["sunday"] == 'true' else False
-        , monday=True if form_details["monday"] == 'true' else False
-        , tuesday=True if form_details["tuesday"] == 'true' else False
-        , wednesday=True if form_details["wednesday"] == 'true' else False
-        , thursday=True if form_details["thursday"] == 'true' else False
-        , friday=True if form_details["friday"] == 'true' else False
-        , saturday=True if form_details["saturday"] == 'true' else False
-        , time_updated=datetime.now()
-    )
+def filter_on_time(happy_hours, time):
+    return happy_hours.filter(Q(start__lte=time) & Q(end__gte=time))
 
-    return happy_hour
+
+def filter_on_days(happy_hours, days):
+    return happy_hours.filter(get_days_criteria(days))
+
+
+def get_days_criteria(days):
+    criteria = Q()
+
+    if 'M' in days:
+        criteria = criteria | Q(monday=True)
+    if 'T' in days:
+        criteria = criteria | Q(tuesday=True)
+    if 'W' in days:
+        criteria = criteria | Q(wednesday=True)
+    if 'R' in days:
+        criteria = criteria | Q(thursday=True)
+    if 'F' in days:
+        criteria = criteria | Q(friday=True)
+    if 'S' in days:
+        criteria = criteria | Q(saturday=True)
+    if 'Y' in days:
+        criteria = criteria | Q(sunday=True)
+
+    return criteria
