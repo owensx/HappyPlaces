@@ -14,11 +14,9 @@ COPY . /code/
 EXPOSE $APPLICATION_PORT
 
 RUN apk add --no-cache --virtual .build-deps gcc \
-     && RUN pip install --upgrade pip \
-     && RUN pip install -r requirements.txt \
+     && pip install --upgrade pip \
+     && pip install -r requirements.txt \
      && apk del .build-deps gcc
-
-
 
 RUN python src/manage.py test
 
