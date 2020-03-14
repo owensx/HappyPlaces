@@ -221,7 +221,7 @@ function initOpenClose(){
 
     $("input#fromOpen").change(function(){
         if($("input#fromOpen").prop('checked')){
-            $("input#id_start").val("00:00:01");
+            $("input#id_start").val("04:00:01");
 	        $("input#id_start").attr('disabled', true);
         } else {
 	        $("input#id_start").attr('disabled', false);
@@ -231,7 +231,7 @@ function initOpenClose(){
 
 	$("input#toClose").change(function(){
         if($("input#toClose").prop('checked')){
-            $("input#id_end").val("23:59:59");
+            $("input#id_end").val("04:00:00");
 	        $("input#id_end").attr('disabled', true);
         } else {
 	        $("input#id_end").attr('disabled', false);
