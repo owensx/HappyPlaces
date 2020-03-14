@@ -20,6 +20,7 @@ urlpatterns = [
 
     , path('admin/submit', views.admin_submit)
 
+
     , path('googlePlaces', handle_request, {'api': google_places_api})
 
     , path('neighborhoods', handle_request, {'api': neighborhoods_api})
@@ -31,7 +32,6 @@ urlpatterns = [
     , path('happyPlaces/<int:happy_place_id>', handle_request, {'api': happy_places_api})
 
     , path('happyPlacesStatus', handle_request, {'api': happy_places_status_api})
-    , path('happyPlacesStatus/', handle_request, {'api': happy_places_status_api})
 
     , path('happyHours', handle_request, {'api': happy_hours_api})
     , path('happyHours/', handle_request, {'api': happy_hours_api})
