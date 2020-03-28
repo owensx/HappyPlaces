@@ -1,6 +1,7 @@
 from django.shortcuts import render
 
-from src.site.models import *
+from src.site.model.happy_hour import HappyHourSubmitForm
+from src.site.model.happy_place import HappyPlaceSubmitForm
 
 
 def admin_submit(request):

@@ -30,8 +30,8 @@ function setHappyPlaceOptions(neighborhoodId){
         $.each(JSON.parse(happyPlaces), function(index, happyPlace){
             $("#happyPlaceForm select[name='happy_place']").append(
                 $("<option>")
-                .val(happyPlace['pk'])
-                .html(happyPlace['fields']['name'])
+                .val(happyPlace['id'])
+                .html(happyPlace['name'])
             );
         });
     });
