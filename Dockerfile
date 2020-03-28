@@ -7,16 +7,17 @@ ENV DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
 ENV APPLICATION_PORT=$APPLICATION_PORT
 ENV PYTHONUNBUFFERED 1
 
+RUN apk add --no-cache --virtual .build-deps gcc \
+     && pip install --upgrade pip \
+     && pip install -r requirements.txt \
+     && apk del .build-deps gcc
+
 RUN mkdir /code
 WORKDIR /code
 COPY . /code/
 
 EXPOSE $APPLICATION_PORT
 
-RUN apk add --no-cache --virtual .build-deps gcc \
-     && pip install --upgrade pip \
-     && pip install -r requirements.txt \
-     && apk del .build-deps gcc
 
 RUN python src/manage.py test
 
