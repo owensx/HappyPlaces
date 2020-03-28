@@ -11,7 +11,7 @@ RUN mkdir /code
 WORKDIR /code
 COPY . /code/
 
-RUN apk add --no-cache --virtual .build-deps gcc \
+RUN apk add --no-cache --virtual .build-deps musl-dev gcc \
      && pip install --upgrade pip \
      && pip install -r requirements.txt \
      && apk del .build-deps gcc
