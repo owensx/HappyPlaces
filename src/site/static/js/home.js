@@ -23,6 +23,22 @@ searchButton.addEventListener('click', function() {
     onSearchButtonClick(mapCenter.lat(), mapCenter.lng());
 });
 
+var todayOnlyCheckbox = document.createElement("INPUT");
+todayOnlyCheckbox.setAttribute("type", "checkbox");
+todayOnlyCheckbox.setAttribute("id", "checkboxId");
+
+var todayOnlyCheckboxLabel = document.createElement('label');
+todayOnlyCheckboxLabel.htmlFor = "checkboxId";
+todayOnlyCheckboxLabel.innerHTML = "TODAY ONLY";
+
+todayOnlyCheckbox.addEventListener('click', function() {
+    searchButton.click();
+});
+
+var statusMarkerMap = {
+    'NONE': 'static/icons/marker.png'
+};
+
 $(document).ready(function() {
     initMap();
 });
@@ -70,6 +86,8 @@ function createMap(latitude, longitude) {
     controlButtonsDiv.appendChild(nextButton);
 
     gmap.controls[google.maps.ControlPosition.TOP_CENTER].push(searchButton);
+    //gmap.controls[google.maps.ControlPosition.TOP_CENTER].push(todayOnlyCheckbox);//TODO: styling
+    //gmap.controls[google.maps.ControlPosition.TOP_CENTER].push(todayOnlyCheckboxLabel);//TODO: styling
     gmap.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(controlButtonsDiv);
     //gmap.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(bannerDiv);
 
@@ -98,15 +116,11 @@ function onNextButtonClick() {
 
     var happyPlaceSet = allHappyPlaces.slice(happyPlaceSetIndex*maxMarkerOnMapCount, (happyPlaceSetIndex*maxMarkerOnMapCount) + maxMarkerOnMapCount);
     $.each(happyPlaceSet, function(index, happyPlace) {
-        var happyPlaceName = happyPlace['name'];
-        var latitude = happyPlace['latitude'];
-        var longitude = happyPlace['longitude'];
-
-        addMarkerToMap(latitude, longitude, happyPlaceName);
+        addMarkerToMap(happyPlace);
+    });
 
     previousButton.style.opacity = "100%";
     previousButton.disabled = false;
-    });
 
     if (happyPlaceSet.length < maxMarkerOnMapCount || (happyPlaceSetIndex*maxMarkerOnMapCount) + maxMarkerOnMapCount == allHappyPlaces.length) {
         nextButton.style.opacity = "50%";
@@ -131,20 +145,16 @@ function onPreviousButtonClick(){
 
     var happyPlaceSet = allHappyPlaces.slice(happyPlaceSetIndex*maxMarkerOnMapCount, (happyPlaceSetIndex*maxMarkerOnMapCount) + maxMarkerOnMapCount);
     $.each(happyPlaceSet, function(index, happyPlace) {
-        var happyPlaceName = happyPlace['name'];
-        var latitude = happyPlace['latitude'];
-        var longitude = happyPlace['longitude'];
-
-        addMarkerToMap(latitude, longitude, happyPlaceName);
-
-        nextButton.style.opacity = "100%";
-        nextButton.disabled = false;
-
-        if (happyPlaceSetIndex==0) {
-            previousButton.style.opacity = "50%";
-            previousButton.disabled = true;
-        }
+        addMarkerToMap(happyPlace);
     });
+
+    nextButton.style.opacity = "100%";
+    nextButton.disabled = false;
+
+    if (happyPlaceSetIndex==0) {
+        previousButton.style.opacity = "50%";
+        previousButton.disabled = true;
+    }
 }
 
 function initSearchButton(){
@@ -170,7 +180,9 @@ function onSearchButtonClick(latitude, longitude){
 
     searchButton.style.display = "none";
 
-    fetchHappyPlaces(latitude, longitude, maxHappyPlaceCount, function(happyPlaces){
+    var todayOnly = false;//TODO:todayOnlyCheckbox.checked;
+
+    fetchHappyPlaces(latitude, longitude, todayOnly, maxHappyPlaceCount, function(happyPlaces){
         allHappyPlaces = happyPlaces;
         if (allHappyPlaces.length > maxMarkerOnMapCount) {
             nextButton.style.opacity = "100%";
@@ -179,34 +191,55 @@ function onSearchButtonClick(latitude, longitude){
 
         var happyPlaceSet = allHappyPlaces.slice(0, maxMarkerOnMapCount);
         $.each(happyPlaceSet, function(index, happyPlace) {
-            var happyPlaceName = happyPlace['name'];
-            var latitude = happyPlace['latitude'];
-            var longitude = happyPlace['longitude'];
-
-            addMarkerToMap(latitude, longitude, happyPlaceName);
+            addMarkerToMap(happyPlace);
         });
     });
 }
 
-function fetchHappyPlaces(latitude, longitude, count, callback){
+function fetchHappyPlaces(latitude, longitude, todayOnly, count, callback){
     var bounds = gmap.getBounds();
     var ne = bounds.getNorthEast();
     var sw = bounds.getSouthWest();
 
-    getHappyPlacesForLatLng(latitude, longitude, count, function(response){
-        var happyPlaces = JSON.parse(response['body'])
-            .filter(function(happyPlace){
-                var latitude = happyPlace['latitude'];
-                var longitude = happyPlace['longitude'];
+    var date = new Date();
 
-                return (latitude > sw.lat()+.001 && latitude < ne.lat()-.001 && longitude > sw.lng()+.001 && longitude < ne.lng()-.001);
-            });
+    if (todayOnly) {
+        getHappyPlacesWithStatusForLatLng(latitude, longitude, ["S","M","T","W","R","F","Y"][date.getDay()], date.getHours().toString() + date.getMinutes().toString(), count, function(response){
+            var happyPlaces = JSON.parse(response['body'])
+                .filter(function(happyPlace){
+                    var latitude = happyPlace['latitude'];
+                    var longitude = happyPlace['longitude'];
 
-        callback(happyPlaces);
-    });
+                    return (latitude > sw.lat()+.001 && latitude < ne.lat()-.001 && longitude > sw.lng()+.001 && longitude < ne.lng()-.001);
+                });
+
+            callback(happyPlaces);
+        });
+    } else {
+        getHappyPlacesForLatLng(latitude, longitude, count, function(response){
+            var happyPlaces = JSON.parse(response['body'])
+                .filter(function(happyPlace){
+                    var latitude = happyPlace['latitude'];
+                    var longitude = happyPlace['longitude'];
+
+                    return (latitude > sw.lat()+.001 && latitude < ne.lat()-.001 && longitude > sw.lng()+.001 && longitude < ne.lng()-.001);
+                });
+
+            callback(happyPlaces);
+        });
+    }
 }
 
-function addMarkerToMap(latitude, longitude, happyPlaceName){
+function addMarkerToMap(happyPlace){
+    var happyPlaceName = happyPlace['name'];
+    var latitude = happyPlace['latitude'];
+    var longitude = happyPlace['longitude'];
+
+    var happyPlaceStatus = happyPlace['status'];
+    if(typeof happyPlaceStatus === 'undefined') {
+        happyPlaceStatus = 'NONE';
+    }
+
 	var marker = new google.maps.Marker({
 		map: gmap
 		, position: {lat: latitude, lng: longitude}
@@ -216,10 +249,10 @@ function addMarkerToMap(latitude, longitude, happyPlaceName){
 		    , fontWeight: "500"
 		}
 		, icon: {
-		    url: 'static/icons/marker.png'
+		    url: statusMarkerMap[happyPlaceStatus]
 		    , labelOrigin: new google.maps.Point(10,-7)
 		    , scaledSize: new google.maps.Size(22,35)
-		    }
+		}
 	});
 
 	marker.addListener('click', function(){
@@ -249,9 +282,13 @@ function getHappyPlacesForLatLng(latitude, longitude, count, callback) {
     });
 }
 
-function getTodaysHappyHours(happyPlaceId, callback) {
-    var days = 'M';
-    var url = "/happyHours?happyPlaceId=" + happyPlaceId + "&days=" + days;
+function getHappyPlacesWithStatusForLatLng(latitude, longitude, day, time, count, callback) {
+    var url = "/happyPlacesStatus?latitude="+ latitude
+        + "&longitude=" + longitude
+        + "&day=" + day
+        + "&time=" + time
+        + "&status=ACTIVE,UPCOMING"
+        + "&count=" + count;
 
     $.getJSON(url, function(response) {
         callback(response);

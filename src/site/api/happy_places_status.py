@@ -1,4 +1,5 @@
 import json
+from math import sqrt
 
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
@@ -52,6 +53,16 @@ class HappyPlacesStatusAPI(API):
         if "status" in request.GET:
             statuses = request.GET["status"].split(',')
             happy_places = list(filter(lambda happy_place: happy_place.status in statuses, happy_places))
+
+        if "latitude" in request.GET and "longitude" in request.GET:
+            latitude = request.GET["latitude"]
+            longitude = request.GET["longitude"]
+            self._logger.debug('Sorting HappyPlaces by latlng ' + latitude + ', ' + longitude)
+
+            happy_places = sorted(happy_places
+                                  , key=lambda happy_place: sqrt(
+                    pow(happy_place.latitude - float(latitude), 2) + pow(
+                        happy_place.longitude - float(longitude), 2)))
 
         if "count" in request.GET:
             count = int(request.GET["count"])
