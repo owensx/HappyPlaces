@@ -1,4 +1,4 @@
-FROM python:3.7-alpine
+FROM python:3-alpine
 
 ARG DJANGO_SETTINGS_MODULE
 ARG APPLICATION_PORT
@@ -14,7 +14,7 @@ COPY . /code/
 RUN apk add --no-cache --virtual .build-deps musl-dev gcc \
      && pip install --upgrade pip \
      && pip install -r requirements.txt \
-     && apk del .build-deps gcc
+     && apk del .build-deps musl-dev gcc
 
 EXPOSE $APPLICATION_PORT
 

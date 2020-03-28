@@ -11,3 +11,7 @@ phases:
   post_build:
     commands:
       - docker push 570412635900.dkr.ecr.us-east-2.amazonaws.com/happyplaces:latest
+      - printf '[{"name":"HappyPlacesDev","imageUri":"%s"},{"name":"HappyPlacesProd","imageUri":"%s"}]' 570412635900.dkr.ecr.us-east-2.amazonaws.com/happyplaces:latest 570412635900.dkr.ecr.us-east-2.amazonaws.com/happyplaces:latest > imagedefinitions.json
+
+artifacts:
+  files: imagedefinitions.json
