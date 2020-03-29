@@ -86,8 +86,8 @@ function createMap(latitude, longitude) {
     controlButtonsDiv.appendChild(nextButton);
 
     gmap.controls[google.maps.ControlPosition.TOP_CENTER].push(searchButton);
-    //gmap.controls[google.maps.ControlPosition.TOP_CENTER].push(todayOnlyCheckbox);//TODO: styling
-    //gmap.controls[google.maps.ControlPosition.TOP_CENTER].push(todayOnlyCheckboxLabel);//TODO: styling
+    gmap.controls[google.maps.ControlPosition.TOP_CENTER].push(todayOnlyCheckbox);
+    gmap.controls[google.maps.ControlPosition.TOP_CENTER].push(todayOnlyCheckboxLabel);
     gmap.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(controlButtonsDiv);
     //gmap.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(bannerDiv);
 
@@ -180,7 +180,7 @@ function onSearchButtonClick(latitude, longitude){
 
     searchButton.style.display = "none";
 
-    var todayOnly = false;//TODO:todayOnlyCheckbox.checked;
+    var todayOnly = todayOnlyCheckbox.checked;
 
     fetchHappyPlaces(latitude, longitude, todayOnly, maxHappyPlaceCount, function(happyPlaces){
         allHappyPlaces = happyPlaces;
