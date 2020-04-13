@@ -41,9 +41,9 @@ var statusMarkerMap = {
     , 'UPCOMING': 'static/icons/marker.png'
 };
 
-$(document).ready(function() {
-    initMap();
-});
+//$(document).ready(function() {
+//    initMap();
+//});
 
 function initMap() {
     var latitude = 40.679
