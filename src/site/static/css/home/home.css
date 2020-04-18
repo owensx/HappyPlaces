@@ -36,7 +36,11 @@ body {
         #report tr.odd td { background:#aaa  repeat-x scroll center left; cursor:pointer;  }
        */
 #map {
-    height: 100%;
+    height: 90%;
+}
+
+#banner {
+    height: 10%;
 }
 
 button {

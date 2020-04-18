@@ -53,21 +53,20 @@ function initMap() {
         latitude = position.coords.latitude;
         longitude = position.coords.longitude;
 
-        createMap(latitude, longitude);
+        createMap(latitude, longitude, 15);
 
         google.maps.event.addListenerOnce(gmap, 'idle', function() {
             searchButton.click();
         });
 
 	}, function(error) {
-        createMap(latitude, longitude);
-        gmap.setZoom(13);//TODO: better way to do this? it triggers the zoom listener
+        createMap(latitude, longitude, 13);
 	});
 }
 
-function createMap(latitude, longitude) {
+function createMap(latitude, longitude, zoomLevel) {
     gmap = new google.maps.Map(document.getElementById('map'), {
-        zoom: 15
+        zoom: zoomLevel
         , zoomControl: false
         , mapTypeControl: false
         , streetViewControlOptions:{
@@ -234,6 +233,7 @@ function fetchHappyPlaces(latitude, longitude, todayOnly, count, callback){
 
 function addMarkerToMap(happyPlace){
     var happyPlaceName = happyPlace['name'];
+    var happyHours = happyPlace['happy_hours'];
     var latitude = happyPlace['latitude'];
     var longitude = happyPlace['longitude'];
 
@@ -259,9 +259,71 @@ function addMarkerToMap(happyPlace){
 
 	marker.addListener('click', function(){
 	    gmap.panTo(marker.getPosition());
+	    $("#banner").html(getBannerHtml(happyPlaceName, happyHours));
 	});
 
     markersOnMap.push(marker);
+}
+
+function getBannerHtml(happyPlaceName, happyHours){
+	var infoHtml = '';
+	var displayNotes = '';
+
+	happyHours = happyHours.filter(function(happyHour){
+        var dayOfWeek = [
+            "sunday"
+            , "monday"
+            , "tuesday"
+            , "wednesday"
+            , "thursday"
+            , "friday"
+            , "saturday"
+        ][new Date().getDay()];
+
+        return happyHour[dayOfWeek];
+    });
+
+	if (happyHours.length == 0){
+		infoHtml = '<br style = "clear: left;">' + '<p>' + 'No Specials Today!' + '</p>';
+	} else {
+		happyHours.forEach(function(happyHour){
+			var start = formatTime(happyHour['start']);
+			var end = formatTime(happyHour['end']);
+			var displayNotes = happyHour['notes'];
+
+			infoHtml += '<p style = "margin-top: 28px; margin-bottom: 0px;">' + ' ' + start + '-' + end + ':' + '</p>';
+
+			if (displayNotes != ''){
+				infoHtml += '<br style = "clear: left;"> <p style = "margin-top: 2px; color: black">' + displayNotes + '</p>';
+			}
+		});
+	}
+
+	return  '<u style = "font-size: 22px; margin: 0px";>' + happyPlaceName + '</u>' + infoHtml;
+}
+
+function formatTime(time) {
+    if (time == '04:00:00') {return 'CLOSE';}
+    else if (time == '04:00:01') {return 'OPEN';}
+    else {
+        var splitTime = time.split(':');
+        var suffix = 'AM';
+
+        var hour = parseInt(splitTime[0]);
+        if (hour >= 12) {
+            suffix = 'PM';
+        }
+
+        if (hour > 12) {
+            hour = hour - 12;
+        } else if (hour == 0) {
+            hour = 12;
+        }
+
+        var minute = splitTime[1];
+
+        return hour.toString() + ':' + minute + ' ' + suffix;
+    }
 }
 
 function clearHappyPlaces() {
