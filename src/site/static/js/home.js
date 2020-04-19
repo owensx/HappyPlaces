@@ -270,7 +270,7 @@ function addMarkerToMap(happyPlace){
 		, icon: {
 		    url: statusMarkerMap[happyPlaceStatus]
 		    , labelOrigin: new google.maps.Point(10,-7)
-		    , scaledSize: new google.maps.Size(18,34)
+		    , scaledSize: new google.maps.Size(21,32)
 		}
 	});
 
