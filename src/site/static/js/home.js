@@ -233,9 +233,11 @@ function fetchHappyPlaces(latitude, longitude, todayOnly, count, callback){
 
 function addMarkerToMap(happyPlace){
     var happyPlaceName = happyPlace['name'];
-    var happyHours = happyPlace['happy_hours'];
+    var address = happyPlace['address'];
     var latitude = happyPlace['latitude'];
     var longitude = happyPlace['longitude'];
+
+    var happyHours = happyPlace['happy_hours'];
 
     var happyPlaceStatus = happyPlace['status'];
     if(typeof happyPlaceStatus === 'undefined') {
@@ -259,16 +261,13 @@ function addMarkerToMap(happyPlace){
 
 	marker.addListener('click', function(){
 	    gmap.panTo(marker.getPosition());
-	    $("#banner").html(getBannerHtml(happyPlaceName, happyHours));
+	    setBannerHtml(happyPlaceName, address, happyHours);
 	});
 
     markersOnMap.push(marker);
 }
 
-function getBannerHtml(happyPlaceName, happyHours){
-	var infoHtml = '';
-	var displayNotes = '';
-
+function setBannerHtml(happyPlaceName, address, happyHours){
 	happyHours = happyHours.filter(function(happyHour){
         var dayOfWeek = [
             "sunday"
@@ -283,23 +282,31 @@ function getBannerHtml(happyPlaceName, happyHours){
         return happyHour[dayOfWeek];
     });
 
+    $("#bannerLeft").html(
+        '<u>' + happyPlaceName + '</u></br>' +
+        '<p>' + address + '</p>'
+    );
+
+    var bannerRightHtml = '';
+
 	if (happyHours.length == 0){
-		infoHtml = '<br style = "clear: left;">' + '<p>' + 'No Specials Today!' + '</p>';
+		bannerRightHtml = '<p>' + 'No Specials Today!' + '</p>';
 	} else {
+
 		happyHours.forEach(function(happyHour){
 			var start = formatTime(happyHour['start']);
 			var end = formatTime(happyHour['end']);
-			var displayNotes = happyHour['notes'];
+			var notes = happyHour['notes'];
 
-			infoHtml += '<p style = "margin-top: 28px; margin-bottom: 0px;">' + ' ' + start + '-' + end + ':' + '</p>';
+			bannerRightHtml += '<p>' + ' ' + start + '-' + end + ':' + '</p>';
 
-			if (displayNotes != ''){
-				infoHtml += '<br style = "clear: left;"> <p style = "margin-top: 2px; color: black">' + displayNotes + '</p>';
+			if (notes != ''){
+				bannerRightHtml += '<p>' + notes + '</p>';
 			}
 		});
 	}
 
-	return  '<u style = "font-size: 22px; margin: 0px";>' + happyPlaceName + '</u>' + infoHtml;
+    $("#bannerRight").html(bannerRightHtml);
 }
 
 function formatTime(time) {
