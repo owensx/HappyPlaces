@@ -208,7 +208,7 @@ function onSearchButtonClick(latitude, longitude){
     $("#bannerLeft").html('<p>Select A HappyPlace For HappyHour Info</p>');
     $("#bannerRight").html('');
     if (todayOnly){
-        $("#bannerRight").html('<p>Green Markers are Active Now</p><p>Red Markers are Upcoming</p>');
+        $("#bannerRight").html('<p>Gold Rings are Active Now!</p>');
     }
 }
 
