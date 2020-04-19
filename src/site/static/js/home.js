@@ -30,6 +30,7 @@ todayOnlyCheckbox.setAttribute("id", "checkboxId");
 var todayOnlyCheckboxLabel = document.createElement('label');
 todayOnlyCheckboxLabel.htmlFor = "checkboxId";
 todayOnlyCheckboxLabel.innerHTML = "TODAY ONLY";
+todayOnlyCheckboxLabel.setAttribute("style","font-weight: 1000");
 
 todayOnlyCheckbox.addEventListener('click', function() {
     searchButton.click();
@@ -86,9 +87,17 @@ function createMap(latitude, longitude, zoomLevel) {
     controlButtonsDiv.appendChild(previousButton);
     controlButtonsDiv.appendChild(nextButton);
 
+    var todayButtonDiv = document.createElement('div');
+    todayButtonDiv.appendChild(todayOnlyCheckbox);
+    todayButtonDiv.appendChild(todayOnlyCheckboxLabel);
+    todayButtonDiv.style.backgroundColor = "black";
+    todayButtonDiv.style.height = "24px";
+    todayButtonDiv.style.width = "90px";
+    todayButtonDiv.style.borderStyle = "solid"
+    todayButtonDiv.style.borderRadius = "10px";
+
     gmap.controls[google.maps.ControlPosition.TOP_CENTER].push(searchButton);
-    gmap.controls[google.maps.ControlPosition.TOP_CENTER].push(todayOnlyCheckbox);
-    gmap.controls[google.maps.ControlPosition.TOP_CENTER].push(todayOnlyCheckboxLabel);
+    gmap.controls[google.maps.ControlPosition.TOP_LEFT].push(todayButtonDiv);
     gmap.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(controlButtonsDiv);
     //gmap.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(bannerDiv);
 
