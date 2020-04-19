@@ -38,7 +38,7 @@ todayOnlyCheckbox.addEventListener('click', function() {
 
 var statusMarkerMap = {
     'NONE': 'static/icons/marker.png'
-    , 'ACTIVE': 'static/icons/green_marker.png'
+    , 'ACTIVE': 'static/icons/active_marker.png'
     , 'UPCOMING': 'static/icons/marker.png'
 };
 
@@ -270,7 +270,7 @@ function addMarkerToMap(happyPlace){
 		, icon: {
 		    url: statusMarkerMap[happyPlaceStatus]
 		    , labelOrigin: new google.maps.Point(10,-7)
-		    , scaledSize: new google.maps.Size(22,35)
+		    , scaledSize: new google.maps.Size(18,34)
 		}
 	});
 
