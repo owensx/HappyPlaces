@@ -85,7 +85,9 @@ function createMap(latitude, longitude, zoomLevel) {
 
     var controlButtonsDiv = document.createElement('div');
     controlButtonsDiv.appendChild(previousButton);
+    controlButtonsDiv.appendChild(searchButton);
     controlButtonsDiv.appendChild(nextButton);
+
 
     var todayButtonDiv = document.createElement('div');
     todayButtonDiv.appendChild(todayOnlyCheckbox);
@@ -96,23 +98,24 @@ function createMap(latitude, longitude, zoomLevel) {
     todayButtonDiv.style.borderStyle = "solid"
     todayButtonDiv.style.borderRadius = "10px";
 
-    gmap.controls[google.maps.ControlPosition.TOP_CENTER].push(searchButton);
-    gmap.controls[google.maps.ControlPosition.TOP_LEFT].push(todayButtonDiv);
-    gmap.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(controlButtonsDiv);
+    gmap.controls[google.maps.ControlPosition.TOP_CENTER].push(controlButtonsDiv);
+    gmap.controls[google.maps.ControlPosition.LEFT_CENTER].push(todayButtonDiv);
     //gmap.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(bannerDiv);
 
     google.maps.event.addListener(gmap, 'center_changed', function(){
-        searchButton.style.display = "initial";
+        searchButton.style.opacity = "100%";
+        searchButton.disabled = false;
     });
     google.maps.event.addListener(gmap, 'zoom_changed', function(){
-        searchButton.style.display = "initial";
+        searchButton.style.opacity = "100%";
+        searchButton.disabled = false;
     });
 }
 
 function initNextButton(){
     var button = document.createElement('button');
     button.id = "nextButton";
-    button.innerHTML = 'Next';
+    button.innerHTML = 'Next 10';
     button.style.margin = "5px";
     button.style.opacity = "50%";
     button.disabled = true;
@@ -141,7 +144,7 @@ function onNextButtonClick() {
 function initPreviousButton(){
     var button = document.createElement('button');
     button.id = "previousButton";
-    button.innerHTML = 'Previous';
+    button.innerHTML = 'Previous 10';
     button.style.margin = "5px";
     button.style.opacity = "50%";
     button.disabled = true;
@@ -170,9 +173,10 @@ function onPreviousButtonClick(){
 function initSearchButton(){
     var button = document.createElement('button');
     button.id = "searchButton";
-    button.innerHTML = 'Search This Area';
-    button.style.margin = "10px";
-    button.style.display = "none";
+    button.innerHTML = 'Redo Search';
+    button.style.margin = "5px";
+    button.style.opacity = "50%";
+    button.disabled = true;
 
     return button;
 }
@@ -187,8 +191,8 @@ function onSearchButtonClick(latitude, longitude){
     nextButton.disabled = true;
     previousButton.style.opacity = "50%";
     previousButton.disabled = true;
-
-    searchButton.style.display = "none";
+    searchButton.style.opacity = "50%";
+    searchButton.disabled = true;
 
     var todayOnly = todayOnlyCheckbox.checked;
 
