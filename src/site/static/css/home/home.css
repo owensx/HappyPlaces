@@ -1,16 +1,15 @@
 html {
-    height: 97%;
     margin: 0;
     padding: 0;
+    height: -webkit-fill-available
 }
 
 body {
-    height: 96%;
+    height: inherit;
     margin: 0;
     padding: 0;
 
     font-family:Tahoma, Geneva, sans-serif;
-    font-variant: small-caps;
     color: #F0C911;
     font-size: 1em;
 
@@ -37,17 +36,66 @@ body {
         #report tr.odd td { background:#aaa  repeat-x scroll center left; cursor:pointer;  }
        */
 #map {
-    height: 90%;
+    height: 85%;
 }
 
 #banner {
-    height: 10%;
+    height: 15%;
+    font-size: 13px;
+    display: flex;
+    flex-direction: column;
 }
 
-div.bannerSection {
-    float: left;
-    width: 50%;
+#bannerTop {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    flex: 1 1 auto;
+    align-content: space-around;
+    height: 40%;
+    border-bottom: solid 3px #F0C911;
+    color: #000000;
     text-align: center;
+}
+
+#bannerBottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: space-around;
+    height: 60%;
+    color: #000000;
+    flex: 1 1 auto;
+}
+
+#bannerTopHappyPlace {
+    margin: 0;
+    height: fit-content;
+    font-size: 18px;
+}
+
+#bannerTopAddressCross {
+    margin: 0;
+    height: fit-content;
+}
+
+.otherMessage {
+    margin: auto;
+    text-align: center;
+    font-size: 16px;
+}
+
+.bannerBottomSpecial {
+    margin: 0 auto;
+    width: 70%;
+    height: fit-content;
+    text-align: left;
+}
+
+.bannerBottomTime {
+    margin: 0 auto;
+    width: 30%;
+    height: fit-content;
+    text-align: right;
 }
 
 button {
