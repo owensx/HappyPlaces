@@ -211,6 +211,16 @@ function onSearchButtonClick(latitude, longitude){
     if (todayOnly){
         $("#bannerBottom").html('<img src="/site/static/icons/active_marker.png"><p class="otherMessage" style="margin-left:0">indicates active now!</p>');
     }
+
+    $("#bannerDays").html(
+        '<p class="dayBlock">S</p>'+
+        '<p class="dayBlock">M</p>' +
+        '<p class="dayBlock">T</p>' +
+        '<p class="dayBlock">W</p>' +
+        '<p class="dayBlock">R</p>' +
+        '<p class="dayBlock">F</p>' +
+        '<p class="dayBlock" style="border-right: none">S</p>');
+
 }
 
 function fetchHappyPlaces(latitude, longitude, todayOnly, count, callback){
@@ -306,10 +316,10 @@ function setBannerHtml(happyPlaceName, address, cross, site, happyHours){
 
     );
 
-    var bannerRightHtml = '';
+    var bannerBottomHtml = '';
 
 	if (happyHours.length == 0){
-		bannerRightHtml = '<p class="otherMessage">' + 'No Specials Today!' + '</p>';
+		bannerBottomHtml = '<p class="otherMessage">' + 'No Specials Today!' + '</p>';
 	} else {
 
 		happyHours.forEach(function(happyHour){
@@ -318,15 +328,15 @@ function setBannerHtml(happyPlaceName, address, cross, site, happyHours){
 			var notes = happyHour['notes'];
 
 			if (notes != ''){
-				bannerRightHtml += '<p class="bannerBottomSpecial">' + notes + '</p>';
+				bannerBottomHtml += '<p class="bannerBottomSpecial">' + notes + '</p>';
 			}
 
-			bannerRightHtml += '<p class="bannerBottomTime">' + ' ' + start + ' - ' + end + '</p>';
+			bannerBottomHtml += '<p class="bannerBottomTime">' + ' ' + start + ' - ' + end + '</p>';
 
 		});
 	}
 
-    $("#bannerBottom").html(bannerRightHtml);
+    $("#bannerBottom").html(bannerBottomHtml);
 }
 
 function formatTime(time) {

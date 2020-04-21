@@ -46,14 +46,21 @@ body {
     flex-direction: column;
 }
 
+#bannerDays {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: space-around;
+    height: fit-content;
+    flex: 1 2 auto;
+}
+
 #bannerTop {
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
-    flex: 1 1 auto;
+    flex: 2 1 auto;
     align-content: space-around;
-    height: 40%;
-    border-bottom: solid 3px #F0C911;
+    height: fit-content;
     color: #000000;
     text-align: center;
 }
@@ -62,9 +69,9 @@ body {
     display: flex;
     flex-wrap: wrap;
     align-content: space-around;
-    height: 60%;
+    height: fit-content;
     color: #000000;
-    flex: 1 1 auto;
+    flex: 3 1 auto;
 }
 
 #bannerTopHappyPlace {
@@ -76,6 +83,16 @@ body {
 #bannerTopAddressCross {
     margin: 0;
     height: fit-content;
+}
+
+.dayBlock {
+    flex: 1 1 auto;
+    margin: auto;
+    text-align: center;
+    height: fit-content;
+    background-color: #f2ab1e;
+    color: #000000;
+    border-right: solid 2px #000000;
 }
 
 .otherMessage {
