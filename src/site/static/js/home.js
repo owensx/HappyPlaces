@@ -206,20 +206,20 @@ function onSearchButtonClick(latitude, longitude){
         });
     });
 
-    $("#bannerTop").html('<p class="otherMessage">Select A HappyPlace For HappyHour Info</p>');
+    $("#bannerTop").html('<p>Select A HappyPlace For HappyHour Info</p>');
     $("#bannerBottom").html('');
     if (todayOnly){
-        $("#bannerBottom").html('<img src="/site/static/icons/active_marker.png"><p class="otherMessage" style="margin-left:0">indicates active now!</p>');
+        $("#bannerBottom").html('<img src="/static/icons/active_marker.png" style="width: 22px; height:35px;"><p style="margin:auto">indicates active now!</p>');
     }
 
     $("#bannerDays").html(
-        '<p class="dayBlock">S</p>'+
+        '<p class="dayBlock">Su</p>'+
         '<p class="dayBlock">M</p>' +
-        '<p class="dayBlock">T</p>' +
+        '<p class="dayBlock">Tu</p>' +
         '<p class="dayBlock">W</p>' +
-        '<p class="dayBlock">R</p>' +
+        '<p class="dayBlock">Th</p>' +
         '<p class="dayBlock">F</p>' +
-        '<p class="dayBlock" style="border-right: none">S</p>');
+        '<p class="dayBlock" style="border-right: none">Sa</p>');
 
 }
 
@@ -312,14 +312,14 @@ function setBannerHtml(happyPlaceName, address, cross, site, happyHours){
 
     $("#bannerTop").html(
         '<a id="bannerTopHappyPlace" href="' + site + '">' + happyPlaceName + '</a>' +
-        '<p id="bannerTopAddressCross">' + address + ' & ' + cross + '</p>'
+        '<p id="bannerTopAddressCross">' + address + ' @ ' + cross + '</p>'
 
     );
 
     var bannerBottomHtml = '';
 
 	if (happyHours.length == 0){
-		bannerBottomHtml = '<p class="otherMessage">' + 'No Specials Today!' + '</p>';
+		bannerBottomHtml = '<p style="margin: auto">' + 'No Specials Today!' + '</p>';
 	} else {
 
 		happyHours.forEach(function(happyHour){
@@ -327,11 +327,11 @@ function setBannerHtml(happyPlaceName, address, cross, site, happyHours){
 			var end = formatTime(happyHour['end']);
 			var notes = happyHour['notes'];
 
-			if (notes != ''){
+			bannerBottomHtml += '<p class="bannerBottomTime">' + ' ' + start + ' - ' + end + '</p>';
+
+            if (notes != ''){
 				bannerBottomHtml += '<p class="bannerBottomSpecial">' + notes + '</p>';
 			}
-
-			bannerBottomHtml += '<p class="bannerBottomTime">' + ' ' + start + ' - ' + end + '</p>';
 
 		});
 	}
