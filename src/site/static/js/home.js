@@ -70,16 +70,13 @@ function createMap(latitude, longitude, zoomLevel) {
         zoom: zoomLevel
         , zoomControl: false
         , mapTypeControl: false
-        , streetViewControlOptions:{
-            position: google.maps.ControlPosition.TOP_RIGHT
-        }
+        , streetViewControl: false
+        , fullscreenControl: false
         , center: {lat: latitude, lng: longitude}
         , styles: [{
             featureType: "poi"
             , elementType: "labels"
-            , stylers: [{
-                visibility: "off"
-            }]
+            , stylers: [{visibility: "off"}]
         }]
     });
 
@@ -99,7 +96,7 @@ function createMap(latitude, longitude, zoomLevel) {
     todayButtonDiv.style.borderRadius = "10px";
 
     gmap.controls[google.maps.ControlPosition.TOP_CENTER].push(controlButtonsDiv);
-    gmap.controls[google.maps.ControlPosition.LEFT_CENTER].push(todayButtonDiv);
+    gmap.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(todayButtonDiv);
     //gmap.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(bannerDiv);
 
     google.maps.event.addListener(gmap, 'center_changed', function(){
@@ -209,11 +206,21 @@ function onSearchButtonClick(latitude, longitude){
         });
     });
 
-    $("#bannerLeft").html('<p>Select A HappyPlace For HappyHour Info</p>');
-    $("#bannerRight").html('');
+    $("#bannerTop").html('<p>Select A HappyPlace For HappyHour Info</p>');
+    $("#bannerBottom").html('');
     if (todayOnly){
-        $("#bannerRight").html('<p>Gold Rings are Active Now!</p>');
+        $("#bannerBottom").html('<img src="/static/icons/active_marker.png" style="width: 22px; height:35px;"><p style="margin:auto">indicates active now!</p>');
     }
+
+    $("#bannerDays").html(
+        '<p class="dayBlock">Su</p>'+
+        '<p class="dayBlock">M</p>' +
+        '<p class="dayBlock">Tu</p>' +
+        '<p class="dayBlock">W</p>' +
+        '<p class="dayBlock">Th</p>' +
+        '<p class="dayBlock">F</p>' +
+        '<p class="dayBlock" style="border-right: none">Sa</p>');
+
 }
 
 function fetchHappyPlaces(latitude, longitude, todayOnly, count, callback){
@@ -253,6 +260,8 @@ function fetchHappyPlaces(latitude, longitude, todayOnly, count, callback){
 function addMarkerToMap(happyPlace){
     var happyPlaceName = happyPlace['name'];
     var address = happyPlace['address'];
+    var cross = happyPlace['cross'];
+    var site = happyPlace['site'];
     var latitude = happyPlace['latitude'];
     var longitude = happyPlace['longitude'];
 
@@ -280,13 +289,13 @@ function addMarkerToMap(happyPlace){
 
 	marker.addListener('click', function(){
 	    gmap.panTo(marker.getPosition());
-	    setBannerHtml(happyPlaceName, address, happyHours);
+	    setBannerHtml(happyPlaceName, address, cross, site, happyHours);
 	});
 
     markersOnMap.push(marker);
 }
 
-function setBannerHtml(happyPlaceName, address, happyHours){
+function setBannerHtml(happyPlaceName, address, cross, site, happyHours){
 	happyHours = happyHours.filter(function(happyHour){
         var dayOfWeek = [
             "sunday"
@@ -301,15 +310,16 @@ function setBannerHtml(happyPlaceName, address, happyHours){
         return happyHour[dayOfWeek];
     });
 
-    $("#bannerLeft").html(
-        '<u>' + happyPlaceName + '</u></br>' +
-        '<p>' + address + '</p>'
+    $("#bannerTop").html(
+        '<a id="bannerTopHappyPlace" href="' + site + '">' + happyPlaceName + '</a>' +
+        '<p id="bannerTopAddressCross">' + address + ' @ ' + cross + '</p>'
+
     );
 
-    var bannerRightHtml = '';
+    var bannerBottomHtml = '';
 
 	if (happyHours.length == 0){
-		bannerRightHtml = '<p>' + 'No Specials Today!' + '</p>';
+		bannerBottomHtml = '<p style="margin: auto">' + 'No Specials Today!' + '</p>';
 	} else {
 
 		happyHours.forEach(function(happyHour){
@@ -317,15 +327,16 @@ function setBannerHtml(happyPlaceName, address, happyHours){
 			var end = formatTime(happyHour['end']);
 			var notes = happyHour['notes'];
 
-			bannerRightHtml += '<p>' + ' ' + start + '-' + end + ':' + '</p>';
+			bannerBottomHtml += '<p class="bannerBottomTime">' + ' ' + start + ' - ' + end + '</p>';
 
-			if (notes != ''){
-				bannerRightHtml += '<p>' + notes + '</p>';
+            if (notes != ''){
+				bannerBottomHtml += '<p class="bannerBottomSpecial">' + notes + '</p>';
 			}
+
 		});
 	}
 
-    $("#bannerRight").html(bannerRightHtml);
+    $("#bannerBottom").html(bannerBottomHtml);
 }
 
 function formatTime(time) {
@@ -333,11 +344,11 @@ function formatTime(time) {
     else if (time == '04:00:01') {return 'OPEN';}
     else {
         var splitTime = time.split(':');
-        var suffix = 'AM';
+        var suffix = 'a';
 
         var hour = parseInt(splitTime[0]);
         if (hour >= 12) {
-            suffix = 'PM';
+            suffix = 'p';
         }
 
         if (hour > 12) {
@@ -346,9 +357,13 @@ function formatTime(time) {
             hour = 12;
         }
 
-        var minute = splitTime[1];
+        var minute = ':' + splitTime[1];
 
-        return hour.toString() + ':' + minute + ' ' + suffix;
+        if (minute == ':00') {
+            minute = '';
+        }
+
+        return hour.toString() + minute + suffix;
     }
 }
 
