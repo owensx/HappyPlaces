@@ -312,7 +312,7 @@ function setBannerHtml(happyPlaceName, address, cross, site, happyHours){
 
     $("#bannerTop").html(
         '<a id="bannerTopHappyPlace" href="' + site + '">' + happyPlaceName + '</a>' +
-        '<p id="bannerTopAddressCross">' + address + ' @ ' + cross + '</p>'
+        '<p id="bannerTopAddress">' + address + '</p>'
 
     );
 
