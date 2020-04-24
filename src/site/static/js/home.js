@@ -141,7 +141,7 @@ function onNextButtonClick() {
 function initPreviousButton(){
     var button = document.createElement('button');
     button.id = "previousButton";
-    button.innerHTML = 'Previous 10';
+    button.innerHTML = 'Prev 10';
     button.style.margin = "5px";
     button.style.opacity = "50%";
     button.disabled = true;
