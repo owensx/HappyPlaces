@@ -62,6 +62,9 @@ function initMap() {
 
 	}, function(error) {
         createMap(latitude, longitude, 13);
+        
+        searchButton.style.opacity = "100%";
+        searchButton.disabled = false;
 	});
 }
 
