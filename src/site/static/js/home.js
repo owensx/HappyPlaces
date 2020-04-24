@@ -62,9 +62,6 @@ function initMap() {
 
 	}, function(error) {
         createMap(latitude, longitude, 13);
-        
-        searchButton.style.opacity = "100%";
-        searchButton.disabled = false;
 	});
 }
 
@@ -173,10 +170,8 @@ function onPreviousButtonClick(){
 function initSearchButton(){
     var button = document.createElement('button');
     button.id = "searchButton";
-    button.innerHTML = 'Redo Search';
+    button.innerHTML = 'Search Area';
     button.style.margin = "5px";
-    button.style.opacity = "50%";
-    button.disabled = true;
 
     return button;
 }
