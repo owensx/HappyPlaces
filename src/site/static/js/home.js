@@ -257,13 +257,8 @@ function fetchHappyPlaces(latitude, longitude, todayOnly, count, callback){
 
 function addMarkerToMap(happyPlace){
     var happyPlaceName = happyPlace['name'];
-    var address = happyPlace['address'];
-    var cross = happyPlace['cross'];
-    var site = happyPlace['site'];
     var latitude = happyPlace['latitude'];
     var longitude = happyPlace['longitude'];
-
-    var happyHours = happyPlace['happy_hours'];
 
     var happyPlaceStatus = happyPlace['status'];
     if(typeof happyPlaceStatus === 'undefined') {
@@ -287,13 +282,19 @@ function addMarkerToMap(happyPlace){
 
 	marker.addListener('click', function(){
 	    gmap.panTo(marker.getPosition());
-	    setBannerHtml(happyPlaceName, address, cross, site, happyHours);
+	    setBannerHtml(happyPlace);
 	});
 
     markersOnMap.push(marker);
 }
 
-function setBannerHtml(happyPlaceName, address, cross, site, happyHours){
+function setBannerHtml(happyPlace){
+    var happyPlaceName = happyPlace['name'];
+    var address = happyPlace['address'];
+    var cross = happyPlace['cross'];
+    var site = happyPlace['site'];
+    var happyHours = happyPlace['happy_hours'];
+
 	happyHours = happyHours.filter(function(happyHour){
         var dayOfWeek = [
             "sunday"
