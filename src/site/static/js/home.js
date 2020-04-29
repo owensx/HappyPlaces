@@ -4,8 +4,8 @@ var gmap;
 var allHappyPlaces = [];
 var markersOnMap = [];
 var happyPlaceSetIndex = 0;
-var maxMarkerOnMapCount = 10;
-var maxHappyPlaceCount = 50;
+var maxMarkerOnMapCount = 6;
+var maxHappyPlaceCount = 36;
 
 var nextButton = initNextButton();
 nextButton.addEventListener('click', function() {
@@ -42,9 +42,9 @@ var statusMarkerMap = {
     , 'UPCOMING': 'static/icons/marker.png'
 };
 
-//$(document).ready(function() {
-//    initMap();
-//});
+$(document).ready(function() {
+    $("#bannerTop").html('<p class="bannerMessage">Welcome to HappyPlaces!</p>');
+});
 
 function initMap() {
     var latitude = 40.679
@@ -55,6 +55,8 @@ function initMap() {
         longitude = position.coords.longitude;
 
         createMap(latitude, longitude, 15);
+
+
 
         google.maps.event.addListenerOnce(gmap, 'idle', function() {
             searchButton.click();
@@ -106,6 +108,11 @@ function createMap(latitude, longitude, zoomLevel) {
     google.maps.event.addListener(gmap, 'zoom_changed', function(){
         searchButton.style.opacity = "100%";
         searchButton.disabled = false;
+    });
+    google.maps.event.addListener(gmap, 'click', function(){
+        setDefaultBannerHtml();
+        //TODO clear all info windows
+        //TODO reset all markers
     });
 }
 
@@ -170,13 +177,14 @@ function onPreviousButtonClick(){
 function initSearchButton(){
     var button = document.createElement('button');
     button.id = "searchButton";
-    button.innerHTML = 'Search Area';
+    button.innerHTML = 'Search';
     button.style.margin = "5px";
 
     return button;
 }
 
 function onSearchButtonClick(latitude, longitude){
+
     clearMarkers();
     clearHappyPlaces();
 
@@ -192,7 +200,15 @@ function onSearchButtonClick(latitude, longitude){
     var todayOnly = todayOnlyCheckbox.checked;
 
     fetchHappyPlaces(latitude, longitude, todayOnly, maxHappyPlaceCount, function(happyPlaces){
+
         allHappyPlaces = happyPlaces;
+
+        if (allHappyPlaces.length == 0) {
+            setNoResultsBannerHtml();
+        } else {
+            setDefaultBannerHtml();
+        }
+
         if (allHappyPlaces.length > maxMarkerOnMapCount) {
             nextButton.style.opacity = "100%";
             nextButton.disabled = false;
@@ -201,23 +217,10 @@ function onSearchButtonClick(latitude, longitude){
         var happyPlaceSet = allHappyPlaces.slice(0, maxMarkerOnMapCount);
         $.each(happyPlaceSet, function(index, happyPlace) {
             addMarkerToMap(happyPlace);
+
+
         });
     });
-
-    $("#bannerTop").html('<p>Select A HappyPlace For HappyHour Info</p>');
-    $("#bannerBottom").html('');
-    if (todayOnly){
-        $("#bannerBottom").html('<img src="/static/icons/active_marker.png" style="width: 22px; height:35px;"><p style="margin:auto">indicates active now!</p>');
-    }
-
-    $("#bannerDays").html(
-        '<p class="dayBlock">Su</p>'+
-        '<p class="dayBlock">M</p>' +
-        '<p class="dayBlock">Tu</p>' +
-        '<p class="dayBlock">W</p>' +
-        '<p class="dayBlock">Th</p>' +
-        '<p class="dayBlock">F</p>' +
-        '<p class="dayBlock" style="border-right: none">Sa</p>');
 
 }
 
@@ -281,20 +284,17 @@ function addMarkerToMap(happyPlace){
 	});
 
 	marker.addListener('click', function(){
+	    //TODO clear all info windows
+	    //TODO reset all markers
 	    gmap.panTo(marker.getPosition());
-	    setBannerHtml(happyPlace);
+	    setSelectedBannerHtml(happyPlaceName, address, cross, site, happyHours);
+	    marker.setAnimation(google.maps.Animation.BOUNCE);
 	});
 
     markersOnMap.push(marker);
 }
 
-function setBannerHtml(happyPlace){
-    var happyPlaceName = happyPlace['name'];
-    var address = happyPlace['address'];
-    var cross = happyPlace['cross'];
-    var site = happyPlace['site'];
-    var happyHours = happyPlace['happy_hours'];
-
+function setSelectedBannerHtml(happyPlaceName, address, cross, site, happyHours){
 	happyHours = happyHours.filter(function(happyHour){
         var dayOfWeek = [
             "sunday"
@@ -309,16 +309,30 @@ function setBannerHtml(happyPlace){
         return happyHour[dayOfWeek];
     });
 
-    $("#bannerTop").html(
-        '<a id="bannerTopHappyPlace" href="' + site + '">' + happyPlaceName + '</a>' +
-        '<p id="bannerTopAddress">' + address + '</p>'
-
-    );
+    $("#bannerDays").html(
+        '<p class="dayBlock">Su</p>'+
+        '<p class="dayBlock">M</p>' +
+        '<p class="dayBlock">Tu</p>' +
+        '<p class="dayBlock">W</p>' +
+        '<p class="dayBlock">Th</p>' +
+        '<p class="dayBlock">F</p>' +
+        '<p class="dayBlock" style="border-right: none">Sa</p>');
 
     var bannerBottomHtml = '';
 
+    $("#bannerTop").html(
+        '<div id="bannerTopHappyPlaceInfo">' +
+            '<a id="bannerTopHappyPlace" href="' + site + '">' + happyPlaceName + '</a>' +
+            '<p id="bannerTopAddress">' + address + '</p>' +
+        '</div>'
+        +
+        '<div id="bannerTopIcons">' +
+            '<img src="/static/icons/mapsicon.png" style="width:28px;height:33px">' +
+		    '<img src="/static/icons/instaicon.png" style="width:35px;height:35px">' +
+		'</div>');
+
 	if (happyHours.length == 0){
-		bannerBottomHtml = '<p style="margin: auto">' + 'No Specials Today!' + '</p>';
+		bannerBottomHtml = '<p class="bannerMessage">' + 'No Specials Today!' + '</p>';
 	} else {
 
 		happyHours.forEach(function(happyHour){
@@ -336,6 +350,22 @@ function setBannerHtml(happyPlace){
 	}
 
     $("#bannerBottom").html(bannerBottomHtml);
+}
+
+function setDefaultBannerHtml(){
+    $("#bannerTop").html('<p class="bannerMessage">Select A HappyPlace for happy hour details.</p>');
+    $("#bannerDays").html('');
+    $("#bannerBottom").html('<img src="/static/icons/active_marker.png" style="height:30px;">' +
+    '<p class="bannerDefaultLegendText">Active Now!</p>' +
+    '<img src="/static/icons/upcoming_marker.png" style="height:30px;">' +
+    '<p class="bannerDefaultLegendText">Upcoming Today</p>'
+    );
+}
+
+function setNoResultsBannerHtml(){
+    $("#bannerTop").html('<p class="bannerMessage">No results! Try zooming out.</p>');
+    $("#bannerDays").html('');
+    $("#bannerBottom").html('');
 }
 
 function formatTime(time) {
