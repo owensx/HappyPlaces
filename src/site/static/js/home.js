@@ -287,14 +287,21 @@ function addMarkerToMap(happyPlace){
 	    //TODO clear all info windows
 	    //TODO reset all markers
 	    gmap.panTo(marker.getPosition());
-	    setSelectedBannerHtml(happyPlaceName, address, cross, site, happyHours);
+	    setSelectedBannerHtml(happyPlace);
 	    marker.setAnimation(google.maps.Animation.BOUNCE);
 	});
 
     markersOnMap.push(marker);
 }
 
-function setSelectedBannerHtml(happyPlaceName, address, cross, site, happyHours){
+function setSelectedBannerHtml(happyPlace){
+
+    var happyPlaceName = happyPlace['name'];
+    var happyPlaceGoogleId = happyPlace['google_place_id'];
+    var address = happyPlace['address'];
+    var site = happyPlace['site'];
+    var happyHours = happyPlace['happy_hours'];
+
 	happyHours = happyHours.filter(function(happyHour){
         var dayOfWeek = [
             "sunday"
@@ -320,6 +327,8 @@ function setSelectedBannerHtml(happyPlaceName, address, cross, site, happyHours)
 
     var bannerBottomHtml = '';
 
+console.log("before");
+
     $("#bannerTop").html(
         '<div id="bannerTopHappyPlaceInfo">' +
             '<a id="bannerTopHappyPlace" href="' + site + '">' + happyPlaceName + '</a>' +
@@ -327,9 +336,13 @@ function setSelectedBannerHtml(happyPlaceName, address, cross, site, happyHours)
         '</div>'
         +
         '<div id="bannerTopIcons">' +
-            '<img src="/static/icons/mapsicon.png" style="width:28px;height:33px">' +
+            '<a href="https://www.google.com/maps/search/?api=1&query=Google&query_place_id=' + happyPlaceGoogleId + '">' +
+                '<img src="/static/icons/mapsicon.png" style="width:28px;height:33px">' +
+            '</a>' +
 		    '<img src="/static/icons/instaicon.png" style="width:35px;height:35px">' +
 		'</div>');
+
+console.log("after");
 
 	if (happyHours.length == 0){
 		bannerBottomHtml = '<p class="bannerMessage">' + 'No Specials Today!' + '</p>';
