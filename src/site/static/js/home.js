@@ -288,7 +288,7 @@ function addMarkerToMap(happyPlace){
 	    //TODO reset all markers
 	    gmap.panTo(marker.getPosition());
 	    setSelectedBannerHtml(happyPlace);
-	    marker.setAnimation(google.maps.Animation.BOUNCE);
+	    //marker.setAnimation(google.maps.Animation.BOUNCE);//TODO: i hate this bounce
 	});
 
     markersOnMap.push(marker);
@@ -301,6 +301,7 @@ function setSelectedBannerHtml(happyPlace){
     var address = happyPlace['address'];
     var site = happyPlace['site'];
     var happyHours = happyPlace['happy_hours'];
+    var instagram_url = happyPlace['instagram_url'];
 
 	happyHours = happyHours.filter(function(happyHour){
         var dayOfWeek = [
@@ -325,24 +326,34 @@ function setSelectedBannerHtml(happyPlace){
         '<p class="dayBlock">F</p>' +
         '<p class="dayBlock" style="border-right: none">Sa</p>');
 
-    var bannerBottomHtml = '';
 
-console.log("before");
 
-    $("#bannerTop").html(
+    var bannerTopHtml =
         '<div id="bannerTopHappyPlaceInfo">' +
             '<a id="bannerTopHappyPlace" href="' + site + '">' + happyPlaceName + '</a>' +
             '<p id="bannerTopAddress">' + address + '</p>' +
-        '</div>'
-        +
+        '</div>';
+
+    bannerTopHtml +=
         '<div id="bannerTopIcons">' +
             '<a href="https://www.google.com/maps/search/?api=1&query=Google&query_place_id=' + happyPlaceGoogleId + '">' +
                 '<img src="/static/icons/mapsicon.png" style="width:28px;height:33px">' +
-            '</a>' +
-		    '<img src="/static/icons/instaicon.png" style="width:35px;height:35px">' +
-		'</div>');
+            '</a>';
 
-console.log("after");
+    if (instagram_url != null){
+        bannerTopHtml +=
+            '<a href="' + instagram_url + '">' +
+                '<img src="/static/icons/instaicon.png" style="width:35px;height:35px">' +
+            '</a>'
+    }
+
+    bannerTopHtml += '</div>';
+
+
+
+    $("#bannerTop").html(bannerTopHtml);
+
+    var bannerBottomHtml = '';
 
 	if (happyHours.length == 0){
 		bannerBottomHtml = '<p class="bannerMessage">' + 'No Specials Today!' + '</p>';

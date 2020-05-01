@@ -40,7 +40,6 @@ function setHappyPlaceOptions(neighborhoodId){
 function onSearchButtonClick(){
     var name = $("#happyPlaceForm input[name='name']").val()
     var neighborhood = $("#happyPlaceForm select[name='neighborhood'] option:selected").text()
-    var neighborhood_id = $("#happyPlaceForm select[name='neighborhood'] option:selected").val()
     var city = $("#happyPlaceForm input[name='city']").val()
 
 	if(name == '') {
@@ -71,31 +70,23 @@ function onSearchButtonClick(){
 	        return;
 	    }
 
-        $("#crossMessage").show();
+        $("#crossInstaMessage").show();
         $("#happyPlaceForm input[name='cross']").show();
         $("#happyPlaceForm label[for='id_cross']").text("Cross");
+        $("#happyPlaceForm input[name='instagram_handle']").show();
+        $("#happyPlaceForm label[for='id_instagram_handle']").text("Instagram");
 
 		$.each(googlePlaces, function(index, googlePlace){
 		    var name = googlePlace["name"]
 		    var address = googlePlace["address"]
 		    var placeId = googlePlace["place_id"]
 
-		    var cross = $("#happyPlaceForm input[name='cross']").val()
-
-		    var saveHappyPlaceRequest = {
-		        cross: cross
-		        , place_id: placeId
-		        , neighborhood_id: neighborhood_id
-		    }
-
-            saveHappyPlaceRequest = JSON.stringify(saveHappyPlaceRequest).replace(/"/g,'\\"');
-
 		    $('#searchResults').append(
                 '<tr>'+
                 '<td>'+ name +'</td>'+
                 '<td>'+ address +'</td>'+
                 '<td><button '+
-                    'onclick=saveHappyPlace("'+ saveHappyPlaceRequest +'") '+
+                    'onclick="saveHappyPlace(\''+placeId+'\')"'+
                     '>Add'+
                 '</button></td>'+
                 '</tr>'
@@ -108,8 +99,19 @@ function onSearchButtonClick(){
 	});
 }
 
-function saveHappyPlace(saveHappyPlaceRequest){
-    $.post( "/happyPlaces", JSON.parse(saveHappyPlaceRequest))
+function saveHappyPlace(placeId){
+    var neighborhoodId = $("#happyPlaceForm select[name='neighborhood'] option:selected").val()
+    var cross = $("#happyPlaceForm input[name='cross']").val()
+    var instagramHandle= $("#happyPlaceForm input[name='instagram_handle']").val()
+
+    var saveHappyPlaceRequest = {
+        "google_place_id": placeId
+        , "neighborhood_id": neighborhoodId
+        , "cross": cross
+        , "instagram_handle": instagramHandle
+    }
+
+    $.post( "/happyPlaces",saveHappyPlaceRequest)
         .done(function(saveHappyPlaceResponse){
             alert('Saved Happy Place!');
             $("#happyPlaceForm select[name='happy_place']").append("<option value='"

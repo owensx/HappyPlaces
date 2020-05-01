@@ -25,8 +25,9 @@
 				{{ happy_place_submit_form.name.label_tag }} {{ happy_place_submit_form.name }}</br></br>
 			    <button type="button" id="searchButton" onClick="onSearchButtonClick()"> Search </button></br></br>
 
-				<span id=crossMessage class="hiddenField">Optionally, add a cross street before adding</span></br></br>
+				<span id=crossInstaMessage class="hiddenField">Optionally, add a cross street and Instagram handle before adding</span></br></br>
 				{{ happy_place_submit_form.cross.label_tag }} {{ happy_place_submit_form.cross }}
+				{{ happy_place_submit_form.instagram_handle.label_tag }} {{ happy_place_submit_form.instagram_handle }}
 			</form>
 			</br>
 			<img id="searchingIcon" src="{% static 'searching.svg' %}" style="display: none"/>
