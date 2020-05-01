@@ -106,11 +106,9 @@ function createMap(latitude, longitude, zoomLevel) {
 
     google.maps.event.addListener(gmap, 'center_changed', function(){
         searchButton.style.opacity = "100%";
-        searchButton.disabled = false;
     });
     google.maps.event.addListener(gmap, 'zoom_changed', function(){
         searchButton.style.opacity = "100%";
-        searchButton.disabled = false;
     });
     google.maps.event.addListener(gmap, 'click', function(){
         setDefaultBannerHtml();
@@ -198,7 +196,6 @@ function onSearchButtonClick(latitude, longitude){
     previousButton.style.opacity = "50%";
     previousButton.disabled = true;
     searchButton.style.opacity = "50%";
-    searchButton.disabled = true;
 
     var todayOnly = todayOnlyCheckbox.checked;
 
@@ -282,7 +279,7 @@ function addMarkerToMap(happyPlace){
 		, icon: {
 		    url: statusMarkerMap[happyPlaceStatus]
 		    , labelOrigin: new google.maps.Point(10,-7)
-		    , scaledSize: new google.maps.Size(21,32)
+		    , scaledSize: new google.maps.Size(22.5,30)
 		}
 	});
 
@@ -291,7 +288,7 @@ function addMarkerToMap(happyPlace){
 	    //TODO reset all markers
 	    gmap.panTo(marker.getPosition());
 	    setSelectedBannerHtml(happyPlace);
-	    //marker.setAnimation(google.maps.Animation.BOUNCE);//TODO: i hate this bounce
+	    //marker.setAnimation(google.maps.Animation.BOUNCE);
 	});
 
     markersOnMap.push(marker);
