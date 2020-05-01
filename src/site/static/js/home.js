@@ -232,7 +232,7 @@ function fetchHappyPlaces(latitude, longitude, todayOnly, count, callback){
     var date = new Date();
 
     if (todayOnly) {
-        getHappyPlacesWithStatusForLatLng(latitude, longitude, ["S","M","T","W","R","F","Y"][date.getDay()], date.getHours().toString() + date.getMinutes().toString(), count, function(response){
+        getHappyPlacesWithStatusForLatLng(latitude, longitude, ["S","M","T","W","R","F","Y"][date.getDay()], ("0" + date.getHours().toString()).slice(-2) + ("0" + date.getMinutes().toString()).slice(-2), count, function(response){
             var happyPlaces = JSON.parse(response['body'])
                 .filter(function(happyPlace){
                     var latitude = happyPlace['latitude'];
