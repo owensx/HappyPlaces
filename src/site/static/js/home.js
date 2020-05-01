@@ -42,7 +42,7 @@ todayOnlyCheckbox.addEventListener('click', function() {
 var statusMarkerMap = {
     'NONE': 'static/icons/marker.png'
     , 'ACTIVE': 'static/icons/active_marker.png'
-    , 'UPCOMING': 'static/icons/marker.png'
+    , 'UPCOMING': 'static/icons/upcoming_marker.png'
 };
 
 $(document).ready(function() {
