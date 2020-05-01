@@ -71,3 +71,4 @@ class HappyPlaceSubmitForm(Form):
 
         self.fields['instagram_handle'] = forms.CharField(max_length=200, label='')
         self.fields['instagram_handle'].widget.attrs['class'] = 'hiddenField'
+
