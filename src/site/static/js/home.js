@@ -328,11 +328,21 @@ function setSelectedBannerHtml(happyPlace){
 
 
 
-    var bannerTopHtml =
-        '<div id="bannerTopHappyPlaceInfo">' +
-            '<a id="bannerTopHappyPlace" href="' + site + '">' + happyPlaceName + '</a>' +
-            '<p id="bannerTopAddress">' + address + '</p>' +
-        '</div>';
+    var bannerTopHtml = '';
+
+    if (site != null) {
+        bannerTopHtml +=
+            '<div id="bannerTopHappyPlaceInfo">' +
+                '<a id="bannerTopHappyPlace" href="' + site + '">' + happyPlaceName + '</a>' +
+                '<p id="bannerTopAddress">' + address + '</p>' +
+            '</div>';
+    } else {
+        bannerTopHtml +=
+            '<div id="bannerTopHappyPlaceInfo">' +
+                '<p id="bannerTopHappyPlace">' + happyPlaceName + '</p>' +
+                '<p id="bannerTopAddress">' + address + '</p>' +
+            '</div>';
+    }
 
     bannerTopHtml +=
         '<div id="bannerTopIcons">' +
