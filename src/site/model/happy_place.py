@@ -19,6 +19,7 @@ class HappyPlace(models.Model):
     cross = models.CharField(max_length=50, null=True)
     site = models.CharField(max_length=75, null=True)
     phone = models.CharField(max_length=50, null=True)
+    instagram_url = models.CharField(max_length=75, null=True)
     latitude = models.FloatField(null=True)
     longitude = models.FloatField(null=True)
     price_level = models.IntegerField(null=True)
@@ -68,3 +69,6 @@ class HappyPlaceSubmitForm(Form):
 
         self.fields['cross'] = forms.CharField(max_length=200, label='')
         self.fields['cross'].widget.attrs['class'] = 'hiddenField'
+
+        self.fields['instagram_handle'] = forms.CharField(max_length=200, label='')
+        self.fields['instagram_handle'].widget.attrs['class'] = 'hiddenField'

@@ -27,7 +27,7 @@ class HappyPlaceSerializer(ModelSerializer):
 class HappyPlacesAPI(API):
     def get_response_body(self, request, params):
         if request.method == 'POST':
-            happy_place = happy_place_helper.create_happy_place_from_form_data(request.POST)
+            happy_place = create_happy_place(request.POST)
 
             self._logger.debug('Saving HappyPlace ' + happy_place.__str__())
             happy_place.save()
@@ -112,14 +112,14 @@ class HappyPlacesAPI(API):
                 'body': json.dumps(HappyPlaceSerializer(happy_places, many=True).data)
             }
 
+def create_happy_place(request_data):
+    google_place_id = request_data["google_place_id"]
 
-def create_happy_place_from_form_data(form_details):
-    place_id = form_details["place_id"]
+    cross = request_data["cross"]
+    instagram_handle = request_data["instagram_handle"]
+    neighborhood_id = int(request_data["neighborhood_id"])
 
-    cross = form_details["cross"]
-    neighborhood_id = int(form_details["neighborhood_id"])
-
-    google_place = google_helper.get_google_place_details(place_id=place_id)
+    google_place = google_helper.get_google_place_details(place_id=google_place_id)
 
     happy_place = HappyPlace(
         neighborhood=Neighborhood.objects.get(id=neighborhood_id)
@@ -128,10 +128,11 @@ def create_happy_place_from_form_data(form_details):
         , cross=cross if cross else None
         , site=google_place["site"] if google_place["site"] else None
         , phone=google_place["phone"] if google_place["phone"] else None
+        , instagram_url='https://instagram.com/'+instagram_handle if instagram_handle else None
         , latitude=google_place["latitude"]
         , longitude=google_place["longitude"]
         , price_level=google_place["price_level"] if google_place["price_level"] else None
-        , google_place_id=place_id
+        , google_place_id=google_place_id
         , time_updated=datetime.now()
     )
 
