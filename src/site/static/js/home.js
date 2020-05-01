@@ -7,6 +7,9 @@ var happyPlaceSetIndex = 0;
 var maxMarkerOnMapCount = 6;
 var maxHappyPlaceCount = 36;
 
+var selectedBannerDay = '';
+var selectedHappyHours = '';
+
 var nextButton = initNextButton();
 nextButton.addEventListener('click', function() {
     onNextButtonClick();
@@ -295,6 +298,15 @@ function addMarkerToMap(happyPlace){
 }
 
 function setSelectedBannerHtml(happyPlace){
+    var dayOfWeek = [
+        "sunday"
+        , "monday"
+        , "tuesday"
+        , "wednesday"
+        , "thursday"
+        , "friday"
+        , "saturday"
+    ][new Date().getDay()];
 
     var happyPlaceName = happyPlace['name'];
     var happyPlaceGoogleId = happyPlace['google_place_id'];
@@ -303,30 +315,20 @@ function setSelectedBannerHtml(happyPlace){
     var happyHours = happyPlace['happy_hours'];
     var instagram_url = happyPlace['instagram_url'];
 
-	happyHours = happyHours.filter(function(happyHour){
-        var dayOfWeek = [
-            "sunday"
-            , "monday"
-            , "tuesday"
-            , "wednesday"
-            , "thursday"
-            , "friday"
-            , "saturday"
-        ][new Date().getDay()];
-
-        return happyHour[dayOfWeek];
-    });
+    selectedHappyHours = happyHours;
 
     $("#bannerDays").html(
-        '<p class="dayBlock">Su</p>'+
-        '<p class="dayBlock">M</p>' +
-        '<p class="dayBlock">Tu</p>' +
-        '<p class="dayBlock">W</p>' +
-        '<p class="dayBlock">Th</p>' +
-        '<p class="dayBlock">F</p>' +
-        '<p class="dayBlock" style="border-right: none">Sa</p>');
+        '<p id="sundayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'sunday\')">Su</p>'+
+        '<p id="mondayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'monday\')">M</p>' +
+        '<p id="tuesdayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'tuesday\')">Tu</p>' +
+        '<p id="wednesdayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'wednesday\')">W</p>' +
+        '<p id="thursdayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'thursday\')">Th</p>' +
+        '<p id="fridayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'friday\')">F</p>' +
+        '<p id="saturdayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'saturday\')" style="border-right: none">Sa</p>');
 
-
+    selectedBannerDay = document.getElementById(dayOfWeek + "DayBlock");
+    selectedBannerDay.className = "dayBlockSelected";
+    setBottomBannerHtml(dayOfWeek);
 
     var bannerTopHtml =
         '<div id="bannerTopHappyPlaceInfo">' +
@@ -349,14 +351,43 @@ function setSelectedBannerHtml(happyPlace){
 
     bannerTopHtml += '</div>';
 
-
-
     $("#bannerTop").html(bannerTopHtml);
+}
+
+function bannerDayOnClick(dayOfWeek){
+    selectedBannerDay.className = "dayBlock";
+
+    selectedBannerDay = document.getElementById(dayOfWeek + "DayBlock");
+    selectedBannerDay.className = "dayBlockSelected";
+    setBottomBannerHtml(dayOfWeek);
+}
+
+function setDefaultBannerHtml(){
+    $("#bannerTop").html('<p class="bannerMessage">Select A HappyPlace for happy hour details.</p>');
+    $("#bannerDays").html('');
+    $("#bannerBottom").html(
+        '<img src="/static/icons/active_marker.png" style="height:30px;">' +
+        '<p class="bannerDefaultLegendText">Active Now!</p>' +
+        '<img src="/static/icons/upcoming_marker.png" style="height:30px;">' +
+        '<p class="bannerDefaultLegendText">Upcoming Today</p>'
+    );
+}
+
+function setNoResultsBannerHtml(){
+    $("#bannerTop").html('<p class="bannerMessage">No results! Try zooming out.</p>');
+    $("#bannerDays").html('');
+    $("#bannerBottom").html('');
+}
+
+function setBottomBannerHtml(dayOfWeek){
+	var happyHours = selectedHappyHours.filter(function(happyHour){
+        return happyHour[dayOfWeek];
+    });
 
     var bannerBottomHtml = '';
 
 	if (happyHours.length == 0){
-		bannerBottomHtml = '<p class="bannerMessage">' + 'No Specials Today!' + '</p>';
+		bannerBottomHtml = '<p class="bannerMessage">' + 'No Specials :(' + '</p>';
 	} else {
 
 		happyHours.forEach(function(happyHour){
@@ -374,22 +405,6 @@ function setSelectedBannerHtml(happyPlace){
 	}
 
     $("#bannerBottom").html(bannerBottomHtml);
-}
-
-function setDefaultBannerHtml(){
-    $("#bannerTop").html('<p class="bannerMessage">Select A HappyPlace for happy hour details.</p>');
-    $("#bannerDays").html('');
-    $("#bannerBottom").html('<img src="/static/icons/active_marker.png" style="height:30px;">' +
-    '<p class="bannerDefaultLegendText">Active Now!</p>' +
-    '<img src="/static/icons/upcoming_marker.png" style="height:30px;">' +
-    '<p class="bannerDefaultLegendText">Upcoming Today</p>'
-    );
-}
-
-function setNoResultsBannerHtml(){
-    $("#bannerTop").html('<p class="bannerMessage">No results! Try zooming out.</p>');
-    $("#bannerDays").html('');
-    $("#bannerBottom").html('');
 }
 
 function formatTime(time) {

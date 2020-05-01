@@ -108,6 +108,16 @@ body {
     border-right: solid 2px #000000;
 }
 
+.dayBlockSelected {
+    flex: 1 1 auto;
+    margin: auto;
+    text-align: center;
+    height: fit-content;
+    background-color: #000000;
+    color: #f2ab1e;
+    border-right: solid 2px #000000;
+}
+
 .bannerBottomSpecial {
     margin: 0 auto;
     width: fit-content;
