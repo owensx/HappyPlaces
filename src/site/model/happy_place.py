@@ -5,6 +5,7 @@ from django.forms import Form
 from src.site.happy_hour_helper import filter_on_days
 from src.site.models import Neighborhood
 
+
 class HappyPlace(models.Model):
     # foreign keys
     neighborhood = models.ForeignKey(Neighborhood, related_name='happy_places', on_delete=models.PROTECT)
