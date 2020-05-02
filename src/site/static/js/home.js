@@ -129,7 +129,7 @@ function createMap(latitude, longitude, zoomLevel) {
 function initNextButton(){
     var button = document.createElement('button');
     button.id = "nextButton";
-    button.innerHTML = 'Next 10';
+    button.innerHTML = 'Next';
     button.style.margin = "5px";
     button.style.opacity = "50%";
     button.disabled = true;
@@ -158,7 +158,7 @@ function onNextButtonClick() {
 function initPreviousButton(){
     var button = document.createElement('button');
     button.id = "previousButton";
-    button.innerHTML = 'Prev 10';
+    button.innerHTML = 'Prev';
     button.style.margin = "5px";
     button.style.opacity = "50%";
     button.disabled = true;
