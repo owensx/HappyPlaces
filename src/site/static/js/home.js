@@ -324,13 +324,13 @@ function setSelectedBannerHtml(happyPlace){
     selectedHappyHours = happyHours;
 
     $("#bannerDays").html(
-        '<p id="sundayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'sunday\')">Su</p>'+
-        '<p id="mondayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'monday\')">M</p>' +
-        '<p id="tuesdayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'tuesday\')">Tu</p>' +
-        '<p id="wednesdayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'wednesday\')">W</p>' +
-        '<p id="thursdayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'thursday\')">Th</p>' +
-        '<p id="fridayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'friday\')">F</p>' +
-        '<p id="saturdayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'saturday\')" style="border-right: none">Sa</p>');
+        '<button id="sundayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'sunday\')">Su</button>'+
+        '<button id="mondayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'monday\')">M</button>' +
+        '<button id="tuesdayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'tuesday\')">Tu</button>' +
+        '<button id="wednesdayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'wednesday\')">W</button>' +
+        '<button id="thursdayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'thursday\')">Th</button>' +
+        '<button id="fridayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'friday\')">F</button>' +
+        '<button id="saturdayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'saturday\')">Sa</button>');
 
     selectedBannerDay = document.getElementById(dayOfWeek + "DayBlock");
     selectedBannerDay.className = "dayBlockSelected";
@@ -347,15 +347,15 @@ function setSelectedBannerHtml(happyPlace){
     } else {
         bannerTopHtml +=
             '<div id="bannerTopHappyPlaceInfo">' +
-                '<p id="bannerTopHappyPlace">' + happyPlaceName + '</p>' +
+                '<p id="bannerTopHappyPlace" style="color:black">' + happyPlaceName + '</p>' +
                 '<p id="bannerTopAddress">' + address + '</p>' +
             '</div>';
     }
 
     bannerTopHtml +=
-        '<div id="bannerTopIcons">' +
+        '<div id="bannerTopIcons" style="display:flex">' +
             '<a href="https://www.google.com/maps/search/?api=1&query=Google&query_place_id=' + happyPlaceGoogleId + '">' +
-                '<img src="/static/icons/mapsicon.png" style="width:28px;height:33px">' +
+                '<img src="/static/icons/mapsicon.png" style="width:28px;height:31px">' +
             '</a>';
 
     if (instagram_url != null){
