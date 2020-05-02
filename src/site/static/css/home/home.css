@@ -36,7 +36,7 @@ body {
         #report tr.odd td { background:#aaa  repeat-x scroll center left; cursor:pointer;  }
        */
 #map {
-    height: 85%;
+    height: 85%;/*if you change this value, be sure to also change home.js, search FINDME-1*/
 }
 
 #banner {
@@ -105,7 +105,6 @@ body {
     height: fit-content;
     background-color: #f2ab1e;
     color: #000000;
-    border-right: solid 2px #000000;
 }
 
 .dayBlockSelected {
@@ -113,9 +112,8 @@ body {
     margin: auto;
     text-align: center;
     height: fit-content;
-    background-color: #000000;
+    background: #000000;
     color: #f2ab1e;
-    border-right: solid 2px #000000;
 }
 
 .bannerBottomSpecial {
@@ -135,6 +133,7 @@ body {
 .bannerDefaultLegendText {
     margin: auto 7px 0px;
 }
+
 button {
 	-moz-box-shadow: 0px 10px 14px -7px #f9eca0;
 	-webkit-box-shadow: 0px 10px 14px -7px #f9eca0;
@@ -157,11 +156,13 @@ button {
 	font-size:12px;
 	font-weight:bold;
 	padding:4px 7px;
-	text-decoration:none;
-	text-shadow:0px 1px 0px #ded17c;
 }
 
-button:hover {
+button:focus {
+    outline: none;
+}
+
+/*button:hover {
 	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #f2ab1e), color-stop(1, #f0c911));
 	background:-moz-linear-gradient(top, #f2ab1e 5%, #f0c911 100%);
 	background:-webkit-linear-gradient(top, #f2ab1e 5%, #f0c911 100%);
@@ -170,7 +171,7 @@ button:hover {
 	background:linear-gradient(to bottom, #f2ab1e 5%, #f0c911 100%);
 	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#f2ab1e', endColorstr='#f0c911',GradientType=0);
 	background-color:#f2ab1e;
-}
+}*/
 
 button:active {
 	position:relative;

@@ -42,7 +42,7 @@ todayOnlyCheckbox.addEventListener('click', function() {
 var statusMarkerMap = {
     'NONE': 'static/icons/marker.png'
     , 'ACTIVE': 'static/icons/active_marker.png'
-    , 'UPCOMING': 'static/icons/marker.png'
+    , 'UPCOMING': 'static/icons/upcoming_marker.png'
 };
 
 $(document).ready(function() {
@@ -52,22 +52,24 @@ $(document).ready(function() {
 function initMap() {
     var latitude = 40.679
     var longitude = -73.936
+    createMap(latitude, longitude, 13);
 
-    navigator.geolocation.getCurrentPosition(function(position) {
-        latitude = position.coords.latitude;
-        longitude = position.coords.longitude;
-
-        createMap(latitude, longitude, 15);
-
-
-
-        google.maps.event.addListenerOnce(gmap, 'idle', function() {
-            searchButton.click();
-        });
-
-	}, function(error) {
-        createMap(latitude, longitude, 13);
-	});
+// commenting until we support SSL
+//    navigator.geolocation.getCurrentPosition(function(position) {
+//        latitude = position.coords.latitude;
+//        longitude = position.coords.longitude;
+//
+//        createMap(latitude, longitude, 15);
+//
+//
+//
+//        google.maps.event.addListenerOnce(gmap, 'idle', function() {
+//            searchButton.click();
+//        });
+//
+//	}, function(error) {
+//        createMap(latitude, longitude, 13);
+//	});
 }
 
 function createMap(latitude, longitude, zoomLevel) {
@@ -84,6 +86,13 @@ function createMap(latitude, longitude, zoomLevel) {
             , stylers: [{visibility: "off"}]
         }]
     });
+
+    //for some reason, on apple devices the height of the map div gets set to 0
+    //manually updating the height here
+    //the 85% comes from the css, they should always match
+    //search FINDME-1
+    var height = .85 * $('body').height();
+    document.getElementById('map').setAttribute("style","height:" + height + "px");
 
     var controlButtonsDiv = document.createElement('div');
     controlButtonsDiv.appendChild(previousButton);
@@ -106,11 +115,9 @@ function createMap(latitude, longitude, zoomLevel) {
 
     google.maps.event.addListener(gmap, 'center_changed', function(){
         searchButton.style.opacity = "100%";
-        searchButton.disabled = false;
     });
     google.maps.event.addListener(gmap, 'zoom_changed', function(){
         searchButton.style.opacity = "100%";
-        searchButton.disabled = false;
     });
     google.maps.event.addListener(gmap, 'click', function(){
         setDefaultBannerHtml();
@@ -122,7 +129,7 @@ function createMap(latitude, longitude, zoomLevel) {
 function initNextButton(){
     var button = document.createElement('button');
     button.id = "nextButton";
-    button.innerHTML = 'Next 10';
+    button.innerHTML = 'Next';
     button.style.margin = "5px";
     button.style.opacity = "50%";
     button.disabled = true;
@@ -151,7 +158,7 @@ function onNextButtonClick() {
 function initPreviousButton(){
     var button = document.createElement('button');
     button.id = "previousButton";
-    button.innerHTML = 'Prev 10';
+    button.innerHTML = 'Prev';
     button.style.margin = "5px";
     button.style.opacity = "50%";
     button.disabled = true;
@@ -198,7 +205,6 @@ function onSearchButtonClick(latitude, longitude){
     previousButton.style.opacity = "50%";
     previousButton.disabled = true;
     searchButton.style.opacity = "50%";
-    searchButton.disabled = true;
 
     var todayOnly = todayOnlyCheckbox.checked;
 
@@ -282,7 +288,7 @@ function addMarkerToMap(happyPlace){
 		, icon: {
 		    url: statusMarkerMap[happyPlaceStatus]
 		    , labelOrigin: new google.maps.Point(10,-7)
-		    , scaledSize: new google.maps.Size(21,32)
+		    , scaledSize: new google.maps.Size(22.5,30)
 		}
 	});
 
@@ -291,7 +297,7 @@ function addMarkerToMap(happyPlace){
 	    //TODO reset all markers
 	    gmap.panTo(marker.getPosition());
 	    setSelectedBannerHtml(happyPlace);
-	    //marker.setAnimation(google.maps.Animation.BOUNCE);//TODO: i hate this bounce
+	    //marker.setAnimation(google.maps.Animation.BOUNCE);
 	});
 
     markersOnMap.push(marker);
@@ -318,13 +324,13 @@ function setSelectedBannerHtml(happyPlace){
     selectedHappyHours = happyHours;
 
     $("#bannerDays").html(
-        '<p id="sundayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'sunday\')">Su</p>'+
-        '<p id="mondayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'monday\')">M</p>' +
-        '<p id="tuesdayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'tuesday\')">Tu</p>' +
-        '<p id="wednesdayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'wednesday\')">W</p>' +
-        '<p id="thursdayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'thursday\')">Th</p>' +
-        '<p id="fridayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'friday\')">F</p>' +
-        '<p id="saturdayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'saturday\')" style="border-right: none">Sa</p>');
+        '<button id="sundayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'sunday\')">Su</button>'+
+        '<button id="mondayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'monday\')">M</button>' +
+        '<button id="tuesdayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'tuesday\')">Tu</button>' +
+        '<button id="wednesdayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'wednesday\')">W</button>' +
+        '<button id="thursdayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'thursday\')">Th</button>' +
+        '<button id="fridayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'friday\')">F</button>' +
+        '<button id="saturdayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'saturday\')">Sa</button>');
 
     selectedBannerDay = document.getElementById(dayOfWeek + "DayBlock");
     selectedBannerDay.className = "dayBlockSelected";
@@ -341,15 +347,15 @@ function setSelectedBannerHtml(happyPlace){
     } else {
         bannerTopHtml +=
             '<div id="bannerTopHappyPlaceInfo">' +
-                '<p id="bannerTopHappyPlace">' + happyPlaceName + '</p>' +
+                '<p id="bannerTopHappyPlace" style="color:black">' + happyPlaceName + '</p>' +
                 '<p id="bannerTopAddress">' + address + '</p>' +
             '</div>';
     }
 
     bannerTopHtml +=
-        '<div id="bannerTopIcons">' +
+        '<div id="bannerTopIcons" style="display:flex">' +
             '<a href="https://www.google.com/maps/search/?api=1&query=Google&query_place_id=' + happyPlaceGoogleId + '">' +
-                '<img src="/static/icons/mapsicon.png" style="width:28px;height:33px">' +
+                '<img src="/static/icons/mapsicon.png" style="width:28px;height:31px">' +
             '</a>';
 
     if (instagram_url != null){
