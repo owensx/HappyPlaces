@@ -52,22 +52,24 @@ $(document).ready(function() {
 function initMap() {
     var latitude = 40.679
     var longitude = -73.936
+    createMap(latitude, longitude, 13);
 
-    navigator.geolocation.getCurrentPosition(function(position) {
-        latitude = position.coords.latitude;
-        longitude = position.coords.longitude;
-
-        createMap(latitude, longitude, 15);
-
-
-
-        google.maps.event.addListenerOnce(gmap, 'idle', function() {
-            searchButton.click();
-        });
-
-	}, function(error) {
-        createMap(latitude, longitude, 13);
-	});
+// commenting until we support SSL
+//    navigator.geolocation.getCurrentPosition(function(position) {
+//        latitude = position.coords.latitude;
+//        longitude = position.coords.longitude;
+//
+//        createMap(latitude, longitude, 15);
+//
+//
+//
+//        google.maps.event.addListenerOnce(gmap, 'idle', function() {
+//            searchButton.click();
+//        });
+//
+//	}, function(error) {
+//        createMap(latitude, longitude, 13);
+//	});
 }
 
 function createMap(latitude, longitude, zoomLevel) {
