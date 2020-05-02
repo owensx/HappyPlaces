@@ -87,6 +87,13 @@ function createMap(latitude, longitude, zoomLevel) {
         }]
     });
 
+    //for some reason, on apple devices the height of the map div gets set to 0
+    //manually updating the height here
+    //the 85% comes from the css, they should always match
+    //search FINDME-1
+    var height = .85 * $('body').height();
+    document.getElementById('map').setAttribute("style","height:" + height + "px");
+
     var controlButtonsDiv = document.createElement('div');
     controlButtonsDiv.appendChild(previousButton);
     controlButtonsDiv.appendChild(searchButton);

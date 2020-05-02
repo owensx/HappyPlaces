@@ -36,7 +36,7 @@ body {
         #report tr.odd td { background:#aaa  repeat-x scroll center left; cursor:pointer;  }
        */
 #map {
-    height: 85%;
+    height: 85%;/*if you change this value, be sure to also change home.js, search FINDME-1*/
 }
 
 #banner {
