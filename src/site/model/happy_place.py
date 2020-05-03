@@ -40,7 +40,7 @@ class HappyPlace(models.Model):
             if not upcoming and happy_hour.start > kwargs['time']:
                 upcoming = True
 
-        return 'UPCOMING' if upcoming else 'PAST'
+        return 'UPCOMING' if upcoming else 'NONE'
 
     def __str__(self):
         return self.name.__str__()
