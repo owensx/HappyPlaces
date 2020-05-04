@@ -1,6 +1,7 @@
 'use strict';
 
 var gmap;
+var searchCenter;
 var allHappyPlaces = [];
 var markersOnMap = [];
 var happyPlaceSetIndex = 0;
@@ -153,6 +154,8 @@ function onNextButtonClick() {
         nextButton.style.opacity = "50%";
         nextButton.disabled = true;
     }
+
+    gmap.panTo(searchCenter);
 }
 
 function initPreviousButton(){
@@ -182,6 +185,8 @@ function onPreviousButtonClick(){
         previousButton.style.opacity = "50%";
         previousButton.disabled = true;
     }
+
+    gmap.panTo(searchCenter);
 }
 
 function initSearchButton(){
@@ -194,7 +199,6 @@ function initSearchButton(){
 }
 
 function onSearchButtonClick(latitude, longitude){
-
     clearMarkers();
     clearHappyPlaces();
 
@@ -207,6 +211,7 @@ function onSearchButtonClick(latitude, longitude){
     searchButton.style.opacity = "50%";
 
     var todayOnly = todayOnlyCheckbox.checked;
+    searchCenter = {lat: latitude, lng: longitude};
 
     fetchHappyPlaces(latitude, longitude, todayOnly, maxHappyPlaceCount, function(happyPlaces){
 
@@ -226,8 +231,6 @@ function onSearchButtonClick(latitude, longitude){
         var happyPlaceSet = allHappyPlaces.slice(0, maxMarkerOnMapCount);
         $.each(happyPlaceSet, function(index, happyPlace) {
             addMarkerToMap(happyPlace);
-
-
         });
     });
 
