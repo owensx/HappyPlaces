@@ -1,6 +1,4 @@
 import json
-from datetime import datetime
-
 from rest_framework import serializers
 
 from src.site import google_helper
@@ -34,16 +32,39 @@ class HappyPlaceStatusSerializer(ModelSerializer):
 class HappyPlacesAPI(API):
     def get_response_body(self, request, params):
         if request.method == 'POST':
-            happy_place = create_happy_place(request.POST)
+            if "happy_place_id" in params:
+                happy_place_id = params["happy_place_id"]
+                happy_place = HappyPlace.objects.get(id=happy_place_id)
 
-            self._logger.debug('Saving HappyPlace ' + happy_place.__str__())
-            happy_place.save()
+                response_body = {
+                    'name': happy_place.name
+                }
 
-            return {
-                'name': happy_place.name
-                , 'id': happy_place.id
-                , 'google_place_id': happy_place.google_place_id
-            }
+                for field in request.POST:
+                    if field not in HappyPlace.EDITABLE_FIELDS:
+                        self._logger.debug(field + ' is not an editable field')
+                        break
+                    happy_place.__setattr__(field, request.POST[field])
+
+                    response_body[field] = request.POST[field]
+
+                happy_place.time_updated = datetime.datetime.now()
+                happy_place.save()
+
+                return response_body
+
+            else:
+                happy_place = create_happy_place(request.POST)
+
+                self._logger.debug('Saving HappyPlace ' + happy_place.__str__())
+                # validateInput
+                happy_place.save()
+
+                return {
+                    'name': happy_place.name
+                    , 'id': happy_place.id
+                    , 'google_place_id': happy_place.google_place_id
+                }
 
         elif request.method == 'GET':
             if ("statusDay" in request.GET) ^ ("statusTime" in request.GET):

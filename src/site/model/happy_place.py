@@ -7,6 +7,8 @@ from src.site.models import Neighborhood
 
 
 class HappyPlace(models.Model):
+    EDITABLE_FIELDS = ['cross', 'instagram_url', 'active']
+
     # foreign keys
     neighborhood = models.ForeignKey(Neighborhood, related_name='happy_places', on_delete=models.PROTECT)
 
