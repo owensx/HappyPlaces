@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+import datetime
 
 from src.site import happy_hour_helper
 from src.site.api.base_api import API
@@ -20,14 +20,36 @@ class HappyHourSerializer(ModelSerializer):
 class HappyHoursAPI(API):
     def get_response_body(self, request, params):
         if request.method == 'POST':
-            happy_hour = create_happy_hour_from_form_data(request.POST)
+            if "happy_hour_id" in params:
+                happy_hour_id = params["happy_hour_id"]
+                happy_hour = HappyHour.objects.get(id=happy_hour_id)
 
-            self._logger.debug('Saving HappyHour ' + happy_hour.__str__())
-            happy_hour.save()
+                response_body = {
+                    'name': happy_hour.id
+                }
 
-            return {
-                'happy_hour_id': happy_hour.id
-            }
+                for field in request.POST:
+                    if field not in HappyHour.EDITABLE_FIELDS:
+                        self._logger.debug(field + ' is not an editable field')
+                        break
+                    happy_hour.__setattr__(field, request.POST[field])
+
+                    response_body[field] = request.POST[field]
+
+                happy_hour.time_updated = datetime.datetime.now()
+                happy_hour.save()
+
+                return response_body
+                
+            else:
+                happy_hour = create_happy_hour_from_form_data(request.POST)
+    
+                self._logger.debug('Saving HappyHour ' + happy_hour.__str__())
+                happy_hour.save()
+    
+                return {
+                    'happy_hour_id': happy_hour.id
+                }
 
         elif request.method == 'GET':
             if "happy_hour_id" in params:
@@ -73,7 +95,7 @@ def create_happy_hour_from_form_data(form_details):
         , thursday=True if form_details["thursday"] == 'true' else False
         , friday=True if form_details["friday"] == 'true' else False
         , saturday=True if form_details["saturday"] == 'true' else False
-        , time_updated=datetime.now()
+        , time_updated=datetime.datetime.now()
     )
 
     return happy_hour

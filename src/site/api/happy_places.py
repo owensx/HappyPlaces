@@ -187,7 +187,7 @@ def create_happy_place(request_data):
         , longitude=google_place["longitude"]
         , price_level=google_place["price_level"] if google_place["price_level"] else None
         , google_place_id=google_place_id
-        , time_updated=datetime.now()
+        , time_updated=datetime.datetime.now()
     )
 
     return happy_place
