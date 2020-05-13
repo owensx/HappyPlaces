@@ -7,6 +7,8 @@ from src.site.models import Neighborhood
 
 
 class HappyPlace(models.Model):
+    EDITABLE_FIELDS = ['cross', 'instagram_url', 'active']
+
     # foreign keys
     neighborhood = models.ForeignKey(Neighborhood, related_name='happy_places', on_delete=models.PROTECT)
 
@@ -40,7 +42,7 @@ class HappyPlace(models.Model):
             if not upcoming and happy_hour.start > kwargs['time']:
                 upcoming = True
 
-        return 'UPCOMING' if upcoming else 'PAST'
+        return 'UPCOMING' if upcoming else 'NONE'
 
     def __str__(self):
         return self.name.__str__()

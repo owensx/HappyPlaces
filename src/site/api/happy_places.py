@@ -1,23 +1,28 @@
 import json
-from datetime import datetime
+from rest_framework import serializers
+
 from src.site import google_helper
 
 from rest_framework.serializers import ModelSerializer
 
 import src.site.api.happy_hours as happy_hour_api
 
-from src.site import happy_place_helper
 from src.site.api.base_api import API
 from src.site.happy_hour_helper import filter_on_time, filter_on_days
 from src.site.model.happy_hour import HappyHour
 from src.site.model.happy_place import HappyPlace
 from src.site.models import City, Neighborhood
 from math import sqrt
-from datetime import time
+import datetime
 
 
-class HappyPlaceSerializer(ModelSerializer):
+class HappyPlaceStatusSerializer(ModelSerializer):
     happy_hours = happy_hour_api.HappyHourSerializer(many=True)
+    status = serializers.SerializerMethodField()
+
+    @staticmethod
+    def get_status(obj):
+        return obj.status
 
     class Meta:
         model = HappyPlace
@@ -27,18 +32,53 @@ class HappyPlaceSerializer(ModelSerializer):
 class HappyPlacesAPI(API):
     def get_response_body(self, request, params):
         if request.method == 'POST':
-            happy_place = create_happy_place(request.POST)
+            if "happy_place_id" in params:
+                happy_place_id = params["happy_place_id"]
+                happy_place = HappyPlace.objects.get(id=happy_place_id)
 
-            self._logger.debug('Saving HappyPlace ' + happy_place.__str__())
-            happy_place.save()
+                response_body = {
+                    'name': happy_place.name
+                }
 
-            return {
-                'name': happy_place.name
-                , 'id': happy_place.id
-                , 'google_place_id': happy_place.google_place_id
-            }
+                errors = []
+
+                for field in request.POST:
+                    if field not in HappyPlace.EDITABLE_FIELDS:
+                        self._logger.debug(field + ' is not an editable field')
+                        errors.append(field)
+                        break
+                    happy_place.__setattr__(field, request.POST[field])
+
+                    response_body[field] = request.POST[field]
+
+                happy_place.time_updated = datetime.datetime.now()
+                happy_place.save()
+
+                if errors:
+                    raise ValueError("the following fields are invalid: " + errors.__str__())
+
+                return response_body
+
+            else:
+                happy_place = create_happy_place(request.POST)
+
+                self._logger.debug('Saving HappyPlace ' + happy_place.__str__())
+                # validateInput
+                happy_place.save()
+
+                return {
+                    'name': happy_place.name
+                    , 'id': happy_place.id
+                    , 'google_place_id': happy_place.google_place_id
+                }
 
         elif request.method == 'GET':
+            if ("statusDay" in request.GET) ^ ("statusTime" in request.GET):
+                raise ValueError('both statusDay and statusTime must be included or both be excluded')
+
+            if "status" in request.GET and ("statusDay" not in request.GET or "statusTime" not in request.GET):
+                raise ValueError('both statusDay and statusTime must be included with status param')
+
             if "happy_place_id" in params:
                 happy_place_id = params["happy_place_id"]
                 self._logger.debug('Fetching HappyPlace ' + str(happy_place_id))
@@ -89,7 +129,7 @@ class HappyPlacesAPI(API):
                     minutes = int(request.GET["time"][2:4])
 
                     happy_hours = HappyHour.objects.filter(happy_place__in=happy_places)
-                    happy_hours = filter_on_time(happy_hours, time(hours, minutes, 0))
+                    happy_hours = filter_on_time(happy_hours, datetime.time(hours, minutes, 0))
                     happy_places = list(map(lambda happy_hour: happy_hour.happy_place, happy_hours))
 
                 if "latitude" in request.GET and "longitude" in request.GET:
@@ -108,9 +148,29 @@ class HappyPlacesAPI(API):
 
                     happy_places = happy_places[:count]
 
+            if "statusDay" in request.GET and "statusTime" in request.GET:
+                day = request.GET["statusDay"]
+                if day not in ['M', 'T', 'W', 'R', 'F', 'S', 'Y']:
+                    raise ValueError(day + " is not valid for day parameter. valid params are [M, T, W, R, F, S, Y]")
+
+                hours = int(request.GET["statusTime"][0:2])
+                minutes = int(request.GET["statusTime"][2:4])
+
+                for happy_place in happy_places:
+                    happy_place.status = happy_place.get_status(day=day, time=datetime.time(hours, minutes, 0))
+            else:
+                self._logger.debug('statusDay and statusTime not provided in request, defaulting status to NONE')
+                for happy_place in happy_places:
+                    happy_place.status = 'NONE'
+
+            if "status" in request.GET:
+                statuses = request.GET["status"].split(',')
+                happy_places = list(filter(lambda happy_place: happy_place.status in statuses, happy_places))
+
             return {
-                'body': json.dumps(HappyPlaceSerializer(happy_places, many=True).data)
+                'body': json.dumps(HappyPlaceStatusSerializer(happy_places, many=True).data)
             }
+
 
 def create_happy_place(request_data):
     google_place_id = request_data["google_place_id"]
@@ -133,7 +193,7 @@ def create_happy_place(request_data):
         , longitude=google_place["longitude"]
         , price_level=google_place["price_level"] if google_place["price_level"] else None
         , google_place_id=google_place_id
-        , time_updated=datetime.now()
+        , time_updated=datetime.datetime.now()
     )
 
     return happy_place

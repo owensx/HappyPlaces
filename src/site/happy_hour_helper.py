@@ -22,9 +22,9 @@ def get_days_criteria(days):
         criteria = criteria | Q(thursday=True)
     if 'F' in days:
         criteria = criteria | Q(friday=True)
-    if 'S' in days:
-        criteria = criteria | Q(saturday=True)
     if 'Y' in days:
+        criteria = criteria | Q(saturday=True)
+    if 'S' in days:
         criteria = criteria | Q(sunday=True)
 
     return criteria

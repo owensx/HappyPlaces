@@ -1,6 +1,7 @@
 'use strict';
 
 var gmap;
+var searchCenter;
 var allHappyPlaces = [];
 var markersOnMap = [];
 var happyPlaceSetIndex = 0;
@@ -153,6 +154,8 @@ function onNextButtonClick() {
         nextButton.style.opacity = "50%";
         nextButton.disabled = true;
     }
+
+    gmap.panTo(searchCenter);
 }
 
 function initPreviousButton(){
@@ -182,6 +185,8 @@ function onPreviousButtonClick(){
         previousButton.style.opacity = "50%";
         previousButton.disabled = true;
     }
+
+    gmap.panTo(searchCenter);
 }
 
 function initSearchButton(){
@@ -194,7 +199,6 @@ function initSearchButton(){
 }
 
 function onSearchButtonClick(latitude, longitude){
-
     clearMarkers();
     clearHappyPlaces();
 
@@ -207,6 +211,7 @@ function onSearchButtonClick(latitude, longitude){
     searchButton.style.opacity = "50%";
 
     var todayOnly = todayOnlyCheckbox.checked;
+    searchCenter = {lat: latitude, lng: longitude};
 
     fetchHappyPlaces(latitude, longitude, todayOnly, maxHappyPlaceCount, function(happyPlaces){
 
@@ -226,8 +231,6 @@ function onSearchButtonClick(latitude, longitude){
         var happyPlaceSet = allHappyPlaces.slice(0, maxMarkerOnMapCount);
         $.each(happyPlaceSet, function(index, happyPlace) {
             addMarkerToMap(happyPlace);
-
-
         });
     });
 
@@ -240,31 +243,30 @@ function fetchHappyPlaces(latitude, longitude, todayOnly, count, callback){
 
     var date = new Date();
 
+    var happyPlacesRequest = {
+        "latitude": latitude
+        , "longitude": longitude
+        , "statusDay": ["S","M","T","W","R","F","Y"][date.getDay()]
+        , "statusTime": ("0" + date.getHours().toString()).slice(-2) + ("0" + date.getMinutes().toString()).slice(-2)
+        , "count": count
+    };
+
     if (todayOnly) {
-        getHappyPlacesWithStatusForLatLng(latitude, longitude, ["S","M","T","W","R","F","Y"][date.getDay()], ("0" + date.getHours().toString()).slice(-2) + ("0" + date.getMinutes().toString()).slice(-2), count, function(response){
-            var happyPlaces = JSON.parse(response['body'])
-                .filter(function(happyPlace){
-                    var latitude = happyPlace['latitude'];
-                    var longitude = happyPlace['longitude'];
-
-                    return (latitude > sw.lat()+.001 && latitude < ne.lat()-.001 && longitude > sw.lng()+.001 && longitude < ne.lng()-.001);
-                });
-
-            callback(happyPlaces);
-        });
-    } else {
-        getHappyPlacesForLatLng(latitude, longitude, count, function(response){
-            var happyPlaces = JSON.parse(response['body'])
-                .filter(function(happyPlace){
-                    var latitude = happyPlace['latitude'];
-                    var longitude = happyPlace['longitude'];
-
-                    return (latitude > sw.lat()+.001 && latitude < ne.lat()-.001 && longitude > sw.lng()+.001 && longitude < ne.lng()-.001);
-                });
-
-            callback(happyPlaces);
-        });
+        happyPlacesRequest["days"] = ["S","M","T","W","R","F","Y"][date.getDay()];
+        happyPlacesRequest["status"] = "ACTIVE,UPCOMING";
     }
+
+    getHappyPlacesForLatLng(happyPlacesRequest, function(response){
+        var happyPlaces = JSON.parse(response['body'])
+            .filter(function(happyPlace){
+                var latitude = happyPlace['latitude'];
+                var longitude = happyPlace['longitude'];
+
+                return (latitude > sw.lat()+.001 && latitude < ne.lat()-.001 && longitude > sw.lng()+.001 && longitude < ne.lng()-.001);
+            });
+
+        callback(happyPlaces);
+    });
 }
 
 function addMarkerToMap(happyPlace){
@@ -321,8 +323,6 @@ function setSelectedBannerHtml(happyPlace){
     var happyHours = happyPlace['happy_hours'];
     var instagram_url = happyPlace['instagram_url'];
 
-    selectedHappyHours = happyHours;
-
     $("#bannerDays").html(
         '<button id="sundayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'sunday\')">Su</button>'+
         '<button id="mondayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'monday\')">M</button>' +
@@ -331,6 +331,9 @@ function setSelectedBannerHtml(happyPlace){
         '<button id="thursdayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'thursday\')">Th</button>' +
         '<button id="fridayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'friday\')">F</button>' +
         '<button id="saturdayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'saturday\')">Sa</button>');
+
+
+    selectedHappyHours = happyHours;
 
     selectedBannerDay = document.getElementById(dayOfWeek + "DayBlock");
     selectedBannerDay.className = "dayBlockSelected";
@@ -463,21 +466,20 @@ function clearMarkers() {
     markersOnMap = [];
 }
 
-function getHappyPlacesForLatLng(latitude, longitude, count, callback) {
-    var url = "/happyPlaces?latitude=" + latitude + "&longitude=" + longitude + "&count=" + count;
+function getHappyPlacesForLatLng(happyPlacesRequest, callback) {
+    var url = "/happyPlaces?latitude=" + happyPlacesRequest["latitude"]
+        + "&longitude=" + happyPlacesRequest["longitude"]
+        + "&statusDay=" + happyPlacesRequest["statusDay"]
+        + "&statusTime=" + happyPlacesRequest["statusTime"]
+        + "&count=" + happyPlacesRequest["count"];
 
-    $.getJSON(url, function(response) {
-        callback(response);
-    });
-}
+    if (happyPlacesRequest["days"] != null) {
+        url += "&days=" + happyPlacesRequest["days"];
+    }
 
-function getHappyPlacesWithStatusForLatLng(latitude, longitude, day, time, count, callback) {
-    var url = "/happyPlacesStatus?latitude="+ latitude
-        + "&longitude=" + longitude
-        + "&day=" + day
-        + "&time=" + time
-        + "&status=ACTIVE,UPCOMING"
-        + "&count=" + count;
+    if (happyPlacesRequest["status"] != null) {
+        url += "&status=" + happyPlacesRequest["status"];
+    }
 
     $.getJSON(url, function(response) {
         callback(response);

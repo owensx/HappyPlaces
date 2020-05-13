@@ -5,6 +5,23 @@ from src.site.model.happy_place import HappyPlace
 
 
 class HappyHour(models.Model):
+    EDITABLE_FIELDS = [
+        'start'
+        , 'end'
+        , 'notes'
+        , 'beer'
+        , 'wine_glass'
+        , 'wine_bottle'
+        , 'well'
+        , 'shot_beer'
+        , 'sunday'
+        , 'monday'
+        , 'tuesday'
+        , 'wednesday'
+        , 'thursday'
+        , 'friday'
+        , 'saturday'
+    ]
     # foreign keys
     happy_place = models.ForeignKey(HappyPlace, related_name='happy_hours', on_delete=models.CASCADE)
 
@@ -37,3 +54,4 @@ class HappyHourSubmitForm(ModelForm):
     class Meta:
         model = HappyHour
         exclude = ('happy_place', 'time_updated',)
+

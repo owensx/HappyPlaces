@@ -6,7 +6,7 @@ from src.site.api import neighborhoods, happy_places, happy_places_status, happy
 google_places_api = google_places.GooglePlacesAPI()
 neighborhoods_api = neighborhoods.NeighborhoodsAPI()
 happy_places_api = happy_places.HappyPlacesAPI()
-happy_places_status_api = happy_places_status.HappyPlacesStatusAPI()
+# happy_places_status_api = happy_places_status.HappyPlacesStatusAPI()
 happy_hours_api = happy_hours.HappyHoursAPI()
 
 
@@ -31,7 +31,7 @@ urlpatterns = [
     , path('happyPlaces/', handle_request, {'api': happy_places_api})
     , path('happyPlaces/<int:happy_place_id>', handle_request, {'api': happy_places_api})
 
-    , path('happyPlacesStatus', handle_request, {'api': happy_places_status_api})
+    # , path('happyPlacesStatus', handle_request, {'api': happy_places_status_api})
 
     , path('happyHours', handle_request, {'api': happy_hours_api})
     , path('happyHours/', handle_request, {'api': happy_hours_api})
