@@ -28,6 +28,8 @@ class HappyHoursAPI(API):
                     'name': happy_hour.id
                 }
 
+                errors = []
+
                 for field in request.POST:
                     if field not in HappyHour.EDITABLE_FIELDS:
                         self._logger.debug(field + ' is not an editable field')
@@ -38,6 +40,9 @@ class HappyHoursAPI(API):
 
                 happy_hour.time_updated = datetime.datetime.now()
                 happy_hour.save()
+
+                if errors:
+                    raise ValueError("the following fields are invalid: " + errors.__str__())
 
                 return response_body
                 

@@ -40,9 +40,12 @@ class HappyPlacesAPI(API):
                     'name': happy_place.name
                 }
 
+                errors = []
+
                 for field in request.POST:
                     if field not in HappyPlace.EDITABLE_FIELDS:
                         self._logger.debug(field + ' is not an editable field')
+                        errors.append(field)
                         break
                     happy_place.__setattr__(field, request.POST[field])
 
@@ -50,6 +53,9 @@ class HappyPlacesAPI(API):
 
                 happy_place.time_updated = datetime.datetime.now()
                 happy_place.save()
+
+                if errors:
+                    raise ValueError("the following fields are invalid: " + errors.__str__())
 
                 return response_body
 
