@@ -100,7 +100,6 @@ function createMap(latitude, longitude, zoomLevel) {
     controlButtonsDiv.appendChild(searchButton);
     controlButtonsDiv.appendChild(nextButton);
 
-
     var todayButtonDiv = document.createElement('div');
     todayButtonDiv.appendChild(todayOnlyCheckbox);
     todayButtonDiv.appendChild(todayOnlyCheckboxLabel);
@@ -356,7 +355,7 @@ function setSelectedBannerHtml(happyPlace){
     }
 
     bannerTopHtml +=
-        '<div id="bannerTopIcons" style="display:flex">' +
+        '<div id="bannerTopIcons" class="iconContainer">' +
             '<a href="https://www.google.com/maps/search/?api=1&query=Google&query_place_id=' + happyPlaceGoogleId + '">' +
                 '<img src="/static/icons/mapsicon.png" style="width:28px;height:31px">' +
             '</a>';

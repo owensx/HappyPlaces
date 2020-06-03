@@ -123,6 +123,10 @@ body {
     text-align: right;
 }
 
+.iconContainer {
+    display: flex;
+}
+
 .bannerBottomTime {
     margin: 0 auto;
     width: fit-content;
