@@ -188,7 +188,7 @@ def create_happy_place(request_data):
         , cross=cross if cross else None
         , site=google_place["site"] if google_place["site"] else None
         , phone=google_place["phone"] if google_place["phone"] else None
-        , instagram_url='https://instagram.com/'+instagram_handle if instagram_handle else None
+        , instagram_handle=instagram_handle
         , latitude=google_place["latitude"]
         , longitude=google_place["longitude"]
         , price_level=google_place["price_level"] if google_place["price_level"] else None

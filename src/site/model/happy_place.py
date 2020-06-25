@@ -10,7 +10,7 @@ from src.site.models import Neighborhood
 
 
 class HappyPlace(models.Model):
-    EDITABLE_FIELDS = ['cross', 'instagram_url', 'active']
+    EDITABLE_FIELDS = ['cross', 'instagram_handle', 'active']
 
     # foreign keys
     neighborhood = models.ForeignKey(Neighborhood, related_name='happy_places', on_delete=models.PROTECT)
@@ -23,7 +23,7 @@ class HappyPlace(models.Model):
     cross = models.CharField(max_length=50, null=True)
     site = models.CharField(max_length=75, null=True)
     phone = models.CharField(max_length=50, null=True)
-    instagram_url = models.CharField(max_length=75, null=True)
+    instagram_handle = models.CharField(max_length=75, null=True)
     latitude = models.FloatField(null=True)
     longitude = models.FloatField(null=True)
     price_level = models.IntegerField(null=True)

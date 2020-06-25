@@ -320,7 +320,7 @@ function setSelectedBannerHtml(happyPlace){
     var address = happyPlace['address'];
     var site = happyPlace['site'];
     var happyHours = happyPlace['happy_hours'];
-    var instagram_url = happyPlace['instagram_url'];
+    var instagram_handle = happyPlace['instagram_handle'];
 
     $("#bannerDays").html(
         '<button id="sundayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'sunday\')">Su</button>'+
@@ -360,9 +360,9 @@ function setSelectedBannerHtml(happyPlace){
                 '<img src="/static/icons/mapsicon.png" style="width:28px;height:31px">' +
             '</a>';
 
-    if (instagram_url != null){
+    if (instagram_handle != null){
         bannerTopHtml +=
-            '<a href="' + instagram_url + '">' +
+            '<a href="https://instagram.com/' + instagram_handle + '">' +
                 '<img src="/static/icons/instaicon.png" style="width:35px;height:35px">' +
             '</a>'
     }
