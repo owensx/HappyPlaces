@@ -18,7 +18,6 @@ RUN apk add --no-cache --virtual .build-deps musl-dev gcc \
 
 EXPOSE $APPLICATION_PORT
 
-RUN python src/manage.py test
 
 
 CMD ["sh", "-c", "python src/manage.py runserver 0.0.0.0:${APPLICATION_PORT}"]
