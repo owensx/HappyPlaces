@@ -18,7 +18,7 @@ RUN apk add --no-cache --virtual .build-deps musl-dev gcc \
 
 EXPOSE $APPLICATION_PORT
 
-RUN python src/manage.py test
+RUN python src/manage.py migrate --no-input
 
 
 CMD ["sh", "-c", "python src/manage.py runserver 0.0.0.0:${APPLICATION_PORT}"]

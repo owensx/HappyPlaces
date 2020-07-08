@@ -1,3 +1,6 @@
+import datetime
+from datetime import timedelta
+
 from django import forms
 from django.db import models
 from django.forms import Form
@@ -7,7 +10,7 @@ from src.site.models import Neighborhood
 
 
 class HappyPlace(models.Model):
-    EDITABLE_FIELDS = ['cross', 'instagram_url', 'active']
+    EDITABLE_FIELDS = ['cross', 'instagram_handle', 'active']
 
     # foreign keys
     neighborhood = models.ForeignKey(Neighborhood, related_name='happy_places', on_delete=models.PROTECT)
@@ -20,7 +23,7 @@ class HappyPlace(models.Model):
     cross = models.CharField(max_length=50, null=True)
     site = models.CharField(max_length=75, null=True)
     phone = models.CharField(max_length=50, null=True)
-    instagram_url = models.CharField(max_length=75, null=True)
+    instagram_handle = models.CharField(max_length=75, null=True)
     latitude = models.FloatField(null=True)
     longitude = models.FloatField(null=True)
     price_level = models.IntegerField(null=True)
@@ -34,10 +37,11 @@ class HappyPlace(models.Model):
 
         upcoming = False
 
-        for happy_hour in happy_hours:# TODO:add cushion
-            if happy_hour.end >= kwargs['time'] >= happy_hour.start\
-                    or (happy_hour.end < happy_hour.start
-                        and (happy_hour.end >= kwargs['time'] or happy_hour.start <= kwargs['time'])):
+        for happy_hour in happy_hours:
+            is_overnight = happy_hour.end < happy_hour.start
+            happy_hour_cushion_start = (datetime.datetime.combine(datetime.date(1965, 2, 3), happy_hour.start) - timedelta(minutes=10)).time()
+            if happy_hour.end >= kwargs['time'] >= happy_hour_cushion_start\
+                    or (is_overnight and (happy_hour.end >= kwargs['time'] or happy_hour.start <= kwargs['time'])):
                 return 'ACTIVE'
             if not upcoming and happy_hour.start > kwargs['time']:
                 upcoming = True

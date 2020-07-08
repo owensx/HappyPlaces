@@ -30,3 +30,4 @@ class Neighborhood(models.Model):
     class Meta:
         ordering = ('name',)
         db_table = "neighborhood"
+
