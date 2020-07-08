@@ -21,7 +21,7 @@ class HappyPlace(models.Model):
 
     # optional fields
     cross = models.CharField(max_length=50, null=True)
-    site = models.CharField(max_length=75, null=True)
+    site = models.CharField(max_length=70, null=True)
     phone = models.CharField(max_length=50, null=True)
     instagram_handle = models.CharField(max_length=75, null=True)
     latitude = models.FloatField(null=True)
