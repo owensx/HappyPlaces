@@ -14,6 +14,18 @@
 	</head>
 
 	<body id="body">
+		<div id="filtersSidebar" class="sidebar">
+		  <button id="beerFilterButton" class="filterButton">BEER</button>
+		  <button id="wellFilterButton" class="filterButton">WELL</button>
+		  <button id="wineFilterButton" class="filterButton">WINE</button>
+		  <hr id="filtersDivider">
+		  <button id="todayFilterButton" class="filterButton">TODAY</button>
+		  <button id="activeFilterButton" class="filterButton">HAPPENING NOW</button>
+		</div>
+        <div id="filtersSidebarButtonPopup">FILTERS</div>
+		<div id="filtersSidebarButton" class="sidebar">
+		  <img id="filtersSidebarButtonImg" src="{% static 'icons/right_arrow.png' %}">
+		</div>
 
 		<div id="map"></div>
 		<div id="banner">

@@ -7,6 +7,7 @@ var markersOnMap = [];
 var happyPlaceSetIndex = 0;
 var maxMarkerOnMapCount = 6;
 var maxHappyPlaceCount = 36;
+var sidebarIsOpen = false;
 
 var selectedBannerDay = '';
 var selectedHappyHours = '';
@@ -27,19 +28,6 @@ searchButton.addEventListener('click', function() {
     onSearchButtonClick(mapCenter.lat(), mapCenter.lng());
 });
 
-var todayOnlyCheckbox = document.createElement("INPUT");
-todayOnlyCheckbox.setAttribute("type", "checkbox");
-todayOnlyCheckbox.setAttribute("id", "checkboxId");
-
-var todayOnlyCheckboxLabel = document.createElement('label');
-todayOnlyCheckboxLabel.htmlFor = "checkboxId";
-todayOnlyCheckboxLabel.innerHTML = "TODAY ONLY";
-todayOnlyCheckboxLabel.setAttribute("style","font-weight: 1000");
-
-todayOnlyCheckbox.addEventListener('click', function() {
-    searchButton.click();
-});
-
 var statusMarkerMap = {
     'NONE': 'static/icons/marker.png'
     , 'ACTIVE': 'static/icons/active_marker.png'
@@ -48,6 +36,56 @@ var statusMarkerMap = {
 
 $(document).ready(function() {
     $("#bannerTop").html('<p class="bannerMessage">Welcome to HappyPlaces!</p>');
+
+    $("#beerFilterButton").click(function(){
+        $(this).toggleClass('dayBlockSelected'); //TODO:probably want a different css class
+        searchButton.click();
+    });
+
+    $("#wellFilterButton").click(function(){
+        $(this).toggleClass('dayBlockSelected'); //TODO:probably want a different css class
+        searchButton.click();
+    });
+
+    $("#wineFilterButton").click(function(){
+        $(this).toggleClass('dayBlockSelected'); //TODO:probably want a different css class
+        searchButton.click();
+    });
+
+    $("#todayFilterButton").click(function(){
+        $(this).toggleClass('dayBlockSelected'); //TODO:probably want a different css class
+        $("#activeFilterButton").removeClass('dayBlockSelected'); //TODO:probably want a different css class
+        searchButton.click();
+    });
+
+    $("#activeFilterButton").click(function(){
+        $(this).toggleClass('dayBlockSelected'); //TODO:probably want a different css class
+        $("#todayFilterButton").removeClass('dayBlockSelected'); //TODO:probably want a different css class
+        searchButton.click();
+    });
+
+    var filtersSidebarButtonTop = parseInt($("#filtersSidebar").css('top')) + parseInt($("#filtersSidebar").css('height'))/2;
+    $("#filtersSidebarButton").css('top', filtersSidebarButtonTop);
+    $("#filtersSidebarButton").click(function(){
+        $("#filtersSidebarButtonPopup").fadeOut("slow");
+        toggleSidebar();
+    });
+
+    $("#filtersSidebarButtonPopup").css('top', filtersSidebarButtonTop);
+    $("#filtersSidebarButtonPopup").css('height', parseInt($("#filtersSidebarButton").css('height')));
+    $("#filtersSidebarButtonPopup").css('line-height', $("#filtersSidebarButton").css('height'));
+    $("#filtersSidebarButtonPopup").css('left', parseInt($("#filtersSidebarButton").css('width')));
+    $("#filtersSidebarButtonPopup").click(function(){
+        $("#filtersSidebarButtonPopup").fadeOut("slow");
+        toggleSidebar();
+    });
+
+    var dividerWidth =
+        $($(".filterButton").get(0)).innerWidth()
+        - parseInt($($(".filterButton").get(0)).css('marginLeft')) - parseInt($($(".filterButton").get(0)).css('marginRight'))
+        - parseInt($($(".filterButton").get(0)).css('paddingLeft')) - parseInt($($(".filterButton").get(0)).css('paddingRight'));
+
+    $("#filtersDivider").width(dividerWidth);
 });
 
 function initMap() {
@@ -100,17 +138,7 @@ function createMap(latitude, longitude, zoomLevel) {
     controlButtonsDiv.appendChild(searchButton);
     controlButtonsDiv.appendChild(nextButton);
 
-    var todayButtonDiv = document.createElement('div');
-    todayButtonDiv.appendChild(todayOnlyCheckbox);
-    todayButtonDiv.appendChild(todayOnlyCheckboxLabel);
-    todayButtonDiv.style.backgroundColor = "black";
-    todayButtonDiv.style.height = "24px";
-    todayButtonDiv.style.width = "90px";
-    todayButtonDiv.style.borderStyle = "solid"
-    todayButtonDiv.style.borderRadius = "10px";
-
     gmap.controls[google.maps.ControlPosition.TOP_CENTER].push(controlButtonsDiv);
-    gmap.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(todayButtonDiv);
     //gmap.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(bannerDiv);
 
     google.maps.event.addListener(gmap, 'center_changed', function(){
@@ -202,6 +230,7 @@ function onSearchButtonClick(latitude, longitude){
     clearHappyPlaces();
 
     happyPlaceSetIndex = 0;
+    searchCenter = {lat: latitude, lng: longitude};
 
     nextButton.style.opacity = "50%";
     nextButton.disabled = true;
@@ -209,10 +238,14 @@ function onSearchButtonClick(latitude, longitude){
     previousButton.disabled = true;
     searchButton.style.opacity = "50%";
 
-    var todayOnly = todayOnlyCheckbox.checked;
-    searchCenter = {lat: latitude, lng: longitude};
+    var beer = $("#beerFilterButton").attr('class').includes('dayBlockSelected');
+    var well = $("#wellFilterButton").attr('class').includes('dayBlockSelected');
+    var wine = $("#wineFilterButton").attr('class').includes('dayBlockSelected');
+    var todayOnly = $("#todayFilterButton").attr('class').includes('dayBlockSelected');
+    var activeOnly = $("#activeFilterButton").attr('class').includes('dayBlockSelected');
 
-    fetchHappyPlaces(latitude, longitude, todayOnly, maxHappyPlaceCount, function(happyPlaces){
+
+    fetchHappyPlaces(latitude, longitude, todayOnly, activeOnly, beer, well, wine, maxHappyPlaceCount, function(happyPlaces){
 
         allHappyPlaces = happyPlaces;
 
@@ -235,7 +268,7 @@ function onSearchButtonClick(latitude, longitude){
 
 }
 
-function fetchHappyPlaces(latitude, longitude, todayOnly, count, callback){
+function fetchHappyPlaces(latitude, longitude, todayOnly, activeOnly, beer, well, wine, count, callback){
     var bounds = gmap.getBounds();
     var ne = bounds.getNorthEast();
     var sw = bounds.getSouthWest();
@@ -253,6 +286,21 @@ function fetchHappyPlaces(latitude, longitude, todayOnly, count, callback){
     if (todayOnly) {
         happyPlacesRequest["days"] = ["S","M","T","W","R","F","Y"][date.getDay()];
         happyPlacesRequest["status"] = "ACTIVE,UPCOMING";
+    }
+
+    if (activeOnly) {
+        happyPlacesRequest["days"] = ["S","M","T","W","R","F","Y"][date.getDay()];
+        happyPlacesRequest["status"] = "ACTIVE";
+    }
+
+    if (beer) {
+        happyPlacesRequest["days"] = 1;
+    }
+    if (well) {
+        happyPlacesRequest["well"] = 1;
+    }
+    if (wine) {
+        happyPlacesRequest["wine"] = 1;
     }
 
     getHappyPlacesForLatLng(happyPlacesRequest, function(response){
@@ -385,14 +433,14 @@ function setDefaultBannerHtml(){
     $("#bannerDays").html('');
     $("#bannerBottom").html(
         '<img src="/static/icons/active_marker.png" style="height:30px;">' +
-        '<p class="bannerDefaultLegendText">Active Now!</p>' +
+        '<p class="bannerDefaultLegendText">Happening Now</p>' +
         '<img src="/static/icons/upcoming_marker.png" style="height:30px;">' +
         '<p class="bannerDefaultLegendText">Upcoming Today</p>'
     );
 }
 
 function setNoResultsBannerHtml(){
-    $("#bannerTop").html('<p class="bannerMessage">No results! Try zooming out.</p>');
+    $("#bannerTop").html('<p class="bannerMessage">No results! Try zooming out, or removing a filter.</p>');
     $("#bannerDays").html('');
     $("#bannerBottom").html('');
 }
@@ -480,7 +528,43 @@ function getHappyPlacesForLatLng(happyPlacesRequest, callback) {
         url += "&status=" + happyPlacesRequest["status"];
     }
 
+    if (happyPlacesRequest["beer"] != null) {
+        url += "&beer=" + happyPlacesRequest["beer"];
+    }
+
+    if (happyPlacesRequest["well"] != null) {
+        url += "&well=" + happyPlacesRequest["well"];
+    }
+
+    if (happyPlacesRequest["wine"] != null) {
+        url += "&wine=" + happyPlacesRequest["wine"];
+    }
+
     $.getJSON(url, function(response) {
         callback(response);
     });
+}
+
+
+
+function toggleSidebar() {
+    if (sidebarIsOpen) {
+        $("#filtersSidebar").width(0);
+        $("#filtersSidebarButton").css({'left': 0});
+
+        document.getElementById("filtersSidebarButtonImg").src = 'static/icons/right_arrow.png';
+        sidebarIsOpen = false;
+    } else {
+        var filterButtonWidth = $($(".filterButton").get(0)).outerWidth();
+        var filterButtonMarginLeft = parseInt($($(".filterButton").get(0)).css('marginLeft'));
+        var filterButtonMarginRight = parseInt($($(".filterButton").get(0)).css('marginRight'));
+
+        var sideBarWidth = filterButtonWidth + filterButtonMarginLeft + filterButtonMarginRight;
+
+        $("#filtersSidebar").width(sideBarWidth);
+        $("#filtersSidebarButton").css({'left': sideBarWidth});
+
+        document.getElementById("filtersSidebarButtonImg").src = 'static/icons/left_arrow.png';
+        sidebarIsOpen = true;
+    }
 }

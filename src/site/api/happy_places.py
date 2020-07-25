@@ -104,16 +104,26 @@ class HappyPlacesAPI(API):
 
                     happy_places = happy_places.filter(neighborhood__id=int(neighborhood_id))
 
-                if "beer" in request.GET or "wine" in request.GET or "well" in request.GET:
+                if "beer" in request.GET or "well" in request.GET or "wine" in request.GET:
+                    filter_on_beer = "beer" in request.GET
+                    filter_on_well = "well" in request.GET
+                    filter_on_wine = "wine" in request.GET
+
+                    if filter_on_beer:
+                        self._logger.debug('Filtering on beer')
+                    if filter_on_well:
+                        self._logger.debug('Filtering on well')
+                    if filter_on_wine:
+                        self._logger.debug('Filtering on wine')
+
                     happy_places = filter(lambda happy_place:  # TODO:use generator expression?
-                                          ("beer" in request.GET and any(happy_hour.beer is not None for happy_hour in
-                                                                         happy_place.happy_hours.all()))
-                                          or ("wine" in request.GET and any(
+                                          (filter_on_beer and any(happy_hour.beer is not None for happy_hour in
+                                                                  happy_place.happy_hours.all()))
+                                          or (filter_on_well and any(happy_hour.well is not None for happy_hour in
+                                                                     happy_place.happy_hours.all()))
+                                          or (filter_on_wine and any(
                                               happy_hour.wine_bottle is not None or happy_hour.wine_glass is not None
                                               for happy_hour in happy_place.happy_hours.all()))
-                                          or ("well" in request.GET and any(
-                                              happy_hour.well is not None for happy_hour in
-                                              happy_place.happy_hours.all()))
                                           , happy_places)
 
                 if "days" in request.GET:
