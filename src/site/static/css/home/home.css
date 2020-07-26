@@ -40,10 +40,11 @@ body {
 }
 
 #banner {
-    height: 15%;
+    height: 14.3%;
     font-size: 15px;
     display: flex;
     flex-direction: column;
+    //border: solid #F0C911;
 }
 
 #bannerDays {
@@ -63,6 +64,7 @@ body {
     color: #000000;
     text-align: center;
     justify-content: space-around;
+    //border-bottom: solid #F0C911;
 }
 
 .bannerMessage {
@@ -77,15 +79,15 @@ body {
 #bannerTopHappyPlace {
     margin: auto;
     height: fit-content;
-    font-size: 21px;
+    font-size: 18px;
     font-weight: bold;
-    color: #f2ab1e;
+    color: #F0C911;
 }
 
 #bannerTopAddress {
     margin: auto;
     height: fit-content;
-    font-size: 15px;
+    font-size: 14px;
 }
 
 #bannerBottom {
@@ -96,6 +98,7 @@ body {
     height: fit-content;
     color: #000000;
     flex: 3 1 auto;
+    align-items: center;
 }
 
 .dayBlock {
@@ -103,7 +106,6 @@ body {
     margin: auto;
     text-align: center;
     height: fit-content;
-    background-color: #f2ab1e;
     color: #000000;
 }
 
@@ -113,12 +115,12 @@ body {
     text-align: center;
     height: fit-content;
     background: #000000;
-    color: #f2ab1e;
+    color: #F0C911;
 }
 
 .bannerBottomSpecial {
     margin: 0 auto;
-    width: fit-content;
+    width: 73%;
     height: fit-content;
     text-align: right;
 }
@@ -129,7 +131,7 @@ body {
 
 .bannerBottomTime {
     margin: 0 auto;
-    width: fit-content;
+    width: 27%;
     height: fit-content;
     text-align: left;
 }
