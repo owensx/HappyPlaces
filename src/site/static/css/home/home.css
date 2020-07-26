@@ -233,6 +233,7 @@ button:active {
     width: 60px;
     opacity: .7;
     font-size: 12px;
+    transition: 0.5s;
 }
 
 /*.gm-style div {

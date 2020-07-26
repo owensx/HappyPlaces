@@ -67,8 +67,8 @@ $(document).ready(function() {
     var filtersSidebarButtonTop = parseInt($("#filtersSidebar").css('top')) + parseInt($("#filtersSidebar").css('height'))/2;
     $("#filtersSidebarButton").css('top', filtersSidebarButtonTop);
     $("#filtersSidebarButton").click(function(){
-        $("#filtersSidebarButtonPopup").fadeOut("slow");
         toggleSidebar();
+        $("#filtersSidebarButtonPopup").fadeOut({"duration":"slow", "start":function(){$("#filtersSidebarButtonPopup").css('transition','0s')}});
     });
 
     $("#filtersSidebarButtonPopup").css('top', filtersSidebarButtonTop);
@@ -76,8 +76,8 @@ $(document).ready(function() {
     $("#filtersSidebarButtonPopup").css('line-height', $("#filtersSidebarButton").css('height'));
     $("#filtersSidebarButtonPopup").css('left', parseInt($("#filtersSidebarButton").css('width')));
     $("#filtersSidebarButtonPopup").click(function(){
-        $("#filtersSidebarButtonPopup").fadeOut("slow");
         toggleSidebar();
+        $("#filtersSidebarButtonPopup").fadeOut({"duration":"slow", "start":function(){$("#filtersSidebarButtonPopup").css('transition','0s')}});
     });
 
     var dividerWidth =
@@ -563,6 +563,9 @@ function toggleSidebar() {
 
         $("#filtersSidebar").width(sideBarWidth);
         $("#filtersSidebarButton").css({'left': sideBarWidth});
+
+        $("#filtersSidebarButtonPopup").css({'left': sideBarWidth + $("#filtersSidebarButton").width()});
+
 
         document.getElementById("filtersSidebarButtonImg").src = 'static/icons/left_arrow.png';
         sidebarIsOpen = true;
