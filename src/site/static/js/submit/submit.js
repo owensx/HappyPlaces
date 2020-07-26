@@ -147,7 +147,7 @@ function saveHappyHour(){
     var friday = $("#happyHourForm input[name='friday']").is(":checked");
     var saturday = $("#happyHourForm input[name='saturday']").is(":checked");
 
-    saveHappyHourRequest = {
+    var saveHappyHourRequest = {
         happy_place_id: happy_place_id
         , notes: notes
         , start: start
