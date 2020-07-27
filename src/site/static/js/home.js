@@ -2,6 +2,7 @@
 
 var gmap;
 var searchCenter;
+var searchZoom;
 var allHappyPlaces = [];
 var markersOnMap = [];
 var happyPlaceSetIndex = 0;
@@ -38,29 +39,29 @@ $(document).ready(function() {
     $("#bannerTop").html('<p class="bannerMessage">Welcome to HappyPlaces!</p>');
 
     $("#beerFilterButton").click(function(){
-        $(this).toggleClass('dayBlockSelected'); //TODO:probably want a different css class
+        $(this).toggleClass('filterButtonSelected');
         searchButton.click();
     });
 
     $("#wellFilterButton").click(function(){
-        $(this).toggleClass('dayBlockSelected'); //TODO:probably want a different css class
+        $(this).toggleClass('filterButtonSelected');
         searchButton.click();
     });
 
     $("#wineFilterButton").click(function(){
-        $(this).toggleClass('dayBlockSelected'); //TODO:probably want a different css class
+        $(this).toggleClass('filterButtonSelected');
         searchButton.click();
     });
 
     $("#todayFilterButton").click(function(){
-        $(this).toggleClass('dayBlockSelected'); //TODO:probably want a different css class
-        $("#activeFilterButton").removeClass('dayBlockSelected'); //TODO:probably want a different css class
+        $(this).toggleClass('filterButtonSelected');
+        $("#activeFilterButton").removeClass('filterButtonSelected');
         searchButton.click();
     });
 
     $("#activeFilterButton").click(function(){
-        $(this).toggleClass('dayBlockSelected'); //TODO:probably want a different css class
-        $("#todayFilterButton").removeClass('dayBlockSelected'); //TODO:probably want a different css class
+        $(this).toggleClass('filterButtonSelected');
+        $("#todayFilterButton").removeClass('filterButtonSelected');
         searchButton.click();
     });
 
@@ -183,6 +184,7 @@ function onNextButtonClick() {
     }
 
     gmap.panTo(searchCenter);
+    gmap.setZoom(searchZoom);
 }
 
 function initPreviousButton(){
@@ -214,6 +216,7 @@ function onPreviousButtonClick(){
     }
 
     gmap.panTo(searchCenter);
+    gmap.setZoom(searchZoom);
 }
 
 function initSearchButton(){
@@ -231,6 +234,7 @@ function onSearchButtonClick(latitude, longitude){
 
     happyPlaceSetIndex = 0;
     searchCenter = {lat: latitude, lng: longitude};
+    searchZoom = gmap.getZoom();
 
     nextButton.style.opacity = "50%";
     nextButton.disabled = true;
@@ -238,11 +242,11 @@ function onSearchButtonClick(latitude, longitude){
     previousButton.disabled = true;
     searchButton.style.opacity = "50%";
 
-    var beer = $("#beerFilterButton").attr('class').includes('dayBlockSelected');
-    var well = $("#wellFilterButton").attr('class').includes('dayBlockSelected');
-    var wine = $("#wineFilterButton").attr('class').includes('dayBlockSelected');
-    var todayOnly = $("#todayFilterButton").attr('class').includes('dayBlockSelected');
-    var activeOnly = $("#activeFilterButton").attr('class').includes('dayBlockSelected');
+    var beer = $("#beerFilterButton").attr('class').includes('filterButtonSelected');
+    var well = $("#wellFilterButton").attr('class').includes('filterButtonSelected');
+    var wine = $("#wineFilterButton").attr('class').includes('filterButtonSelected');
+    var todayOnly = $("#todayFilterButton").attr('class').includes('filterButtonSelected');
+    var activeOnly = $("#activeFilterButton").attr('class').includes('filterButtonSelected');
 
 
     fetchHappyPlaces(latitude, longitude, todayOnly, activeOnly, beer, well, wine, maxHappyPlaceCount, function(happyPlaces){
@@ -371,19 +375,19 @@ function setSelectedBannerHtml(happyPlace){
     var instagram_handle = happyPlace['instagram_handle'];
 
     $("#bannerDays").html(
-        '<button id="sundayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'sunday\')">Su</button>'+
-        '<button id="mondayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'monday\')">M</button>' +
-        '<button id="tuesdayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'tuesday\')">Tu</button>' +
-        '<button id="wednesdayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'wednesday\')">W</button>' +
-        '<button id="thursdayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'thursday\')">Th</button>' +
-        '<button id="fridayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'friday\')">F</button>' +
-        '<button id="saturdayDayBlock" class="dayBlock" onclick="bannerDayOnClick(\'saturday\')">Sa</button>');
+        '<button id="sundayFilterButton" class="filterButton" onclick="bannerDayOnClick(\'sunday\')">Su</button>'+
+        '<button id="mondayFilterButton" class="filterButton" onclick="bannerDayOnClick(\'monday\')">M</button>' +
+        '<button id="tuesdayFilterButton" class="filterButton" onclick="bannerDayOnClick(\'tuesday\')">Tu</button>' +
+        '<button id="wednesdayFilterButton" class="filterButton" onclick="bannerDayOnClick(\'wednesday\')">W</button>' +
+        '<button id="thursdayFilterButton" class="filterButton" onclick="bannerDayOnClick(\'thursday\')">Th</button>' +
+        '<button id="fridayFilterButton" class="filterButton" onclick="bannerDayOnClick(\'friday\')">F</button>' +
+        '<button id="saturdayFilterButton" class="filterButton" onclick="bannerDayOnClick(\'saturday\')">Sa</button>');
 
 
     selectedHappyHours = happyHours;
 
-    selectedBannerDay = document.getElementById(dayOfWeek + "DayBlock");
-    selectedBannerDay.className = "dayBlockSelected";
+    selectedBannerDay = document.getElementById(dayOfWeek + "FilterButton");
+    selectedBannerDay.className = "filterButtonSelected";
     setBottomBannerHtml(dayOfWeek);
 
     var bannerTopHtml = '';
@@ -421,10 +425,10 @@ function setSelectedBannerHtml(happyPlace){
 }
 
 function bannerDayOnClick(dayOfWeek){
-    selectedBannerDay.className = "dayBlock";
+    selectedBannerDay.className = "filterButton";
 
-    selectedBannerDay = document.getElementById(dayOfWeek + "DayBlock");
-    selectedBannerDay.className = "dayBlockSelected";
+    selectedBannerDay = document.getElementById(dayOfWeek + "FilterButton");
+    selectedBannerDay.className = "filterButtonSelected";
     setBottomBannerHtml(dayOfWeek);
 }
 
