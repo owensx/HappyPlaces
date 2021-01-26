@@ -1,0 +1,40 @@
+<!--{% load static %}-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+	<head>
+		<meta name="viewport" content="width=device-width">
+		<link rel="stylesheet" href="{% static 'css/home/home.css' %}" type="text/css">
+
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js" type="text/javascript"></script>
+
+		<script src="{% static 'js/home.js' %}" type="text/javascript"></script>
+		<script src="https://maps.googleapis.com/maps/api/js?callback=initMap&key=AIzaSyDj5RUzdluGjmLNjSVXASlDyvK_LIZ4Qq8&libraries=places" type="text/javascript" async defer></script>
+
+
+	</head>
+
+	<body id="body">
+		<div id="filtersSidebar" class="sidebar">
+		  <button id="beerFilterButton" class="filterButton">BEER</button>
+		  <button id="wellFilterButton" class="filterButton">WELL</button>
+		  <button id="wineFilterButton" class="filterButton">WINE</button>
+		  <hr id="filtersDivider">
+		  <button id="todayFilterButton" class="filterButton">TODAY</button>
+		  <button id="activeFilterButton" class="filterButton">HAPPENING NOW</button>
+		</div>
+        <div id="filtersSidebarButtonPopup">FILTERS</div>
+		<div id="filtersSidebarButton" class="sidebar">
+		  <img id="filtersSidebarButtonImg" src="{% static 'icons/right_arrow.png' %}">
+		</div>
+
+		<div id="map"></div>
+		<div id="banner">
+		<div id="bannerTop"></div>
+		<div id="bannerDays"></div>
+		<div id="bannerBottom"></div>
+
+		</div>
+	<!--{#<a href="https://script.google.com/macros/s/AKfycbxY09aDQbhBdA7t_mB4H4abe_bMMlketJvxwlp8l2A0B_TcDjwN/exec">ADD A PHOTO</a>#}-->
+
+	</body>
+</html>
