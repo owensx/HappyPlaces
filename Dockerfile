@@ -32,7 +32,7 @@ RUN a2dissite *default
 #add WORKDIR to apache environment
 RUN echo "export WORKDIR=$WORKDIR" >> /etc/apache2/envvars
 
-RUN apachectl -D FOREGROUND
+RUN apachectl &
 CMD ["tail", "-f", "/var/log/apache2/error.log"]
 
 
