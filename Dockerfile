@@ -32,7 +32,8 @@ RUN a2dissite *default
 #add WORKDIR to apache environment
 RUN echo "export WORKDIR=$WORKDIR" >> /etc/apache2/envvars
 
-CMD ["tail", "-f", "/var/log/apache2/error.log", "&&", "apachectl", "-D", "FOREGROUND"]
+RUN apachectl -D FOREGROUND
+CMD ["tail", "-f", "/var/log/apache2/error.log"]
 
 
 #RUN python src/manage.py migrate --no-input
