@@ -1,7 +1,11 @@
+import logging
+
 from django.shortcuts import render
 
 from HappyPlaces.model.happy_hour import HappyHourSubmitForm
 from HappyPlaces.model.happy_place import HappyPlaceSubmitForm
+
+logger = logging.getLogger('console_logger')
 
 
 def admin_submit(request):
@@ -24,7 +28,7 @@ def home(request):
     # all_active_cities = sorted(set(happy_place.neighborhood.city for happy_place in all_active_happy_places))
     #
     # context['cities'] = all_active_cities
-
+    logger.info('fetchinghome page')
     return render(request, 'home.html', context)
 
 # def Home(request):
