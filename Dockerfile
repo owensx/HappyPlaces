@@ -36,7 +36,7 @@ RUN echo "export WORKDIR=$WORKDIR" >> /etc/apache2/envvars
 RUN ls -ltr /proc/$$/fd/1
 RUN ln -sf /proc/$$/fd/1 /var/log/apache2/error.log
 
-CMD ["sudo", "apachectl", "-D", "FOREGROUND"]
+CMD ["apachectl", "-D", "FOREGROUND"]
 
 
 #RUN python src/manage.py migrate --no-input
