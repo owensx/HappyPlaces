@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import sys
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -103,16 +104,16 @@ LOGGING = {
         }
     },
     'handlers': {
-        'happy_places': {
+        'console': {
             'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(os.path.dirname(__file__), '../..', 'happy_places.log'),
+            'class': 'logging.StreamHandler',
+            'stream': sys.stdout,
             'formatter': 'base'
         }
     },
     'loggers': {
         'console_logger': {
-            'handlers': ['happy_places'],
+            'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': True,
         },

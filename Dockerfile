@@ -14,11 +14,9 @@ RUN mkdir $WORKDIR
 COPY . $WORKDIR/
 WORKDIR $WORKDIR
 
-RUN chmod -R 777 $WORKDIR
-
 #apt dependencies
 RUN apt update
-RUN apt install -y systemd apache2 apache2-dev default-libmysqlclient-dev sudo
+RUN apt install -y systemd apache2 apache2-dev default-libmysqlclient-dev
 
 #pip dependencies
 RUN pip install --upgrade pip
@@ -34,12 +32,9 @@ RUN a2dissite *default
 #add WORKDIR to apache environment
 RUN echo "export WORKDIR=$WORKDIR" >> /etc/apache2/envvars
 
-
-RUN touch ./happy_places.log
-RUN chmod 777 ./happy_places.log
-RUN tail -f ./happy_places.log &
-
-RUN tail -f /var/log/apache2/error.log &
+#pipe logs to stdout
+RUN ls -ltr /proc/$$/fd/1
+RUN ln -sf /proc/$$/fd/1 /var/log/apache2/error.log
 
 CMD ["sudo", "apachectl", "-D", "FOREGROUND"]
 

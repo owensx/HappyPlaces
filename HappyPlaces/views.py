@@ -28,7 +28,7 @@ def home(request):
     # all_active_cities = sorted(set(happy_place.neighborhood.city for happy_place in all_active_happy_places))
     #
     # context['cities'] = all_active_cities
-    logger.info('fetchinghome page')
+    logger.info('fetching home page')
     return render(request, 'home.html', context)
 
 # def Home(request):
