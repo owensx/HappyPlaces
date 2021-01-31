@@ -32,6 +32,7 @@ RUN a2dissite *default
 #add WORKDIR to apache environment
 RUN echo "export WORKDIR=$WORKDIR" >> /etc/apache2/envvars
 RUN tail -f /var/log/apache2/error.log &
+RUN tail -f ./happy_places.log
 
 CMD ["sudo", "apachectl", "-D", "FOREGROUND"]
 

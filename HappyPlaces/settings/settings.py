@@ -103,15 +103,16 @@ LOGGING = {
         }
     },
     'handlers': {
-        'console': {
+        'happy_places': {
             'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(os.path.dirname(__file__), '../..', 'happy_places.log'),
             'formatter': 'base'
         }
     },
     'loggers': {
         'console_logger': {
-            'handlers': ['console'],
+            'handlers': ['happy_places'],
             'level': 'DEBUG',
             'propagate': True,
         },
