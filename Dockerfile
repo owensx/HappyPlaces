@@ -16,7 +16,7 @@ WORKDIR $WORKDIR
 
 #apt dependencies
 RUN apt update
-RUN apt install -y systemd apache2 apache2-dev default-libmysqlclient-dev
+RUN apt install -y systemd apache2 apache2-dev default-libmysqlclient-dev sudo
 
 #pip dependencies
 RUN pip install --upgrade pip
