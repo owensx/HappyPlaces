@@ -35,7 +35,7 @@ RUN a2dissite *default
 RUN echo "export WORKDIR=$WORKDIR" >> /etc/apache2/envvars
 
 
-RUN mkdir ./happy_places.log
+RUN touch ./happy_places.log
 RUN chmod 777 ./happy_places.log
 RUN tail -f ./happy_places.log &
 
