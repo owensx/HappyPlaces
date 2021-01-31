@@ -1,7 +1,5 @@
 from HappyPlaces.settings.settings import *
 
-ALLOWED_HOSTS.append('findhappyplaces.com')
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',

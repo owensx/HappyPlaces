@@ -46,9 +46,10 @@ MIDDLEWARE = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'HappyPlaces.middleware.HealthCheckMiddleware'
 )
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', '100.115.92.194']
+ALLOWED_HOSTS = ['findhappyplaces.com', 'localhost', '127.0.0.1', '0.0.0.0', '100.115.92.194']
 ROOT_URLCONF = 'HappyPlaces.urls'
 
 

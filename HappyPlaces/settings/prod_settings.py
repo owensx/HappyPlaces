@@ -1,3 +1,5 @@
+from HappyPlaces.settings.settings import *
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
