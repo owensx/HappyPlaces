@@ -40,13 +40,13 @@ INSTALLED_APPS = (
 )
 
 MIDDLEWARE = (
+    'HappyPlaces.middleware.HealthCheckMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'HappyPlaces.middleware.HealthCheckMiddleware'
 )
 
 ALLOWED_HOSTS = ['findhappyplaces.com', 'localhost', '127.0.0.1', '0.0.0.0', '100.115.92.194']
