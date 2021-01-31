@@ -33,7 +33,6 @@ RUN a2dissite *default
 RUN echo "export WORKDIR=$WORKDIR" >> /etc/apache2/envvars
 
 #pipe logs to stdout
-RUN ls -ltr /proc/$$/fd/1
 RUN ln -sf /proc/$$/fd/1 /var/log/apache2/error.log
 
 CMD ["apachectl", "-D", "FOREGROUND"]
