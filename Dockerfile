@@ -40,7 +40,6 @@ RUN chmod 777 ./happy_places.log
 RUN tail -f ./happy_places.log &
 
 RUN tail -f /var/log/apache2/error.log &
-RUN tail -f ./happy_places.log
 
 CMD ["sudo", "apachectl", "-D", "FOREGROUND"]
 
