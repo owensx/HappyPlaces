@@ -49,9 +49,8 @@ MIDDLEWARE = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ALLOWED_HOSTS = ['findhappyplaces.com', 'localhost', '127.0.0.1', '0.0.0.0', '100.115.92.194']
+ALLOWED_HOSTS = ['findhappyplaces.com', 'localhost', '127.0.0.1', '0.0.0.0', os.getenv('LOCAL_IP', '')]
 ROOT_URLCONF = 'HappyPlaces.urls'
-
 
 DATABASES = {
   'default': {

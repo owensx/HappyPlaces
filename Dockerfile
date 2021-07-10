@@ -1,18 +1,17 @@
 FROM python:3.9-buster
 
 ARG DJANGO_SETTINGS_MODULE
-ARG APPLICATION_PORT
 
 ENV DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
-ENV APPLICATION_PORT=$APPLICATION_PORT
 ENV PYTHONUNBUFFERED=1
 ENV WORKDIR="/code"
 
-EXPOSE $APPLICATION_PORT
-
 RUN mkdir $WORKDIR
-COPY . $WORKDIR/
+COPY HappyPlaces $WORKDIR/HappyPlaces
+COPY static $WORKDIR/static
+
 WORKDIR $WORKDIR
+RUN ls -ltr
 
 #apt dependencies
 RUN apt update
@@ -20,12 +19,12 @@ RUN apt install -y systemd apache2 apache2-dev default-libmysqlclient-dev
 
 #pip dependencies
 RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+RUN pip install -r HappyPlaces/requirements.txt
 #python3.9 specific dependencies
 RUN python3.9 -m pip install mod_wsgi
 
 #enable site in apache
-RUN mv $WORKDIR/happyplaces.conf /etc/apache2/sites-available
+RUN mv HappyPlaces/happyplaces.conf /etc/apache2/sites-available
 RUN a2ensite happyplaces
 RUN a2dissite *default
 
@@ -33,7 +32,7 @@ RUN a2dissite *default
 RUN echo "export WORKDIR=$WORKDIR" >> /etc/apache2/envvars
 
 #pipe logs to stdout
-RUN ln -sf /proc/$$/fd/1 /var/log/apache2/error.log
+RUN ln -sf /dev/stdout /var/log/apache2/error.log
 
 CMD ["apachectl", "-D", "FOREGROUND"]
 

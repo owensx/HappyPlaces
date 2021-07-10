@@ -1,0 +1,106 @@
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "push"'
+      when: always
+    - when: never
+
+stages:
+  - build
+  - test
+  - deploy
+
+variables:
+  ECR_REGISTRY: 570412635900.dkr.ecr.us-east-2.amazonaws.com/happyplaces
+
+.docker_build:
+  stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [ "" ]
+  script:
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+
+.test_container:
+  stage: test
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - echo 'integration test'
+#    - docker pull $CI_REGISTRY_IMAGE:$TAG_NAME
+#    - CONTAINER_ID=$(docker run -d $CI_REGISTRY_IMAGE:$TAG_NAME)
+#    - LOCAL_IP=$(docker inspect e DJANGO_SETTINGS_MODULE=HappyPlaces.settings.${ENV} -e LOCAL_IP=* -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $CONTAINER_ID)
+#    - docker stop $CONTAINER_ID
+
+.docker_push:
+  image: docker:latest
+  stage: deploy
+  services:
+    - docker:dind
+  before_script:
+    - apk add py3-pip
+    - pip3 install awscli
+  script:
+    - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+    - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA $ECR_REGISTRY:$TAG_NAME
+    - aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin $ECR_REGISTRY
+    - docker push $ECR_REGISTRY:$TAG_NAME
+
+
+
+.branch:
+  variables:
+  rules:
+      - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH && $CI_COMMIT_BRANCH !~ /release*/
+
+.qa:
+  variables:
+    TAG_NAME: latest
+    ENV: qa
+  rules:
+      - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+.prod:
+  variables:
+    TAG_NAME: $CI_COMMIT_TAG
+    ENV: prod
+
+
+
+build_feature:
+  extends:
+    - .docker_build
+    - .branch
+
+test_feature:
+  extends:
+    - .test_container
+    - .branch
+
+
+
+build_qa:
+  extends:
+    - .docker_build
+    - .qa
+
+test_qa:
+  extends:
+    - .test_container
+    - .qa
+
+push_qa:
+  extends:
+    - .docker_push
+    - .qa
+
+
+
+push_prod:
+  extends:
+    - .docker_push
+    - .prod
+  rules:
+    - if: $CI_COMMIT_TAG
