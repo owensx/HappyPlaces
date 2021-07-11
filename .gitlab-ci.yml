@@ -61,7 +61,6 @@ variables:
 
 .qa:
   variables:
-    TAG_NAME: latest
     ENV: qa
   rules:
       - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
