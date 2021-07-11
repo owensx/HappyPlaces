@@ -1,0 +1,6 @@
+[
+  {
+    "name": "happyplaces",
+    "imageUri": "570412635900.dkr.ecr.us-east-2.amazonaws.com/happyplaces:$ImageTag"
+  }
+]

@@ -11,6 +11,7 @@ stages:
 
 variables:
   ECR_REGISTRY: 570412635900.dkr.ecr.us-east-2.amazonaws.com/happyplaces
+  TAG_NAME: $CI_COMMIT_REF_NAME
 
 .docker_build:
   stage: build
@@ -67,7 +68,6 @@ variables:
 
 .prod:
   variables:
-    TAG_NAME: $CI_COMMIT_TAG
     ENV: prod
 
 
