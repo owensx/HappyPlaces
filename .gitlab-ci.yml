@@ -48,6 +48,7 @@ variables:
     - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA $ECR_REGISTRY:$CI_COMMIT_SHORT_SHA
     - aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin $ECR_REGISTRY
     - docker push $ECR_REGISTRY:$TAG_NAME
+    - docker push $ECR_REGISTRY:$CI_COMMIT_SHORT_SHA
 
 
 
