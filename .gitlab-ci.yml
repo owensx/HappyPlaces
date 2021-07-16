@@ -10,7 +10,6 @@ stages:
   - deploy
 
 variables:
-  ECR_REGISTRY: 570412635900.dkr.ecr.us-east-2.amazonaws.com/happyplaces
   TAG_NAME: $CI_COMMIT_REF_NAME
 
 .docker_build:
@@ -47,11 +46,9 @@ variables:
     - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
     - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA $ECR_REGISTRY:$TAG_NAME
     - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA $ECR_REGISTRY:$CI_COMMIT_SHORT_SHA
-    - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA $ECR_REGISTRY:$ENV
     - aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin $ECR_REGISTRY
     - docker push $ECR_REGISTRY:$TAG_NAME
     - docker push $ECR_REGISTRY:$CI_COMMIT_SHORT_SHA
-    - docker push $ECR_REGISTRY:$ENV
 
 
 
@@ -63,12 +60,14 @@ variables:
 .qa:
   variables:
     ENV: qa
+    ECR_REGISTRY: 570412635900.dkr.ecr.us-east-2.amazonaws.com/happyplaces
   rules:
       - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 .prod:
   variables:
     ENV: prod
+    ECR_REGISTRY: 570412635900.dkr.ecr.us-east-2.amazonaws.com/happyplacesprod
 
 
 
